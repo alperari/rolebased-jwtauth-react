@@ -13,6 +13,7 @@ const Router = () => {
       <Routes>
         <Route path="/" exact element={<Home />} />
         <Route path="/login" exact element={<LoginPage />} />
+
         <Route path="*" element={<h1>404: Not Found</h1>} />
       </Routes>
 
