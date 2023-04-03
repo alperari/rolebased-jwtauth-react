@@ -3,11 +3,11 @@ import { UserProvider } from './providers/UserProvider';
 
 function App() {
   return (
-    <Router>
-      <UserProvider>
+    <UserProvider>
+      <Router>
         <App />
-      </UserProvider>
-    </Router>
+      </Router>
+    </UserProvider>
   );
 }
 

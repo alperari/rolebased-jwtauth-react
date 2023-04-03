@@ -1,11 +1,12 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState('hello');
 
   const login = async (userData) => {
+    console.log('login');
     // Call API to login
 
     // Set user
@@ -30,4 +31,6 @@ export const UserProvider = ({ children }) => {
   );
 };
 
-export default UserProvider;
+export const useUserContext = () => {
+  return useContext(UserContext);
+};

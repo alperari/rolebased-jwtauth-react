@@ -4,12 +4,12 @@
 import React from 'react';
 import { Login } from '../../components/Auth/Login';
 
-const handleLogin = () => {
-  console.log('Login');
-};
-
 const LoginPage = () => {
-  return <Login></Login>;
+  return (
+    <div className="flex items-center justify-center h-screen">
+      <Login></Login>
+    </div>
+  );
 };
 
 export default LoginPage;
