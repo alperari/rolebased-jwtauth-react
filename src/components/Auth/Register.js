@@ -107,15 +107,7 @@ export const Register = () => {
 
         <div className="flex items-center gap-2">
           <Checkbox id="agree" />
-          <Label htmlFor="agree">
-            I agree with the
-            <a
-              href="/forms"
-              className="text-blue-600 hover:underline dark:text-blue-500"
-            >
-              terms and conditions
-            </a>
-          </Label>
+          <Label htmlFor="agree">I agree with the terms and conditions</Label>
         </div>
 
         {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
