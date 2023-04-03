@@ -36,8 +36,35 @@ export const UserProvider = ({ children }) => {
     setUser(null);
   };
 
+  const register = async (displayName, username, email, password, address) => {
+    // Call API to register
+    const registerResponse = await AuthService.register(
+      displayName,
+      username,
+      email,
+      password,
+      address
+    );
+
+    if (registerResponse.error) {
+      return {
+        success: false,
+        message: registerResponse.error,
+      };
+    } else {
+      // Set user in state
+      const { user, token } = registerResponse;
+
+      setUser(user);
+
+      return {
+        success: true,
+      };
+    }
+  };
+
   return (
-    <UserContext.Provider value={{ user, login, logout }}>
+    <UserContext.Provider value={{ user, login, logout, register }}>
       {children}
     </UserContext.Provider>
   );

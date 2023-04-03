@@ -1,53 +1,127 @@
-const Register = () => {
+import React, { useState } from 'react';
+import { Button, TextInput, Label, Checkbox, Card } from 'flowbite-react';
+import { useUserContext } from '../../hooks/useUserContext';
+import { useNavigate } from 'react-router-dom';
+
+export const Register = () => {
+  const { user, register } = useUserContext();
+  const [errorMessage, setErrorMessage] = React.useState('');
+
+  const navigate = useNavigate();
+
   return (
-    <form className="flex flex-col gap-4">
-      <div>
-        <div className="mb-2 block">
-          <Label htmlFor="email2" value="Your email" />
+    <Card>
+      <form
+        className="flex flex-col gap-4"
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const displayName = e.target.displayName.value;
+          const username = e.target.username.value;
+          const address = e.target.address.value;
+          const email = e.target.email.value;
+          const password1 = e.target.password1.value;
+          const password2 = e.target.password2.value;
+
+          if (password1 !== password2) {
+            setErrorMessage('Passwords do not match.');
+            return;
+          }
+
+          const registerResponse = await register(
+            displayName,
+            username,
+            email,
+            password1,
+            address
+          );
+
+          if (registerResponse.success) {
+            navigate('/login');
+          } else {
+            setErrorMessage(registerResponse.message);
+          }
+        }}
+      >
+        <div>
+          <div>
+            <div className="mb-2 block">
+              <Label htmlFor="displayName" value="display name" />
+            </div>
+            <TextInput
+              id="displayName"
+              type="text"
+              required={true}
+              shadow={true}
+            />
+          </div>
+          <div>
+            <div className="mb-2 block">
+              <Label htmlFor="username" value="username" />
+            </div>
+            <TextInput
+              id="username"
+              type="text"
+              required={true}
+              shadow={true}
+            />
+          </div>
+          <div className="mb-2 block">
+            <Label htmlFor="email" value="Your email" />
+          </div>
+          <TextInput
+            id="email"
+            type="email"
+            placeholder="example@mail.com"
+            required={true}
+            shadow={true}
+          />
         </div>
-        <TextInput
-          id="email2"
-          type="email"
-          placeholder="name@flowbite.com"
-          required={true}
-          shadow={true}
-        />
-      </div>
-      <div>
-        <div className="mb-2 block">
-          <Label htmlFor="password2" value="Your password" />
+        <div>
+          <div className="mb-2 block">
+            <Label htmlFor="address" value="address" />
+          </div>
+          <TextInput id="address" type="text" required={true} shadow={true} />
         </div>
-        <TextInput
-          id="password2"
-          type="password"
-          required={true}
-          shadow={true}
-        />
-      </div>
-      <div>
-        <div className="mb-2 block">
-          <Label htmlFor="repeat-password" value="Repeat password" />
+        <div>
+          <div className="mb-2 block">
+            <Label htmlFor="password1" value="Your password" />
+          </div>
+          <TextInput
+            id="password1"
+            type="password"
+            required={true}
+            shadow={true}
+          />
         </div>
-        <TextInput
-          id="repeat-password"
-          type="password"
-          required={true}
-          shadow={true}
-        />
-      </div>
-      <div className="flex items-center gap-2">
-        <Checkbox id="agree" />
-        <Label htmlFor="agree">
-          I agree with the
-          <a
-            href="/forms"
-            className="text-blue-600 hover:underline dark:text-blue-500"
-          >
-            terms and conditions
-          </a>
-        </Label>
-      </div>
-      <Button type="submit">Register new account</Button>
-    </form>
+        <div>
+          <div className="mb-2 block">
+            <Label htmlFor="password2" value="Repeat password" />
+          </div>
+          <TextInput
+            id="password2"
+            type="password"
+            required={true}
+            shadow={true}
+          />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Checkbox id="agree" />
+          <Label htmlFor="agree">
+            I agree with the
+            <a
+              href="/forms"
+              className="text-blue-600 hover:underline dark:text-blue-500"
+            >
+              terms and conditions
+            </a>
+          </Label>
+        </div>
+
+        {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
+
+        <Button type="submit">Register new account</Button>
+      </form>
+    </Card>
   );
 };

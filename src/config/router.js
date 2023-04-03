@@ -4,6 +4,7 @@ import Footer from '../components/Footer/Footer';
 import Navbar from '../components/Navbar/Navbar';
 import Home from '../pages/Home/HomePage';
 import LoginPage from '../pages/Auth/LoginPage';
+import RegisterPage from '../pages/Auth/RegisterPage';
 
 const Router = () => {
   return (
@@ -12,6 +13,7 @@ const Router = () => {
 
       <Routes>
         <Route path="/" exact element={<Home />} />
+        <Route path="/register" exact element={<RegisterPage />} />
         <Route path="/login" exact element={<LoginPage />} />
 
         <Route path="*" element={<h1>404: Not Found</h1>} />

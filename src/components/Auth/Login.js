@@ -44,9 +44,16 @@ export const Login = () => {
           </div>
           <TextInput id="password1" type="password" required={true} />
         </div>
+
         <div className="flex items-center gap-2">
-          <Checkbox id="remember" />
-          <Label htmlFor="remember">Remember me</Label>
+          <Label htmlFor="register">
+            <a
+              href="/register"
+              className="text-blue-600 hover:underline dark:text-blue-500"
+            >
+              Create account
+            </a>
+          </Label>
         </div>
 
         {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
