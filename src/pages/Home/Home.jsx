@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Card } from 'flowbite-react';
+import { UserProvider } from '../../providers/UserProvider';
 
 const Home = () => {
+  const { user } = UserProvider;
+  console.log('user:', user);
+
   return (
     <div>
       <div className="max-w-sm flex">
