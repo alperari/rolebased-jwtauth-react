@@ -3,6 +3,9 @@ import { Card } from 'flowbite-react';
 import { useUserContext } from '../../providers/UserProvider';
 
 const Home = () => {
+  const { user } = useUserContext();
+  console.log('user:', user);
+
   return (
     <div>
       <div className="max-w-sm flex">

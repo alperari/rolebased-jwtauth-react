@@ -1,18 +1,30 @@
 import React, { createContext, useState, useContext } from 'react';
+import { AuthService } from '../services/AuthService';
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState('hello');
+  const [user, setUser] = useState();
 
-  const login = async (userData) => {
-    console.log('login');
+  const login = async (email, password) => {
     // Call API to login
+    const loginResponse = await AuthService.login(email, password);
 
-    // Set user
+    if (loginResponse.error) {
+      return {
+        success: false,
+        message: loginResponse.error,
+      };
+    } else {
+      // Set user in state
+      const { user, token } = loginResponse;
 
-    // Set JWT in cookie
-    setUser(userData);
+      setUser(user);
+
+      return {
+        success: true,
+      };
+    }
   };
 
   const logout = () => {

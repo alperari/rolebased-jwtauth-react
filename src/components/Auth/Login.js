@@ -1,16 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, TextInput, Label, Checkbox, Card } from 'flowbite-react';
 import { useUserContext } from '../../hooks/useUserContext';
+import { useNavigate } from 'react-router-dom';
 
 export const Login = () => {
   const { user, login } = useUserContext();
+  const [errorMessage, setErrorMessage] = React.useState('');
+
+  const navigate = useNavigate();
 
   return (
     <Card>
       <form
         className="w-64 flex flex-col gap-4"
-        onSubmit={(e) => {
-          login({ username: 'alper', age: 25 });
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const email = e.target.email1.value;
+          const password = e.target.password1.value;
+
+          const loginResponse = await login(email, password);
+
+          if (loginResponse.success) {
+            navigate('/');
+          } else {
+            setErrorMessage(loginResponse.message);
+          }
         }}
       >
         <div>
@@ -20,7 +34,7 @@ export const Login = () => {
           <TextInput
             id="email1"
             type="email"
-            placeholder="name@flowbite.com"
+            placeholder="example@gmail.com"
             required={true}
           />
         </div>
@@ -34,6 +48,9 @@ export const Login = () => {
           <Checkbox id="remember" />
           <Label htmlFor="remember">Remember me</Label>
         </div>
+
+        {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
+
         <Button type="submit">Submit</Button>
       </form>
     </Card>
