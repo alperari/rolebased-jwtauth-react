@@ -7,6 +7,7 @@ import LoginPage from '../pages/Auth/LoginPage';
 import RegisterPage from '../pages/Auth/RegisterPage';
 import UserPage from '../pages/User/UserPage';
 
+// Protected route, only accessible if user's
 const Private = ({ Component, roles }) => {
   let user = localStorage.getItem('user');
 

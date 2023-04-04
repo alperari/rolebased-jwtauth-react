@@ -8,9 +8,11 @@ import {
   Dropdown,
 } from 'flowbite-react';
 
-export const UserCard = ({ user }) => {
+const user = JSON.parse(localStorage.getItem('user'));
+
+export const UserCard = () => {
   return (
-    <div className="max-w-sm">
+    <div className="container max-w-xl">
       <Card>
         <div className="flex justify-end px-4 pt-4">
           <Dropdown inline={true} label="">
@@ -22,49 +24,49 @@ export const UserCard = ({ user }) => {
                 Edit
               </a>
             </Dropdown.Item>
-            <Dropdown.Item>
-              <a
-                href="#"
-                className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
-              >
-                Export Data
-              </a>
-            </Dropdown.Item>
-            <Dropdown.Item>
-              <a
-                href="#"
-                className="block py-2 px-4 text-sm text-red-600 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
-              >
-                Delete
-              </a>
-            </Dropdown.Item>
           </Dropdown>
         </div>
         <div className="flex flex-col items-center pb-10">
           <img
             className="mb-3 h-24 w-24 rounded-full shadow-lg"
-            src="https://flowbite.com/docs/images/people/profile-picture-3.jpg"
+            src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
             alt="Bonnie image"
           />
           <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
-            Bonnie Green
+            {user.name + ' '}
+            <>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                ({user.username})
+              </span>
+            </>
           </h5>
           <span className="text-sm text-gray-500 dark:text-gray-400">
-            Visual Designer
+            {user.email}
           </span>
-          <div className="mt-4 flex space-x-3 lg:mt-6">
-            <a
-              href="#"
-              className="inline-flex items-center rounded-lg bg-blue-700 py-2 px-4 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            >
-              Add friend
-            </a>
-            <a
-              href="#"
-              className="inline-flex items-center rounded-lg border border-gray-300 bg-white py-2 px-4 text-center text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
-            >
-              Message
-            </a>
+
+          <hr class="w-full h-1 mx-auto my-2 bg-gray-100 border-0 rounded md:my-5 dark:bg-gray-700" />
+
+          <div className="mt-4 flex flex-col space-y-1 lg:mt-6 text-center">
+            <h5 className="mb-1 text-m font-medium text-gray-900 dark:text-white">
+              Address
+            </h5>
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              {user.address}
+            </span>
+
+            <h5 className="pt-4 text-m font-medium text-gray-900 dark:text-white">
+              Account Balance
+            </h5>
+            <span className="text-sm text-blue-500 dark:text-gray-400">
+              $ {user.balance}
+            </span>
+
+            <h5 className="pt-4 text-m font-medium text-gray-900 dark:text-white">
+              Role
+            </h5>
+            <h6 className=" text-sm font-small text-red-500 text-dark:text-white">
+              {user.role}
+            </h6>
           </div>
         </div>
       </Card>
