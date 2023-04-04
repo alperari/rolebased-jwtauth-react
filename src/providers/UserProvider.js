@@ -16,10 +16,13 @@ export const UserProvider = ({ children }) => {
         message: loginResponse.error,
       };
     } else {
-      // Set user in state
       const { user, token } = loginResponse;
 
+      // Set user in state
       setUser(user);
+
+      // Set user in localStorage
+      localStorage.setItem('user', JSON.stringify(user));
 
       return {
         success: true,
@@ -27,13 +30,18 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
     // Call API to logout
+    await AuthService.logout();
 
-    // Remove user
+    // Clear localStorage
+    localStorage.removeItem('user');
 
-    // Remove JWT from cookie ?
     setUser(null);
+
+    return {
+      success: true,
+    };
   };
 
   const register = async (displayName, username, email, password, address) => {
@@ -52,10 +60,13 @@ export const UserProvider = ({ children }) => {
         message: registerResponse.error,
       };
     } else {
-      // Set user in state
       const { user, token } = registerResponse;
 
+      // Set user in state
       setUser(user);
+
+      // Set user in localStorage
+      localStorage.setItem('user', JSON.stringify(user));
 
       return {
         success: true,

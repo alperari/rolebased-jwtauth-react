@@ -17,7 +17,7 @@ export const Login = () => {
   const { user, login } = useUserContext();
   const [errorMessage, setErrorMessage] = React.useState('');
 
-  const [showAlert, setShowAlert] = useState(true);
+  const [showAlert, setShowAlert] = useState(false);
 
   const navigate = useNavigate();
 

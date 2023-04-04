@@ -34,6 +34,7 @@ export class AuthService {
       const response = await axios({
         method: 'POST',
         url: `${URL}/auth/register`,
+        withCredentials: true,
         data: {
           name,
           username,
@@ -41,6 +42,20 @@ export class AuthService {
           password,
           address,
         },
+      });
+
+      return response.data;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
+
+  static async logout() {
+    try {
+      const response = await axios({
+        method: 'POST',
+        url: `${URL}/auth/logout`,
+        withCredentials: true,
       });
 
       return response.data;

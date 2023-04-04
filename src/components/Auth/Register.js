@@ -9,7 +9,7 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 export const Register = () => {
   const { user, register } = useUserContext();
   const [errorMessage, setErrorMessage] = React.useState('');
-  const [showAlert, setShowAlert] = useState(true);
+  const [showAlert, setShowAlert] = useState(false);
 
   const navigate = useNavigate();
 
