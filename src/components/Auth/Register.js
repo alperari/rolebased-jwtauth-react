@@ -2,10 +2,14 @@ import React, { useState } from 'react';
 import { Button, TextInput, Label, Checkbox, Card } from 'flowbite-react';
 import { useUserContext } from '../../hooks/useUserContext';
 import { useNavigate } from 'react-router-dom';
+import { AlertSuccess, AlertFailure } from '../General/Alert';
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const Register = () => {
   const { user, register } = useUserContext();
   const [errorMessage, setErrorMessage] = React.useState('');
+  const [showAlert, setShowAlert] = useState(true);
 
   const navigate = useNavigate();
 
@@ -36,12 +40,18 @@ export const Register = () => {
           );
 
           if (registerResponse.success) {
+            setShowAlert(true);
+            await delay(1000);
+
             navigate('/login');
           } else {
             setErrorMessage(registerResponse.message);
           }
         }}
       >
+        {showAlert && (
+          <AlertSuccess title="Register Successful!" message="Redirecting..." />
+        )}
         <div>
           <div>
             <div className="mb-2 block">

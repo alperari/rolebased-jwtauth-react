@@ -10,14 +10,6 @@ const Home = () => {
   return (
     <div>
       <div className="max-w-sm flex">
-        <Button
-          onClick={async () => {
-            const result = await axios.get('http://localhost:3000/user/me', {
-              withCredentials: true,
-            });
-            console.log('result:', result.data);
-          }}
-        ></Button>
         <Card
           imgAlt="Apple Watch Series 7 in colors pink, silver, and black"
           imgSrc="https://i.imgur.com/l6140K8.jpeg"

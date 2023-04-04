@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
-import { Button, TextInput, Label, Checkbox, Card } from 'flowbite-react';
+import {
+  Button,
+  TextInput,
+  Label,
+  Checkbox,
+  Card,
+  Alert,
+} from 'flowbite-react';
 import { useUserContext } from '../../hooks/useUserContext';
 import { useNavigate } from 'react-router-dom';
+import { AlertSuccess, AlertFailure } from '../General/Alert';
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const Login = () => {
   const { user, login } = useUserContext();
   const [errorMessage, setErrorMessage] = React.useState('');
+
+  const [showAlert, setShowAlert] = useState(true);
 
   const navigate = useNavigate();
 
@@ -21,12 +33,19 @@ export const Login = () => {
           const loginResponse = await login(email, password);
 
           if (loginResponse.success) {
+            setShowAlert(true);
+            await delay(1000);
+
             navigate('/');
           } else {
             setErrorMessage(loginResponse.message);
           }
         }}
       >
+        {showAlert && (
+          <AlertSuccess title="Login Successful!" message="Redirecting..." />
+        )}
+
         <div>
           <div className="mb-2 block">
             <Label htmlFor="email1" value="Your email" />
