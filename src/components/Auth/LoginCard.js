@@ -13,7 +13,7 @@ import { AlertSuccess, AlertFailure } from '../General/Alert';
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const Login = () => {
+export const LoginCard = () => {
   const { user, login } = useUserContext();
   const [errorMessage, setErrorMessage] = React.useState('');
 

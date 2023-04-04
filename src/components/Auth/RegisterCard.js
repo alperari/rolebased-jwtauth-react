@@ -6,7 +6,7 @@ import { AlertSuccess, AlertFailure } from '../General/Alert';
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const Register = () => {
+export const RegisterCard = () => {
   const { user, register } = useUserContext();
   const [errorMessage, setErrorMessage] = React.useState('');
   const [showAlert, setShowAlert] = useState(false);

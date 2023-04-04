@@ -2,12 +2,12 @@
 // Use the Login component from the components folder
 
 import React from 'react';
-import { Register } from '../../components/Auth/Register';
+import { RegisterCard } from '../../components/Auth/RegisterCard';
 
 const RegisterPage = () => {
   return (
     <div className="flex items-center justify-center h-screen">
-      <Register></Register>
+      <RegisterCard></RegisterCard>
     </div>
   );
 };
