@@ -106,7 +106,7 @@ const VerticalProductCard = ({ product }) => {
   return (
     <div className="max-w-sm">
       <Card imgAlt={product.name} imgSrc={product.imageURL}>
-        <a href="#">
+        <a href="/product">
           <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
             {product.name}
           </h5>
