@@ -18,34 +18,46 @@ import { ProductService } from '../../services/ProductService';
 
 export const AddProductCard = () => {
   const [image, setImage] = useState(null);
-  const [category, setCategory] = useState(null);
-  const [categories, setCategories] = useState(['Other']);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [categories, setCategories] = useState(null);
 
   const onCategoryChange = (e) => {
-    setCategory(e.target.value);
+    setSelectedCategory(e.target.value);
   };
 
-  const onSelectImage = (e) => {
+  const onImageSelect = (e) => {
     setImage(e.target.files[0]);
   };
 
-  const getCategories = async () => {
-    const fetchedCategories = await ProductService.getCategories();
+  const onFormSubmit = async (e) => {
+    e.preventDefault();
 
-    setCategories([...categories, ...fetchedCategories]);
-  };
+    const name = e.target.name.value;
+    const description = e.target.description.value;
+    const category =
+      selectedCategory === 'Other'
+        ? e.target.specifyCategory.value
+        : selectedCategory;
 
-  const addProduct = async () => {
-    const name = document.getElementById('name').value;
-    const description = document.getElementById('description').value;
-    const category = document.getElementById('category').value;
+    const distributor = e.target.distributor.value;
+
+    console.log(distributor);
 
     const product = await ProductService.addProduct({
       name,
       description,
       image,
       category,
+      distributor,
     });
+
+    console.log('product:', product);
+  };
+
+  const getCategories = async () => {
+    const fetchedCategories = await ProductService.getCategories();
+
+    setCategories([...fetchedCategories, 'Other']);
   };
 
   // Fetch categories from API before the render
@@ -56,7 +68,7 @@ export const AddProductCard = () => {
   return (
     <div className="container max-w-xl">
       <Card>
-        <div class="flex flex-col space-y-5">
+        <form class="flex flex-col space-y-5" onSubmit={onFormSubmit}>
           <div id="image">
             <div className="block">
               <Label htmlFor="image" value="Upload Image" />
@@ -65,7 +77,7 @@ export const AddProductCard = () => {
               id="image"
               helperText="An image of your product would be nice."
               required={true}
-              onChange={onSelectImage}
+              onChange={onImageSelect}
             />
           </div>
 
@@ -99,22 +111,37 @@ export const AddProductCard = () => {
             <Select id="countries" required={true} onChange={onCategoryChange}>
               {categories &&
                 categories.map((category, index) => {
-                  return <option>{category}</option>;
+                  return <option key={index}>{category}</option>;
                 })}
             </Select>
           </div>
 
-          {category === 'Other' && (
+          {selectedCategory === 'Other' && (
             <div>
-              <Label htmlFor="otherCategory">Specify Category</Label>
+              <Label
+                class="text-blue-500 text-sm font-bold"
+                htmlFor="specifyCategory"
+              >
+                Specify Category
+              </Label>
               <TextInput
                 type="text"
-                id="otherCategory"
+                id="specifyCategory"
                 placeholder="Creatine"
                 required={true}
               />
             </div>
           )}
+
+          <div>
+            <Label htmlFor="distributor">Distributor</Label>
+            <TextInput
+              type="text"
+              id="distributor"
+              placeholder="Hardline Nutrition"
+              required={true}
+            />
+          </div>
 
           <div>
             <Label htmlFor="quantity">Quantity</Label>
@@ -159,7 +186,8 @@ export const AddProductCard = () => {
               disabled={true}
             />
           </div>
-        </div>
+          <Button type="submit">Submit</Button>
+        </form>
       </Card>
     </div>
   );

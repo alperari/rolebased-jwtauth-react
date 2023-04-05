@@ -3,7 +3,7 @@ import { Footer } from 'flowbite-react';
 
 const CustomFooter = () => {
   return (
-    <div class="fixed bottom-0 w-screen">
+    <div class=" bottom-0 w-screen">
       <Footer container={true}>
         <Footer.Copyright href="#" by="Flowbite™" year={2022} />
         <Footer.LinkGroup>

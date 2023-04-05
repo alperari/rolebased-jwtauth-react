@@ -10,13 +10,14 @@ const headers = {
 };
 
 export class ProductService {
-  static async addProduct({ name, description, image, category }) {
+  static async addProduct({ name, description, image, category, distributor }) {
     const formData = new FormData();
 
     formData.append('image', image);
     formData.append('name', name);
     formData.append('description', description);
     formData.append('category', category);
+    formData.append('distributor', distributor);
 
     try {
       const response = await axios({
