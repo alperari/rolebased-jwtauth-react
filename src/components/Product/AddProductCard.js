@@ -15,11 +15,16 @@ import {
 } from 'flowbite-react';
 
 export const AddProductCard = () => {
-  const [category, setCategory] = useState('');
+  const [image, setImage] = useState(null);
+  const [category, setCategory] = useState(null);
 
   const onCategoryChange = (e) => {
     console.log(e.target.value);
     setCategory(e.target.value);
+  };
+
+  const onSelectImage = (e) => {
+    setImage(e.target.files[0]);
   };
 
   const getCategories = () => {};
@@ -36,6 +41,7 @@ export const AddProductCard = () => {
               id="image"
               helperText="An image of your product would be nice."
               required={true}
+              onChange={onSelectImage}
             />
           </div>
 
