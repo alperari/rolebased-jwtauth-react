@@ -37,6 +37,7 @@ export const LoginCard = () => {
             await delay(1000);
 
             navigate('/');
+            window.location.reload();
           } else {
             setErrorMessage(loginResponse.message);
           }

@@ -105,17 +105,27 @@ const VerticalProductCard = ({ product }) => {
 
   return (
     <div className="max-w-sm">
-      <Card
-        imgAlt="Apple Watch Series 7 in colors pink, silver, and black"
-        imgSrc={product.imageURL}
-      >
+      <Card imgAlt={product.name} imgSrc={product.imageURL}>
         <a href="#">
           <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
             {product.name}
           </h5>
         </a>
 
+        <h5 className="text-m italic tracking-tight text-gray-900 dark:text-white">
+          {product.category}
+        </h5>
+
         {Ratings()}
+
+        <div class="flex flex-row space gap-1">
+          <h5 className="text-m tracking-tight text-gray-500 dark:text-white">
+            Distributed by
+          </h5>
+          <h5 className="text-m font-bold tracking-tight text-gray-400 dark:text-white">
+            {product.distributor}
+          </h5>
+        </div>
 
         <div className="flex items-center justify-between">
           <span className="text-3xl font-bold text-gray-900 dark:text-white">

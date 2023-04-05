@@ -1,10 +1,14 @@
 import React from 'react';
 import { Dropdown, Button, Navbar, Avatar } from 'flowbite-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { UserProvider } from '../../providers/UserProvider';
+import { useUserContext } from '../../hooks/useUserContext';
 
 const user = JSON.parse(localStorage.getItem('user'));
 
 const CustomNavBar = () => {
+  const { logout } = useUserContext();
+
   const navigate = useNavigate();
 
   const onLoginClick = () => {
@@ -49,6 +53,14 @@ const CustomNavBar = () => {
                     {' '}
                     Profile{' '}
                   </Link>
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={async () => {
+                    await logout();
+                    window.location.reload();
+                  }}
+                >
+                  <div class="text-red-500">Log Out</div>
                 </Dropdown.Item>
               </Dropdown>
             </>
