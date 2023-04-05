@@ -6,7 +6,7 @@ import { LoginCard } from '../../components/Auth/LoginCard';
 
 const LoginPage = () => {
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex flex-col  items-center mt-24">
       <LoginCard></LoginCard>
     </div>
   );

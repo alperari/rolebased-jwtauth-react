@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
-import Navbar from '../components/Navbar/Navbar';
+import CustomNavBar from '../components/Navbar/CustomNavBar';
 import Home from '../pages/Home/HomePage';
 import LoginPage from '../pages/Auth/LoginPage';
 import RegisterPage from '../pages/Auth/RegisterPage';
@@ -26,7 +26,7 @@ const Private = ({ Component, roles }) => {
 const Router = () => {
   return (
     <BrowserRouter>
-      <Navbar />
+      <CustomNavBar />
 
       <Routes>
         <Route path="/" exact element={<Home />} />

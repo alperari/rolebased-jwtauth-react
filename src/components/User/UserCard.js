@@ -6,6 +6,7 @@ import {
   Card,
   Alert,
   Dropdown,
+  Avatar,
 } from 'flowbite-react';
 
 const user = JSON.parse(localStorage.getItem('user'));
@@ -27,12 +28,8 @@ export const UserCard = () => {
           </Dropdown>
         </div>
         <div className="flex flex-col items-center pb-10">
-          <img
-            className="mb-3 h-24 w-24 rounded-full shadow-lg"
-            src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-            alt="Bonnie image"
-          />
-          <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
+          <Avatar size="xl" />
+          <h5 className="mb-1 mt-3 text-xl font-medium text-gray-900 dark:text-white">
             {user.name + ' '}
             <>
               <span className="text-sm text-gray-500 dark:text-gray-400">
