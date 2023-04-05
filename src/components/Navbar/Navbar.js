@@ -5,7 +5,7 @@ import { Button } from 'flowbite-react';
 
 const CustomNavBar = () => {
   return (
-    <nav class="bg-black border-gray-200 px-2 sm:px-4 py-2.5 dark:bg-gray-900">
+    <nav class="bg-black border-gray-200 px-2 sm:px-4 py-2.5 dark:bg-gray-900  w-screen ">
       <div class="container flex">
         <div class="text-pink-500">Logo</div>
 

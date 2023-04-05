@@ -29,15 +29,17 @@ export const CustomModal = ({
           </p>
         </div>
       </Modal.Body>
-      <Modal.Footer>
-        <Button
-          onClick={() => {
-            setShow(false);
-          }}
-        >
-          Okay
-        </Button>
-      </Modal.Footer>
+      {dismissable && (
+        <Modal.Footer>
+          <Button
+            onClick={() => {
+              setShow(false);
+            }}
+          >
+            Okay
+          </Button>
+        </Modal.Footer>
+      )}
     </Modal>
   );
 };
