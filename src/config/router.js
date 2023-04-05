@@ -6,6 +6,8 @@ import Home from '../pages/Home/HomePage';
 import LoginPage from '../pages/Auth/LoginPage';
 import RegisterPage from '../pages/Auth/RegisterPage';
 import UserPage from '../pages/User/UserPage';
+import AddProductPage from '../pages/Product/AddProductPage';
+import NotFoundPage from '../pages/NotFoundPage';
 
 // Protected route, only accessible if user's
 const Private = ({ Component, roles }) => {
@@ -42,7 +44,17 @@ const Router = () => {
           }
         />
 
-        <Route path="*" element={<h1>404: Not Found</h1>} />
+        <Route
+          path="/add-product"
+          element={
+            <Private
+              Component={AddProductPage}
+              roles={['admin', 'productManager']}
+            />
+          }
+        />
+
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
 
       <Footer />
