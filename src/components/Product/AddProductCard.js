@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
   Button,
@@ -14,12 +14,14 @@ import {
   Select,
 } from 'flowbite-react';
 
+import { ProductService } from '../../services/ProductService';
+
 export const AddProductCard = () => {
   const [image, setImage] = useState(null);
   const [category, setCategory] = useState(null);
+  const [categories, setCategories] = useState(['Other']);
 
   const onCategoryChange = (e) => {
-    console.log(e.target.value);
     setCategory(e.target.value);
   };
 
@@ -27,7 +29,29 @@ export const AddProductCard = () => {
     setImage(e.target.files[0]);
   };
 
-  const getCategories = () => {};
+  const getCategories = async () => {
+    const fetchedCategories = await ProductService.getCategories();
+
+    setCategories([...categories, ...fetchedCategories]);
+  };
+
+  const addProduct = async () => {
+    const name = document.getElementById('name').value;
+    const description = document.getElementById('description').value;
+    const category = document.getElementById('category').value;
+
+    const product = await ProductService.addProduct({
+      name,
+      description,
+      image,
+      category,
+    });
+  };
+
+  // Fetch categories from API before the render
+  useEffect(() => {
+    getCategories();
+  }, []);
 
   return (
     <div className="container max-w-xl">
@@ -73,11 +97,10 @@ export const AddProductCard = () => {
               <Label htmlFor="countries" value="Select Category" />
             </div>
             <Select id="countries" required={true} onChange={onCategoryChange}>
-              <option>cat1</option>
-              <option>cat2</option>
-              <option>cat3</option>
-              <option>cat4</option>
-              <option>Other</option>
+              {categories &&
+                categories.map((category, index) => {
+                  return <option>{category}</option>;
+                })}
             </Select>
           </div>
 

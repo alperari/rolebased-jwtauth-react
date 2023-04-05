@@ -10,24 +10,37 @@ const headers = {
 };
 
 export class ProductService {
-  static async addProduct({ name, description, image, price, category }) {
+  static async addProduct({ name, description, image, category }) {
     const formData = new FormData();
 
     formData.append('image', image);
     formData.append('name', name);
     formData.append('description', description);
-    formData.append('quantity', quantity);
     formData.append('category', category);
 
     try {
       const response = await axios({
         method: 'POST',
-        url: `${URL}/product/add`,
+        url: `${URL}/product`,
         withCredentials: true,
         data: formData,
       });
 
       return response.data;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
+
+  static async getCategories() {
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `${URL}/product/categories`,
+        withCredentials: true,
+      });
+
+      return response.data.categories;
     } catch (err) {
       return err.response.data;
     }
