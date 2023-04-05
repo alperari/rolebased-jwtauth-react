@@ -15,11 +15,18 @@ import {
 } from 'flowbite-react';
 
 import { ProductService } from '../../services/ProductService';
+import { CustomModal } from '../General/Modal';
 
 export const AddProductCard = () => {
   const [image, setImage] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categories, setCategories] = useState(null);
+
+  // Modals
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+
+  const [loading, setLoading] = useState(false);
 
   const onCategoryChange = (e) => {
     setSelectedCategory(e.target.value);
@@ -32,6 +39,8 @@ export const AddProductCard = () => {
   const onFormSubmit = async (e) => {
     e.preventDefault();
 
+    setLoading(true);
+
     const name = e.target.name.value;
     const description = e.target.description.value;
     const category =
@@ -41,8 +50,6 @@ export const AddProductCard = () => {
 
     const distributor = e.target.distributor.value;
 
-    console.log(distributor);
-
     const product = await ProductService.addProduct({
       name,
       description,
@@ -51,7 +58,15 @@ export const AddProductCard = () => {
       distributor,
     });
 
-    console.log('product:', product);
+    setLoading(false);
+
+    // If create product is successful, show "success modal"
+    if (!product.error) {
+      setShowSuccessModal(true);
+    } else {
+      // Else, show "error modal"
+      setShowErrorModal(true);
+    }
   };
 
   const getCategories = async () => {
@@ -63,10 +78,38 @@ export const AddProductCard = () => {
   // Fetch categories from API before the render
   useEffect(() => {
     getCategories();
-  }, []);
+  }, [loading, showSuccessModal, showErrorModal]);
 
   return (
     <div className="container max-w-xl">
+      {showSuccessModal && (
+        <CustomModal
+          title="✅ Product Creation Is Successful ✅"
+          message1="Your product has been added successfully."
+          message2="You can now view it in the products page."
+          show={showSuccessModal}
+          setShow={setShowSuccessModal}
+        />
+      )}
+      {showErrorModal && (
+        <CustomModal
+          title="❌ Product Creation Failed! ❌"
+          message1="Failed to create your product."
+          message2="Please try again later with different parameters."
+          show={showErrorModal}
+          setShow={setShowErrorModal}
+        />
+      )}
+      {loading && (
+        <CustomModal
+          title="⌛ Processing... ⌛"
+          message1="Listing your product."
+          message2="This might take some time."
+          show={loading}
+          setShow={setLoading}
+          dismisable={false}
+        />
+      )}
       <Card>
         <form class="flex flex-col space-y-5" onSubmit={onFormSubmit}>
           <div id="image">
