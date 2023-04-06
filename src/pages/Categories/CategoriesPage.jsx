@@ -31,10 +31,6 @@ const CategoriesPage = () => {
     fetchProducts();
   }, []);
 
-  //   const CustomTabsItem = (props) => {
-  //     return <Tabs.Item title="Profile">Profile content</Tabs.Item>;
-  //   };
-
   return (
     <div class="flex flex-col items-center mt-24">
       <Tabs.Group
@@ -46,10 +42,8 @@ const CategoriesPage = () => {
           return (
             <Tabs.Item title={category} key={category}>
               <div class="mx-24 grid grid-cols-5 gap-3 ">
-                {groupedProducts[category].map((product) => {
-                  return (
-                    <VerticalProductCard product={product} key={product} />
-                  );
+                {groupedProducts[category].map((product, index) => {
+                  return <VerticalProductCard product={product} key={index} />;
                 })}
               </div>
             </Tabs.Item>

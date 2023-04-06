@@ -64,7 +64,7 @@ const VerticalProductCard = ({ product }) => {
 
     if (ratings.length === 0) {
       return (
-        <p className="text-gray-500 dark:text-gray-400">
+        <div className="text-gray-500 dark:text-gray-400">
           <Rating>
             <Rating.Star filled={false} />
             <Rating.Star filled={false} />
@@ -75,7 +75,7 @@ const VerticalProductCard = ({ product }) => {
               No Ratings
             </p>
           </Rating>
-        </p>
+        </div>
       );
     } else {
       // Calculate average rating
