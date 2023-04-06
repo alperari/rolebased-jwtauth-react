@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Button } from 'flowbite-react';
+import { Card, Button, Rating } from 'flowbite-react';
 import axios from 'axios';
 import { ProductService } from '../../services/ProductService';
 import VerticalProductCard from '../../components/Product/VerticalProductCard';
@@ -28,7 +28,7 @@ const Product = () => {
           console.log(product);
           return <VerticalProductCard product={product} />;
         })}
-      <div class="grid grid-rows-5">
+      <div class="grid gap-2">
         <Card>
           <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
             Review 1
@@ -41,6 +41,16 @@ const Product = () => {
           <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
             Review 2
           </h5>
+          <Rating>
+          <Rating.Star />
+          <Rating.Star />
+          <Rating.Star />
+          <Rating.Star />
+          <Rating.Star filled={false} />
+          <p className="ml-2 text-sm font-medium text-gray-500 dark:text-gray-400">
+            4.95 out of 5
+          </p>
+          </Rating>
           <p className="font-normal text-gray-700 dark:text-gray-400">
             This is another one of the products ever made.
           </p>
