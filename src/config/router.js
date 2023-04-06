@@ -7,8 +7,10 @@ import RegisterPage from '../pages/Auth/RegisterPage';
 import UserPage from '../pages/User/UserPage';
 import AddProductPage from '../pages/Product/AddProductPage';
 import NotFoundPage from '../pages/NotFoundPage';
-import Product from '../pages/Product/ProductPage'
-// Protected route, only accessible if user's
+import ProductPage from '../pages/Product/ProductPage';
+import CategoriesPage from '../pages/Categories/CategoriesPage';
+
+// Protected route, only accessible if user's role is in roles array
 const Private = ({ Component, roles }) => {
   let user = localStorage.getItem('user');
 
@@ -32,8 +34,8 @@ const Router = () => {
         <Route path="/" exact element={<Home />} />
         <Route path="/register" exact element={<RegisterPage />} />
         <Route path="/login" exact element={<LoginPage />} />
-        <Route path="/product" exact element={<Product />} />
-
+        <Route path="/product" exact element={<ProductPage />} />
+        <Route path="/categories" exact element={<CategoriesPage />} />
 
         <Route
           path="/user"
