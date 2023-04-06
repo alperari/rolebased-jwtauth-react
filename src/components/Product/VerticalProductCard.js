@@ -17,71 +17,10 @@ import {
   Badge,
 } from 'flowbite-react';
 
+import { Ratings } from './Ratings';
 import { Link } from 'react-router-dom';
 
 const VerticalProductCard = ({ product }) => {
-  const FilledStars = (number) => {
-    const stars = [];
-    for (let i = 0; i < number; i++) {
-      stars.push(<Rating.Star />);
-    }
-    return stars;
-  };
-
-  const EmptyStars = (number) => {
-    const stars = [];
-    for (let i = 0; i < number; i++) {
-      stars.push(<Rating.Star filled={false} />);
-    }
-    return stars;
-  };
-
-  const Ratings = () => {
-    if (product.ratings.length === 0) {
-      return (
-        <div className="text-gray-500 dark:text-gray-400">
-          <Rating>
-            <Rating.Star filled={false} />
-            <Rating.Star filled={false} />
-            <Rating.Star filled={false} />
-            <Rating.Star filled={false} />
-            <Rating.Star filled={false} />
-            <p className="ml-2 text-sm font-medium text-gray-500 dark:text-gray-400">
-              No Ratings
-            </p>
-          </Rating>
-        </div>
-      );
-    } else {
-      // Calculate average rating
-      const total = product.ratings.reduce(
-        (acc, rating) => acc + rating.stars,
-        0
-      );
-      const average = total / product.ratings.length;
-
-      const roundedAverage = Math.round(average * 10) / 10;
-
-      const filledNo = roundedAverage;
-      const emptyNo = 5 - filledNo;
-
-      const filledStars = FilledStars(filledNo);
-      const emptyStars = EmptyStars(emptyNo);
-
-      return (
-        <div>
-          <Rating>
-            {filledStars.map((star) => star)}
-            {emptyStars.map((star) => star)}
-            <p className="ml-2 text-sm font-medium text-gray-500 dark:text-gray-400">
-              {average} / 5
-            </p>
-          </Rating>
-        </div>
-      );
-    }
-  };
-
   const Price = () => {
     if (product.discount <= 0) {
       return (
@@ -128,7 +67,7 @@ const VerticalProductCard = ({ product }) => {
           {product.category}
         </h5>
 
-        <Ratings />
+        <Ratings product={product} />
 
         <div class="flex flex-row space gap-1">
           <h5 className="text-m tracking-tight text-gray-500 dark:text-white">
@@ -141,12 +80,7 @@ const VerticalProductCard = ({ product }) => {
 
         <div className="flex items-center justify-between">
           <Price />
-          <a
-            href="#"
-            className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          >
-            Add to cart
-          </a>
+          <Button>Add to cart</Button>
         </div>
       </Card>
     </div>
