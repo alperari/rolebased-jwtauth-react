@@ -31,33 +31,30 @@ const CategoriesPage = () => {
     fetchProducts();
   }, []);
 
-  const CustomTabsItem = ({ title, products }) => {
-    return (
-      <div>
-        <Tabs.Item>{title}</Tabs.Item>
-        <div class="grid gap-2">
-          {products.map((product) => {
-            return <VerticalProductCard product={product} />;
-          })}
-        </div>
-      </div>
-    );
-  };
+  //   const CustomTabsItem = (props) => {
+  //     return <Tabs.Item title="Profile">Profile content</Tabs.Item>;
+  //   };
 
   return (
     <div class="flex flex-col items-center mt-24">
-      <Tabs.Group aria-label="Pills" style="pills" class="flex flex-row gap-4">
-        <div>
-          {Object.keys(groupedProducts).map((key) => {
-            return (
-              <CustomTabsItem
-                key={key}
-                title={key}
-                products={groupedProducts[key]}
-              />
-            );
-          })}
-        </div>
+      <Tabs.Group
+        aria-label="Pills"
+        style="pills"
+        class="flex flex-row gap-4 mx-24"
+      >
+        {Object.keys(groupedProducts).map((category) => {
+          return (
+            <Tabs.Item title={category} key={category}>
+              <div class="mx-24 grid grid-cols-5 gap-3 ">
+                {groupedProducts[category].map((product) => {
+                  return (
+                    <VerticalProductCard product={product} key={product} />
+                  );
+                })}
+              </div>
+            </Tabs.Item>
+          );
+        })}
       </Tabs.Group>
     </div>
   );

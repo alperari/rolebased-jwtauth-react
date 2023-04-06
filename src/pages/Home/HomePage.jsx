@@ -20,7 +20,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div class="m-16 grid grid-cols-5 grid-rows-2 gap-2 ">
+    <div class="mx-64 my-16 grid grid-cols-4 gap-5 ">
       {products &&
         products.map((product) => {
           console.log(product);
