@@ -28,6 +28,11 @@ const ProductPage = () => {
       productId: product._id,
     });
 
+    // Fetch users from each comment (unique userIds)
+    const userIds = [
+      ...new Set(fetchedComments.map((comment) => comment.userID)),
+    ];
+
     setComments(fetchedComments);
 
     setLoading(false);
@@ -37,7 +42,7 @@ const ProductPage = () => {
     fetchComments();
   }, []);
 
-  const CustomTimelineItem = ({ title, time, body, icon }) => {
+  const CustomTimelineItem = ({ title, time, description, icon }) => {
     const date = parseDateTime(time, 'onlyDate');
 
     return (
@@ -46,7 +51,7 @@ const ProductPage = () => {
         <Timeline.Content>
           <Timeline.Time>{date}</Timeline.Time>
           <Timeline.Title>{title}</Timeline.Title>
-          <Timeline.Body>{body}</Timeline.Body>
+          <Timeline.Body>{description}</Timeline.Body>
         </Timeline.Content>
       </Timeline.Item>
     );
@@ -55,40 +60,34 @@ const ProductPage = () => {
   const CommentsSection = () => {
     return (
       <Card>
-        <span class="text-xl text-gray-900 font-bold text-center">
-          Comments
+        <span class="text-md text-gray-900 font-bold text-center">
+          Comments ({comments.length})
         </span>
 
-        <div class="overflow-auto max-h-screen pl-6 pt-6 ">
-          <div class="flex flex-col gap-4">
-            <Timeline>
-              <CustomTimelineItem
-                title="Marketing UI design in Figma"
-                time="2023-03-30T14:03:35.778+00:00"
-                body="All of the pages and components are first designed in Figma and we keep a parity between the two versions even as we update the project."
-                icon={HiCalendar}
-              />
-              <CustomTimelineItem
-                title="Marketing UI design in Figma"
-                time="2023-03-30T14:03:35.778+00:00"
-                body="All of the pages and components are first designed in Figma and we keep a parity between the two versions even as we update the project."
-                icon={HiCalendar}
-              />
-              <CustomTimelineItem
-                title="Marketing UI design in Figma"
-                time="2023-03-30T14:03:35.778+00:00"
-                body="All of the pages and components are first designed in Figma and we keep a parity between the two versions even as we update the project."
-                icon={HiCalendar}
-              />
-              <CustomTimelineItem
-                title="Marketing UI design in Figma"
-                time="2023-03-30T14:03:35.778+00:00"
-                body="All of the pages and components are first designed in Figma and we keep a parity between the two versions even as we update the project."
-                icon={HiCalendar}
-              />
-            </Timeline>
+        {comments.length > 0 ? (
+          <div class="overflow-auto max-h-screen pl-6 pt-6 ">
+            <div class="flex flex-col gap-4">
+              <Timeline>
+                {comments.map((comment) => {
+                  return (
+                    <CustomTimelineItem
+                      title={comment.title}
+                      time={comment.date}
+                      description={comment.description}
+                      icon={HiCalendar}
+                    />
+                  );
+                })}
+              </Timeline>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div class="flex flex-col gap-4">
+            <span class="text-md text-gray-900 text-center">
+              No comments yet
+            </span>
+          </div>
+        )}
       </Card>
     );
   };
@@ -97,7 +96,7 @@ const ProductPage = () => {
     return (
       <Card>
         <div class="flex flex-col gap-3 items-center">
-          <span class="text-lg text-gray-900 font-bold ">Ratings</span>
+          <span class="text-md text-gray-900 font-bold ">Ratings</span>
           <Ratings product={product} size="lg" />
         </div>
       </Card>
