@@ -4,6 +4,7 @@ import { HiCalendar, HiArrowNarrowRight } from 'react-icons/hi';
 
 import { ProductService } from '../../services/ProductService';
 import { CommentService } from '../../services/CommentService';
+import { UserService } from '../../services/UserService';
 
 import { useLocation } from 'react-router-dom';
 
@@ -11,6 +12,11 @@ import VerticalProductCard from '../../components/Product/VerticalProductCard';
 import { Ratings } from '../../components/Product/Ratings';
 
 import { parseDateTime } from '../../helpers/helperFunctions';
+
+let user = localStorage.getItem('user');
+if (user) {
+  user = JSON.parse(user);
+}
 
 const ProductPage = () => {
   const location = useLocation();
@@ -28,10 +34,18 @@ const ProductPage = () => {
       productId: product._id,
     });
 
-    // Fetch users from each comment (unique userIds)
-    const userIds = [
+    // Fetch users from each comment (unique userIDs)
+    const userIDs = [
       ...new Set(fetchedComments.map((comment) => comment.userID)),
     ];
+
+    const users = await UserService.getMultipleUsersById({ ids: userIDs });
+
+    // Match users with comments
+    for (const comment of fetchedComments) {
+      const user = users.find((user) => user._id === comment.userID);
+      comment.user = user;
+    }
 
     setComments(fetchedComments);
 
@@ -42,16 +56,24 @@ const ProductPage = () => {
     fetchComments();
   }, []);
 
-  const CustomTimelineItem = ({ title, time, description, icon }) => {
-    const date = parseDateTime(time, 'onlyDate');
+  const CustomTimelineItem = ({ comment }) => {
+    console.log('comment:', comment);
+    const isCommentMine = user && comment.user._id === user._id;
+    const date = parseDateTime(comment.date, 'onlyDate');
+
+    const commentorName = isCommentMine ? 'You' : comment.user.name;
 
     return (
       <Timeline.Item>
-        <Timeline.Point icon={icon} />
+        <span>{commentorName}</span>
+
+        <Timeline.Point icon={HiCalendar} />
         <Timeline.Content>
           <Timeline.Time>{date}</Timeline.Time>
-          <Timeline.Title>{title}</Timeline.Title>
-          <Timeline.Body>{description}</Timeline.Body>
+
+          <Timeline.Title>{comment.title}</Timeline.Title>
+
+          <Timeline.Body>{comment.description}</Timeline.Body>
         </Timeline.Content>
       </Timeline.Item>
     );
@@ -69,14 +91,7 @@ const ProductPage = () => {
             <div class="flex flex-col gap-4">
               <Timeline>
                 {comments.map((comment) => {
-                  return (
-                    <CustomTimelineItem
-                      title={comment.title}
-                      time={comment.date}
-                      description={comment.description}
-                      icon={HiCalendar}
-                    />
-                  );
+                  return <CustomTimelineItem comment={comment} />;
                 })}
               </Timeline>
             </div>
@@ -96,7 +111,9 @@ const ProductPage = () => {
     return (
       <Card>
         <div class="flex flex-col gap-3 items-center">
-          <span class="text-md text-gray-900 font-bold ">Ratings</span>
+          <span class="text-md text-gray-900 font-bold ">
+            Ratings ({product.ratings.length})
+          </span>
           <Ratings product={product} size="lg" />
         </div>
       </Card>
