@@ -120,7 +120,7 @@ const Home = () => {
             <Button
               color="gray"
               onClick={() => {
-                sortProducts('discount', 'desc');
+                sortProducts('discount', 'asc');
               }}
             >
               <div class="flex flex-row gap-1">
@@ -146,16 +146,20 @@ const Home = () => {
   };
 
   const ProductsGridView = () => {
-    if (products.length > 0) {
-      return (
-        <div class="mt-12 grid grid-cols-4 gap-5 ">
-          {products.map((product, index) => {
-            return <VerticalProductCard product={product} key={index} />;
-          })}
-        </div>
-      );
+    if (loading) {
+      return <div class="mt-12">Loading...</div>;
     } else {
-      return <div class="mt-12">No products found.</div>;
+      if (products.length === 0) {
+        return <div class="mt-12">No products found.</div>;
+      } else {
+        return (
+          <div class="mt-12 grid grid-cols-4 gap-5 ">
+            {products.map((product, index) => {
+              return <VerticalProductCard product={product} key={index} />;
+            })}
+          </div>
+        );
+      }
     }
   };
 
