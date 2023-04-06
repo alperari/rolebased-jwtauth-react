@@ -14,6 +14,7 @@ import {
   Select,
   Rating,
   Spinner,
+  Badge,
 } from 'flowbite-react';
 
 import { RatingService } from '../../services/RatingService';
@@ -103,6 +104,37 @@ const VerticalProductCard = ({ product }) => {
     }
   };
 
+  const Price = () => {
+    if (product.discount <= 0) {
+      return (
+        <div>
+          <span className="text-3xl font-bold text-gray-900 dark:text-white">
+            ${product.price}
+          </span>
+        </div>
+      );
+    } else {
+      const discountedPrice =
+        product.price - (product.price * product.discount) / 100;
+
+      return (
+        <div>
+          <Badge color="success" size="sm">
+            {product.discount}% Discount
+          </Badge>
+          <div class="flex flex-row gap-3">
+            <span className="text-2xl line-through font-bold text-red-700 dark:text-white">
+              ${product.price}
+            </span>
+            <span className="text-2xl font-bold text-gray-900 dark:text-white">
+              ${discountedPrice}
+            </span>
+          </div>
+        </div>
+      );
+    }
+  };
+
   return (
     <div className="max-w-sm">
       <Card imgAlt={product.name} imgSrc={product.imageURL}>
@@ -116,7 +148,7 @@ const VerticalProductCard = ({ product }) => {
           {product.category}
         </h5>
 
-        {Ratings()}
+        <Ratings />
 
         <div class="flex flex-row space gap-1">
           <h5 className="text-m tracking-tight text-gray-500 dark:text-white">
@@ -128,9 +160,7 @@ const VerticalProductCard = ({ product }) => {
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-3xl font-bold text-gray-900 dark:text-white">
-            ${product.price}
-          </span>
+          <Price />
           <a
             href="#"
             className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
