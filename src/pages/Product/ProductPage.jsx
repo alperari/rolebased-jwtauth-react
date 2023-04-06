@@ -23,7 +23,7 @@ const Product = () => {
 
   return (
     <div class="m-20 grid grid-cols-2 grid-rows-1 gap-1 ">
-      {products &&
+      {
         products.map((product) => {
           console.log(product);
           return <VerticalProductCard product={product} />;

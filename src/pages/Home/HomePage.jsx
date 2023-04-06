@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Button, Rating } from 'flowbite-react';
+import { Card, Button } from 'flowbite-react';
 import axios from 'axios';
 import { ProductService } from '../../services/ProductService';
 import VerticalProductCard from '../../components/Product/VerticalProductCard';
