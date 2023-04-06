@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Button } from 'flowbite-react';
 import axios from 'axios';
-import { ProductService } from '../../services/ProductService';
-import VerticalProductCard from '../../components/Product/VerticalProductCard';
 import { TbSortAscending, TbSortDescending } from 'react-icons/tb';
+
+import { ProductService } from '../../services/ProductService';
+import { RatingService } from '../../services/RatingService';
+
+import VerticalProductCard from '../../components/Product/VerticalProductCard';
 
 const Home = () => {
   const [loading, setLoading] = useState(false);
@@ -11,7 +14,19 @@ const Home = () => {
 
   const fetchProducts = async () => {
     setLoading(true);
+
+    // Fetch products
     const fetchedProducts = await ProductService.getProducts();
+
+    // Fetch ratings for each product
+    for (const product of fetchedProducts) {
+      const fetchedRatings = await RatingService.getRatingsByProductId({
+        productId: product._id,
+      });
+      product.ratings = fetchedRatings;
+      console.log('product:', product);
+    }
+
     setProducts(fetchedProducts);
     setLoading(false);
   };

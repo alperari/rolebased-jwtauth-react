@@ -17,26 +17,7 @@ import {
   Badge,
 } from 'flowbite-react';
 
-import { RatingService } from '../../services/RatingService';
-
 const VerticalProductCard = ({ product }) => {
-  const [ratings, setRatings] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchRatings = async () => {
-    setLoading(true);
-    const fetchedRatings = await RatingService.getRatingsByProductId({
-      productId: product._id,
-    });
-
-    setRatings(fetchedRatings);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchRatings();
-  }, []);
-
   const FilledStars = (number) => {
     const stars = [];
     for (let i = 0; i < number; i++) {
@@ -54,15 +35,7 @@ const VerticalProductCard = ({ product }) => {
   };
 
   const Ratings = () => {
-    if (loading)
-      return (
-        <div class="flex flex-row gap-2">
-          <Spinner color="failure" aria-label="Failure spinner example" />
-          Loading Comments...
-        </div>
-      );
-
-    if (ratings.length === 0) {
+    if (product.ratings.length === 0) {
       return (
         <div className="text-gray-500 dark:text-gray-400">
           <Rating>
@@ -79,8 +52,11 @@ const VerticalProductCard = ({ product }) => {
       );
     } else {
       // Calculate average rating
-      const total = ratings.reduce((acc, rating) => acc + rating.stars, 0);
-      const average = total / ratings.length;
+      const total = product.ratings.reduce(
+        (acc, rating) => acc + rating.stars,
+        0
+      );
+      const average = total / product.ratings.length;
 
       const roundedAverage = Math.round(average * 10) / 10;
 
