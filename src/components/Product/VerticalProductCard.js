@@ -17,6 +17,8 @@ import {
   Badge,
 } from 'flowbite-react';
 
+import { Link } from 'react-router-dom';
+
 const VerticalProductCard = ({ product }) => {
   const FilledStars = (number) => {
     const stars = [];
@@ -114,11 +116,13 @@ const VerticalProductCard = ({ product }) => {
   return (
     <div className="max-w-sm">
       <Card imgAlt={product.name} imgSrc={product.imageURL}>
-        <a href="/product">
-          <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
-            {product.name}
-          </h5>
-        </a>
+        <Link
+          to="/product"
+          state={{ product }}
+          className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white"
+        >
+          {product.name}
+        </Link>
 
         <h5 className="text-m italic tracking-tight text-gray-900 dark:text-white">
           {product.category}

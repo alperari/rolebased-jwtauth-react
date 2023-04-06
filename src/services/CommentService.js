@@ -10,7 +10,7 @@ const headers = {
 };
 
 export class CommentService {
-  static async getCommentsByProductId(productId) {
+  static async getCommentsByProductId({ productId }) {
     try {
       const response = await axios({
         method: 'GET',

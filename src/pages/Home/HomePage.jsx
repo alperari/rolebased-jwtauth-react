@@ -24,7 +24,6 @@ const Home = () => {
         productId: product._id,
       });
       product.ratings = fetchedRatings;
-      console.log('product:', product);
     }
 
     setProducts(fetchedProducts);
