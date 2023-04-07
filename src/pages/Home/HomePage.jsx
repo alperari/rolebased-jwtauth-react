@@ -16,15 +16,9 @@ const Home = () => {
     setLoading(true);
 
     // Fetch products
-    const fetchedProducts = await ProductService.getProducts();
+    const fetchedProducts = await ProductService.getProductsWithRatings();
 
-    // Fetch ratings for each product
-    for (const product of fetchedProducts) {
-      const fetchedRatings = await RatingService.getRatingsByProductId({
-        productID: product._id,
-      });
-      product.ratings = fetchedRatings;
-    }
+    console.log(fetchedProducts);
 
     setProducts(fetchedProducts);
     setLoading(false);
