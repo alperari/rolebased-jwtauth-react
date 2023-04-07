@@ -10,15 +10,33 @@ const headers = {
 };
 
 export class RatingService {
-  static async getRatingsByProductId({ productId }) {
+  static async getRatingsByProductId({ productID }) {
     try {
       const response = await axios({
         method: 'GET',
-        url: `${URL}/rating/all/${productId}`,
+        url: `${URL}/rating/all/${productID}`,
         withCredentials: true,
       });
 
       return response.data.ratings;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
+
+  static async addRating({ productID, stars }) {
+    try {
+      const response = await axios({
+        method: 'POST',
+        url: `${URL}/rating/`,
+        data: {
+          productID,
+          stars,
+        },
+        withCredentials: true,
+      });
+
+      return response.data;
     } catch (err) {
       return err.response.data;
     }

@@ -6,6 +6,7 @@ import ReactStars from 'react-stars';
 import { ProductService } from '../../services/ProductService';
 import { CommentService } from '../../services/CommentService';
 import { UserService } from '../../services/UserService';
+import { RatingService } from '../../services/RatingService';
 
 import { useLocation } from 'react-router-dom';
 
@@ -24,7 +25,6 @@ const ProductPage = () => {
   const { product } = location.state;
   console.log(product.ratings);
 
-  // const product = props.location.state.product;
   const [loading, setLoading] = useState(false);
   const [comments, setComments] = useState([]);
   const [yourRating, setYourRating] = useState(0);
@@ -34,25 +34,33 @@ const ProductPage = () => {
 
     // Set new rating in state
     setYourRating(newRating);
+  };
 
-    // // Update rating in product state
-    // const myRatingInProductState = product.ratings.find(
-    //   (rating) => rating.userID === user._id
-    // );
+  const onConfirmRating = async () => {
+    if (yourRating > 0 && user)
+      await RatingService.addRating({
+        productID: product._id,
+        stars: yourRating,
+      });
 
-    // // If i already have a rating, update it
-    // if (myRatingInProductState) {
-    //   myRatingInProductState.stars = newRating;
-    // }
+    // Update rating in product state
+    const myRatingInProductState = product.ratings.find(
+      (rating) => rating.userID === user._id
+    );
 
-    // // If i don't have a rating, add it
-    // else {
-    //   product.ratings.push({
-    //     userID: user._id,
-    //     productID: product._id,
-    //     stars: newRating,
-    //   });
-    // }
+    // If i already have a rating, update it
+    if (myRatingInProductState) {
+      myRatingInProductState.stars = yourRating;
+    }
+
+    // If i don't have a rating, add it
+    else {
+      product.ratings.push({
+        userID: user._id,
+        productID: product._id,
+        stars: yourRating,
+      });
+    }
   };
 
   const fetchMyRating = async () => {
@@ -147,9 +155,10 @@ const ProductPage = () => {
   };
 
   const Rate = () => {
+    // If user is not logged in, don't show rate section
     if (!user) return null;
 
-    const didRate = yourRating > 0;
+    const didSelectStar = yourRating > 0;
 
     return (
       <div class="flex flex-col mt-8 items-center">
@@ -168,14 +177,21 @@ const ProductPage = () => {
         <div class="flex flex-row gap-3">
           <Button
             color="failure"
-            disabled={!didRate}
-            onClick={() => {
+            disabled={!didSelectStar}
+            onClick={(e) => {
+              e.preventDefault();
               setYourRating(0);
             }}
           >
             Cancel
           </Button>
-          <Button disabled={!didRate} onClick={() => {}}>
+          <Button
+            disabled={!didSelectStar}
+            onClick={(e) => {
+              e.preventDefault();
+              onConfirmRating();
+            }}
+          >
             Confirm
           </Button>
         </div>

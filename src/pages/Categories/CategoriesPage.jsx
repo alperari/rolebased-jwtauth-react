@@ -27,7 +27,7 @@ const CategoriesPage = () => {
     // Fetch ratings for each product
     for (const product of fetchedProducts) {
       const fetchedRatings = await RatingService.getRatingsByProductId({
-        productId: product._id,
+        productID: product._id,
       });
       product.ratings = fetchedRatings;
     }
