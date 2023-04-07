@@ -40,7 +40,7 @@ export const Ratings = ({ product, size = 'sm' }) => {
     );
     const average = total / product.ratings.length;
 
-    const roundedAverage = Math.round(average * 10) / 10;
+    const roundedAverage = Math.round(average);
 
     const filledNo = roundedAverage;
     const emptyNo = 5 - filledNo;
@@ -54,7 +54,7 @@ export const Ratings = ({ product, size = 'sm' }) => {
           {filledStars.map((star) => star)}
           {emptyStars.map((star) => star)}
           <p className="ml-2 text-sm font-medium text-gray-500 dark:text-gray-400">
-            {average} / 5
+            {average.toFixed(1)} / 5
           </p>
         </Rating>
       </div>

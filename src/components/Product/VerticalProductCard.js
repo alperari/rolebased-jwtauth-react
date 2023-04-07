@@ -78,7 +78,7 @@ const VerticalProductCard = ({ product }) => {
           </h5>
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex flex-row gap-3 items-center justify-between">
           <Price />
           <Button>Add to cart</Button>
         </div>

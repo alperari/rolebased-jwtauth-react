@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Button, Rating, Carousel, Timeline } from 'flowbite-react';
 import { HiCalendar, HiArrowNarrowRight } from 'react-icons/hi';
+import ReactStars from 'react-stars';
 
 import { ProductService } from '../../services/ProductService';
 import { CommentService } from '../../services/CommentService';
@@ -21,10 +22,48 @@ if (user) {
 const ProductPage = () => {
   const location = useLocation();
   const { product } = location.state;
+  console.log(product.ratings);
 
   // const product = props.location.state.product;
   const [loading, setLoading] = useState(false);
   const [comments, setComments] = useState([]);
+  const [yourRating, setYourRating] = useState(0);
+
+  const onRatingChanged = (newRating) => {
+    // TODO: Update rating in database by sending request to API
+
+    // Set new rating in state
+    setYourRating(newRating);
+
+    // // Update rating in product state
+    // const myRatingInProductState = product.ratings.find(
+    //   (rating) => rating.userID === user._id
+    // );
+
+    // // If i already have a rating, update it
+    // if (myRatingInProductState) {
+    //   myRatingInProductState.stars = newRating;
+    // }
+
+    // // If i don't have a rating, add it
+    // else {
+    //   product.ratings.push({
+    //     userID: user._id,
+    //     productID: product._id,
+    //     stars: newRating,
+    //   });
+    // }
+  };
+
+  const fetchMyRating = async () => {
+    const myRating = product.ratings.find(
+      (rating) => rating.userID === user._id
+    );
+
+    if (myRating) {
+      setYourRating(myRating.stars);
+    }
+  };
 
   const fetchComments = async () => {
     setLoading(true);
@@ -54,10 +93,10 @@ const ProductPage = () => {
 
   useEffect(() => {
     fetchComments();
+    fetchMyRating();
   }, []);
 
   const CustomTimelineItem = ({ comment }) => {
-    console.log('comment:', comment);
     const isCommentMine = user && comment.user._id === user._id;
     const date = parseDateTime(comment.date, 'onlyDate');
 
@@ -107,6 +146,43 @@ const ProductPage = () => {
     );
   };
 
+  const Rate = () => {
+    if (!user) return null;
+
+    const didRate = yourRating > 0;
+
+    return (
+      <div class="flex flex-col mt-8 items-center">
+        <span class="text-lg font-normal font-thin">
+          <b>Rate this product!</b>
+        </span>
+        <ReactStars
+          value={yourRating}
+          count={5}
+          onChange={onRatingChanged}
+          size={48}
+          color2={'#e3a008'}
+          half={false}
+        />
+
+        <div class="flex flex-row gap-3">
+          <Button
+            color="failure"
+            disabled={!didRate}
+            onClick={() => {
+              setYourRating(0);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button disabled={!didRate} onClick={() => {}}>
+            Confirm
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
   const RatingsSection = () => {
     return (
       <Card>
@@ -115,6 +191,8 @@ const ProductPage = () => {
             Ratings ({product.ratings.length})
           </span>
           <Ratings product={product} size="lg" />
+
+          <Rate />
         </div>
       </Card>
     );
