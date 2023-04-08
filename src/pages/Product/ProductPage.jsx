@@ -11,12 +11,15 @@ import {
 } from 'flowbite-react';
 import {
   HiCalendar,
+  HiOutlinePencil,
   HiArrowNarrowRight,
   HiCheckCircle,
   HiXCircle,
   HiX,
   HiOutlineCheckCircle,
   HiOutlineBan,
+  HiPencil,
+  HiCheck,
 } from 'react-icons/hi';
 import ReactStars from 'react-stars';
 
@@ -100,22 +103,22 @@ const ProductPage = () => {
     }
   };
 
-  const onStockInputChange = async (e) => {
-    setStock(e.target.value);
-  };
+  const onEditStockConfirm = async (e) => {
+    e.preventDefault();
 
-  const onEditStockButtonPress = async () => {
-    setIsEditingStock(true);
-  };
-
-  const onEditStockConfirm = async () => {
     if (isEditingStock) {
-      //TODO: Edit stock in database
+      const newStock = parseInt(e.target.stock.value);
 
-      // Update stock in product state
-      setStock(stock);
+      if (newStock < 0) {
+        setIsEditingStock(false);
+      } else {
+        //TODO: Edit stock in database
 
-      setIsEditingStock(false);
+        // Update stock in product state
+        setStock(newStock);
+
+        setIsEditingStock(false);
+      }
     }
   };
 
@@ -305,14 +308,43 @@ const ProductPage = () => {
       <div class="flex flex-row gap-6 mt-8 items-center">
         <div class="flex flex-col gap-1">
           <Label htmlFor="stock" value="Edit Stocks" />
-          <TextInput
-            id="stock"
-            type="number"
-            placeholder="0"
-            value={stock}
-            required={true}
-            onChange={onStockInputChange}
-          />
+          <form onSubmit={onEditStockConfirm}>
+            <div class="flex flex-row gap-2 items-center">
+              <TextInput
+                disabled={!isEditingStock}
+                id="stock"
+                type="number"
+                placeholder={stock}
+                required={true}
+              />
+              {isEditingStock ? (
+                <div class="flex flex-row gap-2">
+                  <Button
+                    color="light"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsEditingStock(false);
+                    }}
+                  >
+                    <HiX size={20} color="red" />
+                  </Button>
+                  <Button color="light" type="submit">
+                    <HiCheck size={20} color="green" />
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  color="light"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsEditingStock(true);
+                  }}
+                >
+                  <HiOutlinePencil size={20} />
+                </Button>
+              )}
+            </div>
+          </form>
         </div>
         {/* {product.quantity > 0 ? (
           <div class="flex flex-row gap-1 items-center">
