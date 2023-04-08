@@ -1,4 +1,5 @@
 import { Rating } from 'flowbite-react';
+import { useEffect } from 'react';
 
 const FilledStars = (number) => {
   const stars = [];
@@ -16,8 +17,8 @@ const EmptyStars = (number) => {
   return stars;
 };
 
-export const Ratings = ({ product, size = 'sm' }) => {
-  if (product.ratings.length === 0) {
+export const Ratings = ({ ratings, size = 'sm' }) => {
+  if (ratings.length === 0) {
     return (
       <div className="text-gray-500 dark:text-gray-400">
         <Rating>
@@ -34,11 +35,8 @@ export const Ratings = ({ product, size = 'sm' }) => {
     );
   } else {
     // Calculate average rating
-    const total = product.ratings.reduce(
-      (acc, rating) => acc + rating.stars,
-      0
-    );
-    const average = total / product.ratings.length;
+    const total = ratings.reduce((acc, rating) => acc + rating.stars, 0);
+    const average = total / ratings.length;
 
     const roundedAverage = Math.round(average);
 

@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Button, Rating, Carousel, Timeline } from 'flowbite-react';
+import {
+  Card,
+  Button,
+  Rating,
+  Carousel,
+  Timeline,
+  Spinner,
+} from 'flowbite-react';
 import { HiCalendar, HiArrowNarrowRight } from 'react-icons/hi';
 import ReactStars from 'react-stars';
 
@@ -23,58 +30,64 @@ if (user) {
 const ProductPage = () => {
   const location = useLocation();
   const { product } = location.state;
-  console.log(product.ratings);
 
-  const [loading, setLoading] = useState(false);
+  const [loadingComments, setLoadingComments] = useState(false);
+  const [loadingRatings, setLoadingRatings] = useState(false);
+  const [confirmingRating, setConfirmingRating] = useState(false);
+
   const [comments, setComments] = useState([]);
+  const [ratings, setRatings] = useState([]);
+
   const [yourRating, setYourRating] = useState(0);
+  const [selectedStars, setSelectedStars] = useState(0);
 
   const onRatingChanged = (newRating) => {
     // TODO: Update rating in database by sending request to API
 
     // Set new rating in state
-    setYourRating(newRating);
+    setSelectedStars(newRating);
   };
 
   const onConfirmRating = async () => {
-    if (yourRating > 0 && user)
+    try {
+      setConfirmingRating(true);
+
+      // Update rating in database by sending request to API
       await RatingService.addRating({
         productID: product._id,
-        stars: yourRating,
+        stars: selectedStars,
       });
 
-    // Update rating in product state
-    const myRatingInProductState = product.ratings.find(
-      (rating) => rating.userID === user._id
-    );
+      // Update rating in product state
+      const myRatingInProductState = ratings.find(
+        (rating) => rating.userID === user._id
+      );
 
-    // If i already have a rating, update it
-    if (myRatingInProductState) {
-      myRatingInProductState.stars = yourRating;
-    }
+      // If i already have a rating, update it
+      if (myRatingInProductState) {
+        myRatingInProductState.stars = yourRating;
+      }
 
-    // If i don't have a rating, add it
-    else {
-      product.ratings.push({
-        userID: user._id,
-        productID: product._id,
-        stars: yourRating,
-      });
-    }
-  };
+      // If i don't have a rating, add it
+      else {
+        ratings.push({
+          userID: user._id,
+          productID: product._id,
+          stars: selectedStars,
+        });
+      }
+      // Disable "confirm" button
+      setYourRating(selectedStars);
 
-  const fetchMyRating = async () => {
-    const myRating = product.ratings.find(
-      (rating) => rating.userID === user._id
-    );
-
-    if (myRating) {
-      setYourRating(myRating.stars);
+      setConfirmingRating(false);
+    } catch (err) {
+      console.log(err);
+      setConfirmingRating(false);
     }
   };
 
   const fetchComments = async () => {
-    setLoading(true);
+    setLoadingComments(true);
 
     // Fetch comments
     const fetchedComments = await CommentService.getCommentsByProductId({
@@ -96,13 +109,36 @@ const ProductPage = () => {
 
     setComments(fetchedComments);
 
-    setLoading(false);
+    setLoadingComments(false);
+  };
+
+  const fetchRatings = async () => {
+    setLoadingRatings(true);
+
+    // Fetch ratings
+    const fetchedRatings = await RatingService.getRatingsByProductId({
+      productID: product._id,
+    });
+
+    // If user already rated this product, set yourRating state
+    const myRating = fetchedRatings.find(
+      (rating) => rating.userID === user._id
+    );
+
+    if (myRating) {
+      setYourRating(myRating.stars);
+      setSelectedStars(myRating.stars);
+    }
+
+    setRatings(fetchedRatings);
+
+    setLoadingRatings(false);
   };
 
   useEffect(() => {
     fetchComments();
-    fetchMyRating();
-  }, []);
+    fetchRatings();
+  }, [yourRating]);
 
   const CustomTimelineItem = ({ comment }) => {
     const isCommentMine = user && comment.user._id === user._id;
@@ -158,41 +194,47 @@ const ProductPage = () => {
     // If user is not logged in, don't show rate section
     if (!user) return null;
 
-    const didSelectStar = yourRating > 0;
-
     return (
       <div class="flex flex-col mt-8 items-center">
-        <span class="text-lg font-normal font-thin">
-          <b>Rate this product!</b>
-        </span>
+        {yourRating > 0 ? (
+          <span class="text-lg font-normal font-thin">
+            <b>You already rated this product</b>
+          </span>
+        ) : (
+          <span class="text-lg font-normal font-thin">
+            <b>Rate this product</b>
+          </span>
+        )}
+
         <ReactStars
-          value={yourRating}
+          value={selectedStars}
           count={5}
           onChange={onRatingChanged}
           size={48}
+          edit={yourRating == 0 || selectedStars == 0}
           color2={'#e3a008'}
           half={false}
         />
 
         <div class="flex flex-row gap-3">
           <Button
-            color="failure"
-            disabled={!didSelectStar}
+            color="light"
+            disabled={yourRating == 0 && selectedStars == 0}
             onClick={(e) => {
               e.preventDefault();
-              setYourRating(0);
+              setSelectedStars(0);
             }}
           >
-            Cancel
+            Clear
           </Button>
           <Button
-            disabled={!didSelectStar}
+            disabled={yourRating === selectedStars}
             onClick={(e) => {
               e.preventDefault();
               onConfirmRating();
             }}
           >
-            Confirm
+            {confirmingRating ? <Spinner size="sm" /> : 'Confirm'}
           </Button>
         </div>
       </div>
@@ -200,13 +242,23 @@ const ProductPage = () => {
   };
 
   const RatingsSection = () => {
+    if (loadingRatings) {
+      return (
+        <Card>
+          <div class="flex flex-col gap-3 items-center">
+            <Spinner size="lg" />
+          </div>
+        </Card>
+      );
+    }
+
     return (
       <Card>
         <div class="flex flex-col gap-3 items-center">
           <span class="text-md text-gray-900 font-bold ">
-            Ratings ({product.ratings.length})
+            Ratings ({ratings.length})
           </span>
-          <Ratings product={product} size="lg" />
+          <Ratings ratings={ratings} size="lg" />
 
           <Rate />
         </div>
