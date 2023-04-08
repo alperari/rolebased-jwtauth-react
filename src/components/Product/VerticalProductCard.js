@@ -19,39 +19,9 @@ import {
 
 import { Ratings } from './Ratings';
 import { Link } from 'react-router-dom';
+import { Price } from './Price';
 
 const VerticalProductCard = ({ product }) => {
-  const Price = () => {
-    if (product.discount <= 0) {
-      return (
-        <div>
-          <span className="text-3xl font-bold text-gray-900 dark:text-white">
-            ${product.price}
-          </span>
-        </div>
-      );
-    } else {
-      const discountedPrice =
-        product.price - (product.price * product.discount) / 100;
-
-      return (
-        <div>
-          <Badge color="success" size="sm">
-            {product.discount}% Discount
-          </Badge>
-          <div class="flex flex-row gap-3">
-            <span className="text-2xl line-through font-bold text-red-700 dark:text-white">
-              ${product.price}
-            </span>
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">
-              ${discountedPrice}
-            </span>
-          </div>
-        </div>
-      );
-    }
-  };
-
   return (
     <div className="max-w-sm">
       <Card imgAlt={product.name} imgSrc={product.imageURL}>
@@ -67,7 +37,7 @@ const VerticalProductCard = ({ product }) => {
           {product.category}
         </h5>
 
-        <Ratings product={product} />
+        <Ratings ratings={product.ratings} />
 
         <div class="flex flex-row space gap-1">
           <h5 className="text-m tracking-tight text-gray-500 dark:text-white">
@@ -79,7 +49,7 @@ const VerticalProductCard = ({ product }) => {
         </div>
 
         <div className="flex flex-row gap-3 items-center justify-between">
-          <Price />
+          <Price product={product} />
           <Button>Add to cart</Button>
         </div>
       </Card>

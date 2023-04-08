@@ -6,8 +6,18 @@ import {
   Carousel,
   Timeline,
   Spinner,
+  Label,
+  TextInput,
 } from 'flowbite-react';
-import { HiCalendar, HiArrowNarrowRight } from 'react-icons/hi';
+import {
+  HiCalendar,
+  HiArrowNarrowRight,
+  HiCheckCircle,
+  HiXCircle,
+  HiX,
+  HiOutlineCheckCircle,
+  HiOutlineBan,
+} from 'react-icons/hi';
 import ReactStars from 'react-stars';
 
 import { ProductService } from '../../services/ProductService';
@@ -19,6 +29,7 @@ import { useLocation } from 'react-router-dom';
 
 import VerticalProductCard from '../../components/Product/VerticalProductCard';
 import { Ratings } from '../../components/Product/Ratings';
+import { Price } from '../../components/Product/Price';
 
 import { parseDateTime } from '../../helpers/helperFunctions';
 
@@ -268,15 +279,75 @@ const ProductPage = () => {
 
   return (
     <div class="m-20 grid grid-cols-5 gap-1 ">
-      <div class="col-span-2">
-        <div className="h-80">
-          <Carousel>
-            <img
-              src="https://flowbite.com/docs/images/carousel/carousel-1.svg"
-              alt="..."
-            />
-          </Carousel>
-        </div>
+      <div class="col-span-2 flex flex-col bg-red-100">
+        <Card>
+          <div class="flex flex-row bg-blue-100 w-full items-center justify-center">
+            <div className="h-96 w-96 border-gray-100 border-2">
+              <Carousel leftControl={' '} rightControl={' '} indicators={false}>
+                <img src={product.imageURL} alt={product.name} />
+              </Carousel>
+            </div>
+          </div>
+
+          <div class="details flex flex-col gap-2">
+            <div class="flex flex-row justify-between">
+              <span className="text-m italic tracking-tight text-gray-900 dark:text-white">
+                {product.category}
+              </span>
+              <span className="text-m italic tracking-tight text-gray-400 dark:text-white">
+                id: {product._id}
+              </span>
+            </div>
+            <span class="font-bold text-xl">{product.name}</span>
+            <span class="text-lg">{product.description}</span>
+          </div>
+
+          <div class="flex flex-row gap-1 mt-4">
+            <span class="text-lg tracking-tight text-gray-400 dark:text-white">
+              Distributed by
+            </span>
+            <span className="text-lg font-bold tracking-tight text-gray-400 dark:text-white">
+              {product.distributor}
+            </span>
+          </div>
+
+          <div class="gap-1 mt-8">
+            {product.quantity > 0 ? (
+              <div class="flex flex-row gap-1 items-center">
+                <HiOutlineCheckCircle color="green" size={30} />
+                <span className="text-xl text-green-500 font-bold">
+                  In stock
+                </span>
+              </div>
+            ) : (
+              <div class="flex flex-row gap-1 items-center">
+                <HiOutlineBan color="red" size={30} />
+                <span className="text-xl text-red-500 font-bold">
+                  Out of stock
+                </span>
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-row mt-12 gap-5 items-center   justify-between">
+            <div class="flex-col">
+              <Label htmlFor="price" value="Price" />
+              <Price product={product} />
+            </div>
+
+            <div className="px-8">
+              <Label htmlFor="quantity" value="Quantity" />
+              <TextInput
+                id="quantity"
+                type="number"
+                placeholder="1"
+                required={true}
+              />
+            </div>
+
+            <Button>Add to cart</Button>
+          </div>
+        </Card>
       </div>
 
       <div class="flex flex-col col-span-3 pl-24 pr-4 gap-6">
