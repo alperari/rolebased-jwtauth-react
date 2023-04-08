@@ -52,6 +52,9 @@ const ProductPage = () => {
   const [yourRating, setYourRating] = useState(0);
   const [selectedStars, setSelectedStars] = useState(0);
 
+  const [isEditingStock, setIsEditingStock] = useState(false);
+  const [stock, setStock] = useState(product.quantity);
+
   const onRatingChanged = (newRating) => {
     // TODO: Update rating in database by sending request to API
 
@@ -94,6 +97,25 @@ const ProductPage = () => {
     } catch (err) {
       console.log(err);
       setConfirmingRating(false);
+    }
+  };
+
+  const onStockInputChange = async (e) => {
+    setStock(e.target.value);
+  };
+
+  const onEditStockButtonPress = async () => {
+    setIsEditingStock(true);
+  };
+
+  const onEditStockConfirm = async () => {
+    if (isEditingStock) {
+      //TODO: Edit stock in database
+
+      // Update stock in product state
+      setStock(stock);
+
+      setIsEditingStock(false);
     }
   };
 
@@ -277,12 +299,44 @@ const ProductPage = () => {
     );
   };
 
+  const StockSection = () => {
+    // if (!user || user.role !== 'admin' || user.role !== 'productManager') return null;
+    return (
+      <div class="flex flex-row gap-6 mt-8 items-center">
+        <div class="flex flex-col gap-1">
+          <Label htmlFor="stock" value="Edit Stocks" />
+          <TextInput
+            id="stock"
+            type="number"
+            placeholder="0"
+            value={stock}
+            required={true}
+            onChange={onStockInputChange}
+          />
+        </div>
+        {/* {product.quantity > 0 ? (
+          <div class="flex flex-row gap-1 items-center">
+            <HiOutlineCheckCircle color="green" size={30} />
+            <span className="text-xl text-green-500 font-bold">In stock</span>
+          </div>
+        ) : (
+          <div class="flex flex-row gap-1 items-center">
+            <HiOutlineBan color="red" size={30} />
+            <span className="text-xl text-red-500 font-bold">Out of stock</span>
+          </div>
+        )} */}
+      </div>
+    );
+
+    return <div></div>;
+  };
+
   return (
     <div class="m-20 grid grid-cols-5 gap-1 ">
-      <div class="col-span-2 flex flex-col bg-red-100">
+      <div class="col-span-2 flex flex-col ">
         <Card>
-          <div class="flex flex-row bg-blue-100 w-full items-center justify-center">
-            <div className="h-96 w-96 border-gray-100 border-2">
+          <div class="flex flex-row w-full items-center justify-center">
+            <div className="h-96 w-96">
               <Carousel leftControl={' '} rightControl={' '} indicators={false}>
                 <img src={product.imageURL} alt={product.name} />
               </Carousel>
@@ -311,23 +365,7 @@ const ProductPage = () => {
             </span>
           </div>
 
-          <div class="gap-1 mt-8">
-            {product.quantity > 0 ? (
-              <div class="flex flex-row gap-1 items-center">
-                <HiOutlineCheckCircle color="green" size={30} />
-                <span className="text-xl text-green-500 font-bold">
-                  In stock
-                </span>
-              </div>
-            ) : (
-              <div class="flex flex-row gap-1 items-center">
-                <HiOutlineBan color="red" size={30} />
-                <span className="text-xl text-red-500 font-bold">
-                  Out of stock
-                </span>
-              </div>
-            )}
-          </div>
+          <StockSection />
 
           <div className="flex flex-row mt-12 gap-5 items-center   justify-between">
             <div class="flex-col">
@@ -351,7 +389,6 @@ const ProductPage = () => {
       </div>
 
       <div class="flex flex-col col-span-3 pl-24 pr-4 gap-6">
-        {/* <hr class="w-full h-1 bg-gray-700 rounded dark:bg-gray-700" /> */}
         <CommentsSection />
         <RatingsSection />
       </div>
