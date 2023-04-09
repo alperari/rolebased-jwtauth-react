@@ -126,4 +126,21 @@ export class ProductService {
       return err.response.data;
     }
   }
+
+  static async removeProduct({ productID }) {
+    try {
+      const response = await axios({
+        method: 'DELETE',
+        url: `${URL}/product/id/${productID}`,
+        withCredentials: true,
+        data: {
+          productID,
+        },
+      });
+
+      return response.data;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
 }

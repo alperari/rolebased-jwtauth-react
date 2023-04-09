@@ -21,13 +21,15 @@ import { Ratings } from './Ratings';
 import { Link } from 'react-router-dom';
 import { Price } from './Price';
 
+import { ProductService } from '../../services/ProductService';
+
 let user = localStorage.getItem('user');
 if (user) {
   user = JSON.parse(user);
 }
 
 const VerticalProductCard = ({ product, setProducts = null }) => {
-  const onRemoveButtonClick = () => {
+  const onRemoveButtonClick = async () => {
     // Remove product from products array state
     if (setProducts) {
       setProducts((products) => {
@@ -36,6 +38,7 @@ const VerticalProductCard = ({ product, setProducts = null }) => {
     }
 
     // TODO: Remove product from database
+    await ProductService.removeProduct({ productID: product._id });
   };
 
   const RemoveButton = () => {
