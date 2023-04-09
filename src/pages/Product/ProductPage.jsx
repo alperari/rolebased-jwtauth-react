@@ -68,7 +68,30 @@ const ProductPage = () => {
   // For adding comment
   const [showAddCommentModal, setShowAddCommentModal] = useState(false);
 
-  const onAddComment = async (comment) => {};
+  const onAddComment = async (title, description) => {
+    try {
+      // Add comment to database
+      const newComment = await CommentService.addComment({
+        productID: productFromDB._id,
+        title: title,
+        description: description,
+      });
+
+      newComment.user = {
+        _id: user._id,
+        name: user.name,
+      };
+
+      // Add comment to state
+      const newComments = [...comments, newComment];
+      setComments(newComments);
+
+      setShowAddCommentModal(false);
+    } catch (err) {
+      console.log(err);
+      setShowAddCommentModal(false);
+    }
+  };
 
   const onDeleteComment = async (commentID) => {
     try {
@@ -265,6 +288,7 @@ const ProductPage = () => {
   }, [yourRating, stock, price, discount, showAddCommentModal]);
 
   const CustomTimelineItem = ({ comment }) => {
+    console.log('at customTimelineItem, comment:', comment);
     const isCommentMine = user && comment.user._id === user._id;
     const date = parseDateTime(comment.date, 'onlyDate');
 
@@ -333,7 +357,6 @@ const ProductPage = () => {
           <Button
             onClick={() => {
               setShowAddCommentModal(true);
-              console.log('clicked');
             }}
           >
             Make Comment

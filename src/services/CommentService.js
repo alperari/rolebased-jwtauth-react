@@ -23,6 +23,25 @@ export class CommentService {
     }
   }
 
+  static async addComment({ productID, title, description }) {
+    try {
+      const response = await axios({
+        method: 'POST',
+        url: `${URL}/comment`,
+        data: {
+          productID,
+          title,
+          description,
+        },
+
+        withCredentials: true,
+      });
+      return response.data.newComment;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
+
   static async deleteComment({ commentID }) {
     try {
       const response = await axios({
