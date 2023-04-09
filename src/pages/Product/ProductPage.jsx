@@ -12,9 +12,6 @@ import {
 import {
   HiCalendar,
   HiOutlinePencil,
-  HiArrowNarrowRight,
-  HiCheckCircle,
-  HiXCircle,
   HiX,
   HiOutlineCheckCircle,
   HiOutlineBan,
@@ -59,6 +56,11 @@ const ProductPage = () => {
   const [isEditingStock, setIsEditingStock] = useState(false);
   const [stock, setStock] = useState(productFromDB.quantity);
   const [updatingStock, setUpdatingStock] = useState(false);
+
+  const [isEditingPriceDiscount, setIsEditingPriceDiscount] = useState(false);
+  const [price, setPrice] = useState(productFromDB.price);
+  const [discount, setDiscount] = useState(productFromDB.discount);
+  const [updatingPriceDiscount, setUpdatingPriceDiscount] = useState(false);
 
   const onRatingChanged = (newRating) => {
     // Set new rating in state
@@ -131,11 +133,14 @@ const ProductPage = () => {
     }
   };
 
+  const onEditPriceDiscountConfirm = async (e) => {
+    e.preventDefault();
+  };
+
   const fetchProductDetails = async () => {
     const fetchedProduct = await ProductService.getProductById({
       productID: productFromDB._id,
     });
-    console.log('fetched product: ', fetchedProduct);
 
     setProductFromDB(fetchedProduct);
   };
@@ -178,14 +183,16 @@ const ProductPage = () => {
       productID: productFromDB._id,
     });
 
-    // If user already rated this product, set yourRating state
-    const myRating = fetchedRatings.find(
-      (rating) => rating.userID === user._id
-    );
+    if (fetchedRatings.length > 0 && user) {
+      // If user already rated this product, set yourRating state
+      const myRating = fetchedRatings.find(
+        (rating) => rating.userID === user._id
+      );
 
-    if (myRating) {
-      setYourRating(myRating.stars);
-      setSelectedStars(myRating.stars);
+      if (myRating) {
+        setYourRating(myRating.stars);
+        setSelectedStars(myRating.stars);
+      }
     }
 
     setRatings(fetchedRatings);
@@ -325,32 +332,131 @@ const ProductPage = () => {
     );
   };
 
-  const StockSection = () => {
-    // if (!user || user.role !== 'admin' || user.role !== 'productManager') return null;
+  const EditStockSection = () => {
     return (
-      <div class="flex flex-row gap-6 mt-8 items-center">
-        <div class="flex flex-col gap-1">
-          <Label htmlFor="stock" value="Edit Stocks" />
-          <form onSubmit={onEditStockConfirm}>
-            <div class="flex flex-row gap-2 items-center">
+      <div class="flex flex-col gap-1">
+        <Label htmlFor="stock" value="Stock" />
+        <form onSubmit={onEditStockConfirm}>
+          <div class="flex flex-row gap-2 items-center">
+            <TextInput
+              disabled={!isEditingStock}
+              id="stock"
+              type="number"
+              placeholder={productFromDB.quantity}
+              required={true}
+            />
+            {isEditingStock ? (
+              <div class="flex flex-row gap-2">
+                <Button
+                  color="light"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsEditingStock(false);
+                  }}
+                >
+                  <HiX size={20} color="red" />
+                </Button>
+                <Button color="light" type="submit">
+                  <HiCheck size={20} color="green" />
+                </Button>
+              </div>
+            ) : (
+              <Button
+                color="light"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsEditingStock(true);
+                }}
+              >
+                {updatingStock ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <HiOutlinePencil size={20} />
+                )}
+              </Button>
+            )}
+          </div>
+        </form>
+      </div>
+    );
+  };
+
+  const StockStatusSection = () => {
+    if (productFromDB.quantity > 0) {
+      return (
+        <div class="flex flex-row gap-1 items-center">
+          <HiOutlineCheckCircle color="green" size={30} />
+          <span className="text-xl text-green-500 font-bold">In stock</span>
+        </div>
+      );
+    } else {
+      return (
+        <div class="flex flex-row gap-1 items-center">
+          <HiOutlineBan color="red" size={30} />
+          <span className="text-xl text-red-500 font-bold">Out of stock</span>
+        </div>
+      );
+    }
+  };
+
+  const StockSection = () => {
+    if (!user || (user.role !== 'admin' && user.role !== 'productManager')) {
+      return (
+        <div class="flex flex-row gap-6 mt-8 items-center">
+          <StockStatusSection />
+        </div>
+      );
+    }
+
+    if (user && (user.role === 'admin' || user.role === 'productManager')) {
+      return (
+        <div class="flex flex-row gap-6 mt-8 items-center">
+          <EditStockSection />
+        </div>
+      );
+    }
+  };
+
+  const EditPriceDiscountSection = () => {
+    return (
+      <div class="flex flex-col">
+        <form onSubmit={onEditPriceDiscountConfirm}>
+          <div class="flex flex-col gap-2">
+            <div class="flex flex-row gap-2 items-center justify-between">
+              <Label htmlFor="price" value="Price" />
+
               <TextInput
-                disabled={!isEditingStock}
-                id="stock"
+                disabled={!isEditingPriceDiscount}
+                id="price"
                 type="number"
-                placeholder={productFromDB.quantity}
+                placeholder={productFromDB.price}
                 required={true}
               />
-              {isEditingStock ? (
+            </div>
+            <div class="flex flex-row gap-2 items-center justify-between">
+              <Label htmlFor="discount" value="Discount" />
+
+              <TextInput
+                disabled={!isEditingPriceDiscount}
+                id="discount"
+                type="number"
+                placeholder={productFromDB.discount}
+                required={true}
+              />
+            </div>
+            <div class="flex flex-row items-center justify-end">
+              {isEditingPriceDiscount ? (
                 <div class="flex flex-row gap-2">
                   <Button
                     color="light"
                     onClick={(e) => {
                       e.preventDefault();
-                      setIsEditingStock(false);
+                      setIsEditingPriceDiscount(false);
                     }}
                   >
                     <HiX size={20} color="red" />
                   </Button>
+
                   <Button color="light" type="submit">
                     <HiCheck size={20} color="green" />
                   </Button>
@@ -360,34 +466,46 @@ const ProductPage = () => {
                   color="light"
                   onClick={(e) => {
                     e.preventDefault();
-                    setIsEditingStock(true);
+                    setIsEditingPriceDiscount(true);
                   }}
-                >
-                  {updatingStock ? (
-                    <Spinner size="sm" />
-                  ) : (
-                    <HiOutlinePencil size={20} />
-                  )}
-                </Button>
+                ></Button>
               )}
             </div>
-          </form>
+          </div>
+        </form>
+      </div>
+    );
+  };
+
+  const PriceSection = () => {
+    if (isEditingPriceDiscount) {
+      return EditPriceDiscountSection();
+    }
+
+    return (
+      <div class="flex-col">
+        <Label htmlFor="price" value="Price" />
+        <div class="flex flex-row gap-2">
+          <Price product={product} />
+          <Button
+            color="light"
+            onClick={(e) => {
+              e.preventDefault();
+              setIsEditingPriceDiscount(true);
+            }}
+          >
+            <HiOutlinePencil size={20} />
+          </Button>
         </div>
-        {/* {productFromDB.quantity > 0 ? (
-          <div class="flex flex-row gap-1 items-center">
-            <HiOutlineCheckCircle color="green" size={30} />
-            <span className="text-xl text-green-500 font-bold">In stock</span>
-          </div>
-        ) : (
-          <div class="flex flex-row gap-1 items-center">
-            <HiOutlineBan color="red" size={30} />
-            <span className="text-xl text-red-500 font-bold">Out of stock</span>
-          </div>
-        )} */}
       </div>
     );
 
-    return <div></div>;
+    // return (
+    //   <div class="flex-col">
+    //     <Label htmlFor="price" value="Price" />
+    //     <Price product={product} />
+    //   </div>
+    // );
   };
 
   return (
@@ -426,11 +544,8 @@ const ProductPage = () => {
 
           <StockSection />
 
-          <div className="flex flex-row mt-12 gap-5 items-center   justify-between">
-            <div class="flex-col">
-              <Label htmlFor="price" value="Price" />
-              <Price product={product} />
-            </div>
+          <div className="flex flex-row mt-12 gap-5 items-end   justify-between">
+            <PriceSection />
 
             <div className="px-8">
               <Label htmlFor="quantity" value="Quantity" />
