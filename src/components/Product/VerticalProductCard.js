@@ -21,9 +21,41 @@ import { Ratings } from './Ratings';
 import { Link } from 'react-router-dom';
 import { Price } from './Price';
 
-const VerticalProductCard = ({ product }) => {
+let user = localStorage.getItem('user');
+if (user) {
+  user = JSON.parse(user);
+}
+
+const VerticalProductCard = ({ product, setProducts = null }) => {
+  const onRemoveButtonClick = () => {
+    // Remove product from products array state
+    if (setProducts) {
+      setProducts((products) => {
+        return products.filter((p) => p._id != product._id);
+      });
+    }
+
+    // TODO: Remove product from database
+  };
+
+  const RemoveButton = () => {
+    if (
+      user &&
+      (user.role == 'admin' || (user && user.role == 'productManager'))
+    )
+      return (
+        <div class="flex flex-col items-center bg-red-100 justify-center justify-items-stretch items-stretch">
+          <Button color="failure" size="xs" onClick={onRemoveButtonClick}>
+            Remove Product
+          </Button>
+        </div>
+      );
+    else return null;
+  };
+
   return (
     <div className="max-w-sm">
+      <RemoveButton />
       <Card imgAlt={product.name} imgSrc={product.imageURL}>
         <Link
           to="/product"

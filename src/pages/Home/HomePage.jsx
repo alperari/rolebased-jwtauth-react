@@ -146,7 +146,13 @@ const Home = () => {
         return (
           <div class="mt-12 grid grid-cols-4 gap-5 ">
             {products.map((product, index) => {
-              return <VerticalProductCard product={product} key={index} />;
+              return (
+                <VerticalProductCard
+                  product={product}
+                  setProducts={setProducts}
+                  key={index}
+                />
+              );
             })}
           </div>
         );

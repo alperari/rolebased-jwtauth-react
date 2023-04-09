@@ -15,7 +15,6 @@ import {
   HiX,
   HiOutlineCheckCircle,
   HiOutlineBan,
-  HiPencil,
   HiCheck,
 } from 'react-icons/hi';
 import ReactStars from 'react-stars';
@@ -27,7 +26,6 @@ import { RatingService } from '../../services/RatingService';
 
 import { useLocation } from 'react-router-dom';
 
-import VerticalProductCard from '../../components/Product/VerticalProductCard';
 import { Ratings } from '../../components/Product/Ratings';
 import { Price } from '../../components/Product/Price';
 
@@ -586,34 +584,37 @@ const ProductPage = () => {
   };
 
   const PriceSection = () => {
-    if (isEditingPriceDiscount) {
-      return EditPriceDiscountSection();
+    if (!user || (user.role !== 'admin' && user.role !== 'salesManager')) {
+      return (
+        <div class="flex flex-row gap-6 mt-8 items-center">
+          <Price product={productFromDB} />
+        </div>
+      );
     }
 
-    return (
-      <div class="flex-col">
-        <Label htmlFor="price" value="Price" />
-        <div class="flex flex-row gap-2">
-          <Price product={productFromDB} />
-          <Button
-            color="light"
-            onClick={(e) => {
-              e.preventDefault();
-              setIsEditingPriceDiscount(true);
-            }}
-          >
-            <HiOutlinePencil size={20} />
-          </Button>
-        </div>
-      </div>
-    );
+    if (user && (user.role === 'admin' || user.role === 'salesManager')) {
+      if (isEditingPriceDiscount) {
+        return EditPriceDiscountSection();
+      }
 
-    // return (
-    //   <div class="flex-col">
-    //     <Label htmlFor="price" value="Price" />
-    //     <Price product={product} />
-    //   </div>
-    // );
+      return (
+        <div class="flex-col">
+          <Label htmlFor="price" value="Price" />
+          <div class="flex flex-row gap-2">
+            <Price product={productFromDB} />
+            <Button
+              color="light"
+              onClick={(e) => {
+                e.preventDefault();
+                setIsEditingPriceDiscount(true);
+              }}
+            >
+              <HiOutlinePencil size={20} />
+            </Button>
+          </div>
+        </div>
+      );
+    }
   };
 
   return (
