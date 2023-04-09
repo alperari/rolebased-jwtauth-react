@@ -135,6 +135,39 @@ const ProductPage = () => {
 
   const onEditPriceDiscountConfirm = async (e) => {
     e.preventDefault();
+
+    if (isEditingPriceDiscount) {
+      const newPrice = parseInt(e.target.price.value);
+      const newDiscount = parseFloat(e.target.discount.value);
+
+      if (newPrice == null && newDiscount == null) {
+        setIsEditingPriceDiscount(false);
+        return;
+      }
+
+      if (newPrice < 0 || newDiscount < 0 || newDiscount > 100) {
+        setIsEditingPriceDiscount(false);
+        return;
+      }
+
+      setUpdatingPriceDiscount(true);
+
+      // Update price and discount in product state
+      if (newPrice != null) setPrice(newPrice);
+      if (newDiscount != null) setDiscount(newDiscount);
+
+      // TODO: Update price and discount in database
+
+      const result = ProductService.updatePriceDiscount({
+        productID: productFromDB._id,
+        price: newPrice,
+        discount: newDiscount,
+      });
+
+      setUpdatingPriceDiscount(false);
+
+      setIsEditingPriceDiscount(false);
+    }
   };
 
   const fetchProductDetails = async () => {
@@ -204,7 +237,7 @@ const ProductPage = () => {
     fetchComments();
     fetchRatings();
     fetchProductDetails();
-  }, [yourRating, stock]);
+  }, [yourRating, stock, price, discount]);
 
   const CustomTimelineItem = ({ comment }) => {
     const isCommentMine = user && comment.user._id === user._id;
@@ -430,7 +463,6 @@ const ProductPage = () => {
                 id="price"
                 type="number"
                 placeholder={productFromDB.price}
-                required={true}
               />
             </div>
             <div class="flex flex-row gap-2 items-center justify-between">
@@ -441,7 +473,6 @@ const ProductPage = () => {
                 id="discount"
                 type="number"
                 placeholder={productFromDB.discount}
-                required={true}
               />
             </div>
             <div class="flex flex-row items-center justify-end">
@@ -486,7 +517,7 @@ const ProductPage = () => {
       <div class="flex-col">
         <Label htmlFor="price" value="Price" />
         <div class="flex flex-row gap-2">
-          <Price product={product} />
+          <Price product={productFromDB} />
           <Button
             color="light"
             onClick={(e) => {
