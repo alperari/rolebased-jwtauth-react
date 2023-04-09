@@ -32,6 +32,7 @@ import { Ratings } from '../../components/Product/Ratings';
 import { Price } from '../../components/Product/Price';
 
 import { parseDateTime } from '../../helpers/helperFunctions';
+import { AddCommentModal } from '../../components/General/Modal';
 
 let user = localStorage.getItem('user');
 if (user) {
@@ -53,14 +54,38 @@ const ProductPage = () => {
   const [yourRating, setYourRating] = useState(0);
   const [selectedStars, setSelectedStars] = useState(0);
 
+  // For editing stock
   const [isEditingStock, setIsEditingStock] = useState(false);
   const [stock, setStock] = useState(productFromDB.quantity);
   const [updatingStock, setUpdatingStock] = useState(false);
 
+  // For editing price and discount
   const [isEditingPriceDiscount, setIsEditingPriceDiscount] = useState(false);
   const [price, setPrice] = useState(productFromDB.price);
   const [discount, setDiscount] = useState(productFromDB.discount);
   const [updatingPriceDiscount, setUpdatingPriceDiscount] = useState(false);
+
+  // For adding comment
+  const [showAddCommentModal, setShowAddCommentModal] = useState(false);
+
+  const onAddComment = async (comment) => {};
+
+  const onDeleteComment = async (commentID) => {
+    try {
+      // Delete comment from database
+      await CommentService.deleteComment({ commentID });
+
+      // Delete comment from state
+      const newComments = comments.filter(
+        (comment) => comment._id !== commentID
+      );
+      setComments(newComments);
+
+      console.log('comments:', comments);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const onRatingChanged = (newRating) => {
     // Set new rating in state
@@ -237,7 +262,7 @@ const ProductPage = () => {
     fetchComments();
     fetchRatings();
     fetchProductDetails();
-  }, [yourRating, stock, price, discount]);
+  }, [yourRating, stock, price, discount, showAddCommentModal]);
 
   const CustomTimelineItem = ({ comment }) => {
     const isCommentMine = user && comment.user._id === user._id;
@@ -247,16 +272,35 @@ const ProductPage = () => {
 
     return (
       <Timeline.Item>
-        <span>{commentorName}</span>
+        <div class="flex flex-row items-center justify-between">
+          <div>
+            <span>{commentorName}</span>
 
-        <Timeline.Point icon={HiCalendar} />
-        <Timeline.Content>
-          <Timeline.Time>{date}</Timeline.Time>
+            <Timeline.Point icon={HiCalendar} />
+            <Timeline.Content>
+              <Timeline.Time>{date}</Timeline.Time>
 
-          <Timeline.Title>{comment.title}</Timeline.Title>
+              <Timeline.Title>{comment.title}</Timeline.Title>
 
-          <Timeline.Body>{comment.description}</Timeline.Body>
-        </Timeline.Content>
+              <Timeline.Body>{comment.description}</Timeline.Body>
+            </Timeline.Content>
+          </div>
+
+          {isCommentMine && (
+            <div class="flex flex-row justify-between items-end">
+              <Button
+                color="light"
+                onClick={(e) => {
+                  e.preventDefault();
+
+                  onDeleteComment(comment._id);
+                }}
+              >
+                <HiX color="red" size={20} />
+              </Button>
+            </div>
+          )}
+        </div>
       </Timeline.Item>
     );
   };
@@ -284,6 +328,16 @@ const ProductPage = () => {
               No comments yet
             </span>
           </div>
+        )}
+        {user && (
+          <Button
+            onClick={() => {
+              setShowAddCommentModal(true);
+              console.log('clicked');
+            }}
+          >
+            Make Comment
+          </Button>
         )}
       </Card>
     );
@@ -541,6 +595,17 @@ const ProductPage = () => {
 
   return (
     <div class="m-20 grid grid-cols-5 gap-1 ">
+      {showAddCommentModal && (
+        <AddCommentModal
+          show={showAddCommentModal}
+          setShow={setShowAddCommentModal}
+          setComments={setComments}
+          size="lg"
+          dismissable={true}
+          onSubmit={onAddComment}
+        />
+      )}
+
       <div class="col-span-2 flex flex-col ">
         <Card>
           <div class="flex flex-row w-full items-center justify-center">

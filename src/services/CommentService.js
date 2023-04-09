@@ -22,4 +22,17 @@ export class CommentService {
       return err.response.data;
     }
   }
+
+  static async deleteComment({ commentID }) {
+    try {
+      const response = await axios({
+        method: 'DELETE',
+        url: `${URL}/comment/id/${commentID}`,
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
 }
