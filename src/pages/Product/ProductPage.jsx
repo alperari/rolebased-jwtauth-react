@@ -49,6 +49,7 @@ const ProductPage = () => {
   const [loadingRatings, setLoadingRatings] = useState(false);
   const [confirmingRating, setConfirmingRating] = useState(false);
 
+  const [productFromDB, setProductFromDB] = useState(product);
   const [comments, setComments] = useState([]);
   const [ratings, setRatings] = useState([]);
 
@@ -56,7 +57,8 @@ const ProductPage = () => {
   const [selectedStars, setSelectedStars] = useState(0);
 
   const [isEditingStock, setIsEditingStock] = useState(false);
-  const [stock, setStock] = useState(product.quantity);
+  const [stock, setStock] = useState(productFromDB.quantity);
+  const [updatingStock, setUpdatingStock] = useState(false);
 
   const onRatingChanged = (newRating) => {
     // Set new rating in state
@@ -69,7 +71,7 @@ const ProductPage = () => {
 
       // Update rating in database by sending request to API
       await RatingService.addRating({
-        productID: product._id,
+        productID: productFromDB._id,
         stars: selectedStars,
       });
 
@@ -87,7 +89,7 @@ const ProductPage = () => {
       else {
         ratings.push({
           userID: user._id,
-          productID: product._id,
+          productID: productFromDB._id,
           stars: selectedStars,
         });
       }
@@ -115,9 +117,27 @@ const ProductPage = () => {
 
         // TODO: Update stock in database
 
+        setUpdatingStock(true);
+
+        const result = ProductService.updateQuantity({
+          productID: productFromDB._id,
+          quantity: newStock,
+        });
+
+        setUpdatingStock(false);
+
         setIsEditingStock(false);
       }
     }
+  };
+
+  const fetchProductDetails = async () => {
+    const fetchedProduct = await ProductService.getProductById({
+      productID: productFromDB._id,
+    });
+    console.log('fetched product: ', fetchedProduct);
+
+    setProductFromDB(fetchedProduct);
   };
 
   const fetchComments = async () => {
@@ -125,7 +145,7 @@ const ProductPage = () => {
 
     // Fetch comments
     const fetchedComments = await CommentService.getCommentsByProductId({
-      productId: product._id,
+      productId: productFromDB._id,
     });
 
     // Fetch users from each comment (unique userIDs)
@@ -133,12 +153,16 @@ const ProductPage = () => {
       ...new Set(fetchedComments.map((comment) => comment.userID)),
     ];
 
-    const users = await UserService.getMultipleUsersById({ ids: userIDs });
+    if (userIDs.length > 0) {
+      const users = await UserService.getMultipleUsersById({ ids: userIDs });
 
-    // Match users with comments
-    for (const comment of fetchedComments) {
-      const user = users.find((user) => user._id === comment.userID);
-      comment.user = user;
+      if (users.length > 0) {
+        // Match users with comments
+        for (const comment of fetchedComments) {
+          const user = users.find((user) => user._id === comment.userID);
+          comment.user = user;
+        }
+      }
     }
 
     setComments(fetchedComments);
@@ -151,7 +175,7 @@ const ProductPage = () => {
 
     // Fetch ratings
     const fetchedRatings = await RatingService.getRatingsByProductId({
-      productID: product._id,
+      productID: productFromDB._id,
     });
 
     // If user already rated this product, set yourRating state
@@ -172,7 +196,8 @@ const ProductPage = () => {
   useEffect(() => {
     fetchComments();
     fetchRatings();
-  }, [yourRating]);
+    fetchProductDetails();
+  }, [yourRating, stock]);
 
   const CustomTimelineItem = ({ comment }) => {
     const isCommentMine = user && comment.user._id === user._id;
@@ -312,7 +337,7 @@ const ProductPage = () => {
                 disabled={!isEditingStock}
                 id="stock"
                 type="number"
-                placeholder={stock}
+                placeholder={productFromDB.quantity}
                 required={true}
               />
               {isEditingStock ? (
@@ -338,13 +363,17 @@ const ProductPage = () => {
                     setIsEditingStock(true);
                   }}
                 >
-                  <HiOutlinePencil size={20} />
+                  {updatingStock ? (
+                    <Spinner size="sm" />
+                  ) : (
+                    <HiOutlinePencil size={20} />
+                  )}
                 </Button>
               )}
             </div>
           </form>
         </div>
-        {/* {product.quantity > 0 ? (
+        {/* {productFromDB.quantity > 0 ? (
           <div class="flex flex-row gap-1 items-center">
             <HiOutlineCheckCircle color="green" size={30} />
             <span className="text-xl text-green-500 font-bold">In stock</span>
@@ -368,7 +397,7 @@ const ProductPage = () => {
           <div class="flex flex-row w-full items-center justify-center">
             <div className="h-96 w-96">
               <Carousel leftControl={' '} rightControl={' '} indicators={false}>
-                <img src={product.imageURL} alt={product.name} />
+                <img src={productFromDB.imageURL} alt={productFromDB.name} />
               </Carousel>
             </div>
           </div>
@@ -376,14 +405,14 @@ const ProductPage = () => {
           <div class="details flex flex-col gap-2">
             <div class="flex flex-row justify-between">
               <span className="text-m italic tracking-tight text-gray-900 dark:text-white">
-                {product.category}
+                {productFromDB.category}
               </span>
               <span className="text-m italic tracking-tight text-gray-400 dark:text-white">
-                id: {product._id}
+                id: {productFromDB._id}
               </span>
             </div>
-            <span class="font-bold text-xl">{product.name}</span>
-            <span class="text-lg">{product.description}</span>
+            <span class="font-bold text-xl">{productFromDB.name}</span>
+            <span class="text-lg">{productFromDB.description}</span>
           </div>
 
           <div class="flex flex-row gap-1 mt-4">
@@ -391,7 +420,7 @@ const ProductPage = () => {
               Distributed by
             </span>
             <span className="text-lg font-bold tracking-tight text-gray-400 dark:text-white">
-              {product.distributor}
+              {productFromDB.distributor}
             </span>
           </div>
 

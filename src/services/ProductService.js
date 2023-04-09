@@ -10,6 +10,19 @@ const headers = {
 };
 
 export class ProductService {
+  static async getProductById({ productID }) {
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `${URL}/product/id/${productID}`,
+        withCredentials: true,
+      });
+      return response.data.product;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
+
   static async getProducts() {
     try {
       const response = await axios({

@@ -18,8 +18,6 @@ const Home = () => {
     // Fetch products
     const fetchedProducts = await ProductService.getProductsWithRatings();
 
-    console.log(fetchedProducts);
-
     setProducts(fetchedProducts);
     setLoading(false);
   };
