@@ -59,8 +59,6 @@ const ProductPage = () => {
   const [stock, setStock] = useState(product.quantity);
 
   const onRatingChanged = (newRating) => {
-    // TODO: Update rating in database by sending request to API
-
     // Set new rating in state
     setSelectedStars(newRating);
   };
@@ -112,10 +110,10 @@ const ProductPage = () => {
       if (newStock < 0) {
         setIsEditingStock(false);
       } else {
-        //TODO: Edit stock in database
-
         // Update stock in product state
         setStock(newStock);
+
+        // TODO: Update stock in database
 
         setIsEditingStock(false);
       }

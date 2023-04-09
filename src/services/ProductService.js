@@ -59,7 +59,48 @@ export class ProductService {
     }
   }
 
-  static async getCategories() {
+  static async updateQuantity({ productID, quantity }) {
+    try {
+      const response = await axios({
+        method: 'PATCH',
+        url: `${URL}/product/update-quantity`,
+        withCredentials: true,
+        data: {
+          productID,
+          quantity,
+        },
+      });
+
+      return response.data;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
+
+  static async updatePriceDiscount({
+    productID,
+    price = null,
+    discount = null,
+  }) {
+    try {
+      const response = await axios({
+        method: 'PATCH',
+        url: `${URL}/product/update-price-discount`,
+        withCredentials: true,
+        data: {
+          productID,
+          price,
+          discount,
+        },
+      });
+
+      return response.data;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
+
+  static async getCategories({ productID, price, discount }) {
     try {
       const response = await axios({
         method: 'GET',
