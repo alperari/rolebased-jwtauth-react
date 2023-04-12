@@ -113,7 +113,7 @@ export class ProductService {
     }
   }
 
-  static async getCategories({ productID, price, discount }) {
+  static async getCategories() {
     try {
       const response = await axios({
         method: 'GET',

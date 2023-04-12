@@ -24,6 +24,19 @@ export class CommentService {
     }
   }
 
+  static async getApprovedCommentsByProductId({ productId }) {
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `${URL}/comment/approved/${productId}`,
+        withCredentials: true,
+      });
+      return response.data.comments;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
+
   static async getCommentsByProductId({ productId }) {
     try {
       const response = await axios({

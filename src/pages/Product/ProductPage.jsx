@@ -228,9 +228,11 @@ const ProductPage = () => {
     setLoadingComments(true);
 
     // Fetch comments
-    const fetchedComments = await CommentService.getCommentsByProductId({
-      productId: productFromDB._id,
-    });
+    const fetchedComments = await CommentService.getApprovedCommentsByProductId(
+      {
+        productId: productFromDB._id,
+      }
+    );
 
     // Fetch users from each comment (unique userIDs)
     const userIDs = [
