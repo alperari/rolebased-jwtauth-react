@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Button } from 'flowbite-react';
-import axios from 'axios';
-import { TbSortAscending, TbSortDescending } from 'react-icons/tb';
+import { Link, useNavigate } from 'react-router-dom';
+
+import { TbSortAscending, TbSortDescending, TbPlus } from 'react-icons/tb';
 
 import { ProductService } from '../../services/ProductService';
 import { RatingService } from '../../services/RatingService';
@@ -11,6 +12,8 @@ import VerticalProductCard from '../../components/Product/VerticalProductCard';
 const Home = () => {
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
+
+  const navigate = useNavigate();
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -55,6 +58,17 @@ const Home = () => {
   const SortButtons = () => {
     return (
       <div class="flex flex-col items-center gap-1">
+        <div class="mb-4">
+          <Button
+            color="success"
+            onClick={() => {
+              navigate('/add-product');
+            }}
+          >
+            Add Product
+          </Button>
+        </div>
+
         <span>Sort Products By:</span>
         <div class="flex flex-row gap-4">
           <Button.Group>

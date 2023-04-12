@@ -9,6 +9,7 @@ import AddProductPage from '../pages/Product/AddProductPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import ProductPage from '../pages/Product/ProductPage';
 import CategoriesPage from '../pages/Categories/CategoriesPage';
+import CommentsPage from '../pages/Comments/CommentsPage';
 
 // Protected route, only accessible if user's role is in roles array
 const Private = ({ Component, roles }) => {
@@ -53,6 +54,16 @@ const Router = () => {
             <Private
               Component={AddProductPage}
               roles={['admin', 'productManager']}
+            />
+          }
+        />
+
+        <Route
+          path="/comments"
+          element={
+            <Private
+              Component={CommentsPage}
+              roles={['admin', 'customer', 'salesManager', 'productManager']}
             />
           }
         />

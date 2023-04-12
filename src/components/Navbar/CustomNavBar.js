@@ -88,6 +88,12 @@ const CustomNavBar = () => {
           </Navbar.Link>
           <Navbar.Link href="/categories">Categories</Navbar.Link>
           <Navbar.Link href="/add-product">Add Product</Navbar.Link>
+
+          <Navbar.Link href="/comments">
+            {user.role === 'salesManager' || user.role === 'admin'
+              ? 'Comments'
+              : 'My Comments'}
+          </Navbar.Link>
         </Navbar.Collapse>
       </Navbar>
     </div>
