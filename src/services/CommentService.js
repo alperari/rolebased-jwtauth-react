@@ -68,4 +68,20 @@ export class CommentService {
       return err.response.data;
     }
   }
+
+  static async updateCommentStatus({ commentID, newStatus }) {
+    try {
+      const response = await axios({
+        method: 'PATCH',
+        url: `${URL}/comment/update-status/id/${commentID}`,
+        data: {
+          newStatus,
+        },
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
 }

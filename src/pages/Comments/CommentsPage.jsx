@@ -33,6 +33,8 @@ const CommentPageAsProductManager = () => {
     const fetchedComments =
       await CommentService.getAllCommentsWithUserAndProduct();
 
+    setComments(fetchedComments);
+
     // Group comments by status
     const groupedComments = groupBy(fetchedComments, 'status');
     setGroupedComments(groupedComments);
@@ -40,8 +42,60 @@ const CommentPageAsProductManager = () => {
     setLoading(false);
   };
 
+  const onClickApprove = async (commentObject) => {
+    commentObject.status = 'approved';
+
+    // Update comment status in db
+    const updatedComment = await CommentService.updateCommentStatus({
+      commentID: commentObject._id,
+      newStatus: 'approved',
+    });
+
+    const updatedGroupedComments = { ...groupedComments };
+
+    // Remove comment from pending
+    updatedGroupedComments.pending = updatedGroupedComments.pending.filter(
+      (comment) => comment._id !== commentObject._id
+    );
+
+    // Add comment to approved
+    if (updatedGroupedComments.approved) {
+      updatedGroupedComments.approved.push(commentObject);
+    } else {
+      updatedGroupedComments.approved = [commentObject];
+    }
+
+    setGroupedComments({ ...updatedGroupedComments });
+  };
+
+  const onClickReject = async (commentObject) => {
+    commentObject.status = 'rejected';
+
+    // Update comment status in db
+    const updatedComment = await CommentService.updateCommentStatus({
+      commentID: commentObject._id,
+      newStatus: 'rejected',
+    });
+
+    const updatedGroupedComments = { ...groupedComments };
+
+    // Remove comment from pending
+    updatedGroupedComments.pending = updatedGroupedComments.pending.filter(
+      (comment) => comment._id !== commentObject._id
+    );
+
+    // Add comment to rejected
+    if (updatedGroupedComments.rejected) {
+      updatedGroupedComments.rejected.push(commentObject);
+    } else {
+      updatedGroupedComments.rejected = [commentObject];
+    }
+
+    setGroupedComments({ ...updatedGroupedComments });
+  };
+
   useEffect(() => {
-    // fetchComments();
+    fetchComments();
   }, []);
 
   const CustomTabs = () => {
@@ -125,29 +179,37 @@ const CommentPageAsProductManager = () => {
                   </Table.Cell>
 
                   <Table.Cell>
-                    <div class="flex flex-row gap-3">
-                      <Button
-                        onClick={() => {
-                          CommentService.approveComment(comment.id);
-                          fetchComments();
-                        }}
-                        color="green"
-                        size="sm"
-                      >
-                        Approve
-                      </Button>
+                    {comment.status === 'pending' ? (
+                      <div class="flex flex-row gap-3">
+                        <Button
+                          onClick={() => {
+                            onClickApprove(comment);
+                          }}
+                          color="green"
+                          size="sm"
+                        >
+                          Approve
+                        </Button>
 
-                      <Button
-                        onClick={() => {
-                          CommentService.rejectComment(comment.id);
-                          fetchComments();
-                        }}
-                        color="red"
-                        size="sm"
-                      >
-                        Reject
-                      </Button>
-                    </div>
+                        <Button
+                          onClick={() => {
+                            onClickReject(comment);
+                          }}
+                          color="red"
+                          size="sm"
+                        >
+                          Reject
+                        </Button>
+                      </div>
+                    ) : comment.status == 'approved' ? (
+                      <div class="text-green-700 tracking-tight font-bold">
+                        Approved
+                      </div>
+                    ) : (
+                      <div class="text-red-700 tracking-tight font-bold">
+                        Rejected
+                      </div>
+                    )}
                   </Table.Cell>
                 </Table.Row>
               );
