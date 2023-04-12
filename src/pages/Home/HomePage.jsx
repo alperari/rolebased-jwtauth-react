@@ -1,17 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Button } from 'flowbite-react';
+import { Card, Button, Label, TextInput } from 'flowbite-react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { TbSortAscending, TbSortDescending, TbPlus } from 'react-icons/tb';
+import {
+  TbSortAscending,
+  TbSortDescending,
+  TbPlus,
+  TbSearch,
+} from 'react-icons/tb';
 
 import { ProductService } from '../../services/ProductService';
 import { RatingService } from '../../services/RatingService';
+import { SearchService } from '../../services/SearchService';
 
 import VerticalProductCard from '../../components/Product/VerticalProductCard';
 
 const Home = () => {
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
+  const [productsCopy, setProductsCopy] = useState([]);
+  const [query, setQuery] = useState('');
 
   const navigate = useNavigate();
 
@@ -22,6 +30,7 @@ const Home = () => {
     const fetchedProducts = await ProductService.getProductsWithRatings();
 
     setProducts(fetchedProducts);
+    setProductsCopy(fetchedProducts);
     setLoading(false);
   };
 
@@ -57,19 +66,10 @@ const Home = () => {
 
   const SortButtons = () => {
     return (
-      <div class="flex flex-col items-center gap-1">
-        <div class="mb-4">
-          <Button
-            color="success"
-            onClick={() => {
-              navigate('/add-product');
-            }}
-          >
-            Add Product
-          </Button>
-        </div>
+      <div class="flex flex-col items-center gap-1 mt-8">
+        <div class="mb-4"></div>
 
-        <span>Sort Products By:</span>
+        <Label value="Sort Products" />
         <div class="flex flex-row gap-4">
           <Button.Group>
             <Button
@@ -150,6 +150,45 @@ const Home = () => {
     );
   };
 
+  const SearchBar = () => {
+    return (
+      <form class="mt-12">
+        <div class="flex flex-row gap-2 ">
+          <TextInput
+            id="search"
+            type="text"
+            value={query}
+            icon={TbSearch}
+            placeholder="Search by name or description..."
+            onChange={(e) => {
+              e.preventDefault();
+              const query = e.target.value.toLowerCase();
+              setQuery(query);
+
+              const results = productsCopy.filter(
+                (product) =>
+                  product.name.toLowerCase().includes(query) ||
+                  product.description.toLowerCase().includes(query) ||
+                  product.category.toLowerCase().includes(query) ||
+                  product.distributor.toLowerCase().includes(query)
+              );
+
+              setProducts(results);
+            }}
+          />
+          <Button
+            color="light"
+            onClick={() => {
+              navigate('/products');
+            }}
+          >
+            Search
+          </Button>
+        </div>
+      </form>
+    );
+  };
+
   const ProductsGridView = () => {
     if (loading) {
       return <div class="mt-12">Loading...</div>;
@@ -178,9 +217,23 @@ const Home = () => {
     fetchProducts();
   }, []);
 
+  const search = async (query) => {
+    const productsSearched = await SearchService.searchProducts({
+      query: query,
+    });
+
+    for (const product of productsSearched) {
+      const rating = products.find((p) => p._id === product._id).ratings;
+      product.ratings = rating;
+    }
+
+    setProducts([...productsSearched]);
+  };
+
   return (
-    <div class="flex flex-col items-center mx-64 my-12">
+    <div class="flex flex-col items-center mx-64 my-8">
       <SortButtons />
+      {SearchBar()}
       <ProductsGridView />
     </div>
   );

@@ -288,7 +288,6 @@ const ProductPage = () => {
   }, [yourRating, stock, price, discount, showAddCommentModal]);
 
   const CustomTimelineItem = ({ comment }) => {
-    console.log('at customTimelineItem, comment:', comment);
     const isCommentMine = user && comment.user._id === user._id;
     const date = parseDateTime(comment.date, 'onlyDate');
 
