@@ -37,14 +37,14 @@ export class CommentService {
     }
   }
 
-  static async getCommentsByProductId({ productId }) {
+  static async getMyComments() {
     try {
       const response = await axios({
         method: 'GET',
-        url: `${URL}/comment/all/${productId}`,
+        url: `${URL}/comment/my-comments`,
         withCredentials: true,
       });
-      return response.data.comments;
+      return response.data.myComments;
     } catch (err) {
       return err.response.data;
     }
