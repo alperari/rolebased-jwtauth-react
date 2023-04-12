@@ -10,6 +10,20 @@ const headers = {
 };
 
 export class CommentService {
+  static async getAllCommentsWithUserAndProduct() {
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `${URL}/comment/all`,
+        withCredentials: true,
+      });
+
+      return response.data.comments;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
+
   static async getCommentsByProductId({ productId }) {
     try {
       const response = await axios({

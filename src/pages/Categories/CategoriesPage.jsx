@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Button, Rating, Tabs } from 'flowbite-react';
 
+import { groupBy } from '../../helpers/helperFunctions';
+
 import { ProductService } from '../../services/ProductService';
 import { RatingService } from '../../services/RatingService';
 
@@ -10,13 +12,6 @@ const CategoriesPage = () => {
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
   const [groupedProducts, setGroupedProducts] = useState({});
-
-  function groupBy(array, key) {
-    return array.reduce(function (rv, x) {
-      (rv[x[key]] = rv[x[key]] || []).push(x);
-      return rv;
-    }, {});
-  }
 
   const fetchProducts = async () => {
     setLoading(true);
