@@ -101,8 +101,6 @@ const ProductPage = () => {
         (comment) => comment._id !== commentID
       );
       setComments(newComments);
-
-      console.log('comments:', comments);
     } catch (err) {
       console.log(err);
     }
@@ -183,7 +181,7 @@ const ProductPage = () => {
     e.preventDefault();
 
     if (isEditingPriceDiscount) {
-      const newPrice = parseInt(e.target.price.value);
+      const newPrice = parseFloat(e.target.price.value);
       const newDiscount = parseFloat(e.target.discount.value);
 
       if (newPrice == null && newDiscount == null) {
@@ -538,6 +536,7 @@ const ProductPage = () => {
                 disabled={!isEditingPriceDiscount}
                 id="price"
                 type="number"
+                step={0.01}
                 placeholder={productFromDB.price}
               />
             </div>
@@ -548,6 +547,7 @@ const ProductPage = () => {
                 disabled={!isEditingPriceDiscount}
                 id="discount"
                 type="number"
+                step={0.01}
                 placeholder={productFromDB.discount}
               />
             </div>
@@ -618,6 +618,35 @@ const ProductPage = () => {
     }
   };
 
+  const AddToCartSection = () => {
+    if (user && (user.role === 'admin' || user.role === 'salesManager')) {
+      return (
+        <div className="flex flex-row mt-12 gap-5 items-end   justify-between">
+          <PriceSection />
+        </div>
+      );
+    }
+    if (product.quantity > 0) {
+      return (
+        <div className="flex flex-row mt-12 gap-5 items-end   justify-between">
+          <PriceSection />
+
+          <div className="px-8">
+            <Label htmlFor="quantity" value="Quantity" />
+            <TextInput
+              id="quantity"
+              type="number"
+              placeholder="1"
+              required={true}
+            />
+          </div>
+
+          <Button>Add to cart</Button>
+        </div>
+      );
+    }
+  };
+
   return (
     <div class="m-20 grid grid-cols-5 gap-1 ">
       {showAddCommentModal && (
@@ -665,21 +694,7 @@ const ProductPage = () => {
 
           <StockSection />
 
-          <div className="flex flex-row mt-12 gap-5 items-end   justify-between">
-            <PriceSection />
-
-            <div className="px-8">
-              <Label htmlFor="quantity" value="Quantity" />
-              <TextInput
-                id="quantity"
-                type="number"
-                placeholder="1"
-                required={true}
-              />
-            </div>
-
-            <Button>Add to cart</Button>
-          </div>
+          <AddToCartSection />
         </Card>
       </div>
 

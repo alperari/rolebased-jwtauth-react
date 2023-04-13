@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Button, Label, TextInput } from 'flowbite-react';
+import { Card, Button, Label, TextInput, Checkbox } from 'flowbite-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import {
@@ -20,6 +20,7 @@ const Home = () => {
   const [products, setProducts] = useState([]);
   const [productsCopy, setProductsCopy] = useState([]);
   const [query, setQuery] = useState('');
+  const [onlyStocksCheck, setOnlyStocksCheck] = useState(false);
 
   const navigate = useNavigate();
 
@@ -176,16 +177,32 @@ const Home = () => {
               setProducts(results);
             }}
           />
-          <Button
-            color="light"
-            onClick={() => {
-              navigate('/products');
-            }}
-          >
-            Search
-          </Button>
         </div>
       </form>
+    );
+  };
+
+  const CheckBoxOnlyStocks = () => {
+    return (
+      <div class="flex flex-row gap-2 mt-4 items-center">
+        <Label value="Show Only Available Stocks" />
+
+        <Checkbox
+          id="remember"
+          check
+          onChange={(e) => {
+            if (e.target.checked) {
+              const results = productsCopy.filter(
+                (product) => product.quantity > 0
+              );
+
+              setProducts(results);
+            } else {
+              setProducts(productsCopy);
+            }
+          }}
+        />
+      </div>
     );
   };
 
@@ -234,6 +251,7 @@ const Home = () => {
     <div class="flex flex-col items-center mx-64 my-8">
       <SortButtons />
       {SearchBar()}
+      {CheckBoxOnlyStocks()}
       <ProductsGridView />
     </div>
   );

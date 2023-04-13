@@ -17,6 +17,8 @@ import {
   Badge,
 } from 'flowbite-react';
 
+import { HiOutlineBan } from 'react-icons/hi';
+
 import { Ratings } from './Ratings';
 import { Link } from 'react-router-dom';
 import { Price } from './Price';
@@ -83,10 +85,17 @@ const VerticalProductCard = ({ product, setProducts = null }) => {
           </h5>
         </div>
 
-        <div className="flex flex-row gap-3 items-center justify-between">
-          <Price product={product} />
-          <Button>Add to cart</Button>
-        </div>
+        {product.quantity > 0 ? (
+          <div className="flex flex-row gap-3 items-center justify-between">
+            <Price product={product} />
+            <Button>Add to cart</Button>
+          </div>
+        ) : (
+          <div class="flex flex-row gap-1 items-center">
+            <HiOutlineBan color="red" size={20} />
+            <span className="text-md text-red-500 font-bold">Out of stock</span>
+          </div>
+        )}
       </Card>
     </div>
   );
