@@ -25,6 +25,7 @@ import { ProductService } from '../../services/ProductService';
 import { CommentService } from '../../services/CommentService';
 import { UserService } from '../../services/UserService';
 import { RatingService } from '../../services/RatingService';
+import { WishlistService } from '../../services/WishlistService';
 
 import { useLocation } from 'react-router-dom';
 
@@ -225,8 +226,6 @@ const ProductPage = () => {
     const fetchedProduct = await ProductService.getProductById({
       productID: productFromDB._id,
     });
-
-    console.log('fetched!');
 
     setProductFromDB(fetchedProduct);
   };
@@ -658,19 +657,22 @@ const ProductPage = () => {
 
   const AddToWishlistButton = () => {
     if (user) {
-      if (isInWishlist) {
+      if (productFromDB.inMyWishlist) {
         return (
           <div class="flex flex-row items-center justify-end">
             <Button
               size="xs"
               color="light"
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.preventDefault();
-
-                // Remove from wishlist in db
 
                 // Remove from wishlist in state
                 setIsInWishlist(false);
+
+                // Remove from wishlist in db
+                await WishlistService.removeFromWishlist({
+                  productID: productFromDB._id,
+                });
               }}
             >
               <HiHeart size={20} color="red" />
@@ -683,13 +685,16 @@ const ProductPage = () => {
             <Button
               size="xs"
               color="light"
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.preventDefault();
-
-                // Add to wishlist in db
 
                 // Add to wishlist in state
                 setIsInWishlist(true);
+
+                // Add to wishlist in db
+                await WishlistService.addToWishlist({
+                  productID: productFromDB._id,
+                });
               }}
             >
               <HiOutlineHeart size={20} color="red" />
