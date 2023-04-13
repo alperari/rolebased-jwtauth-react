@@ -667,7 +667,10 @@ const ProductPage = () => {
                 e.preventDefault();
 
                 // Remove from wishlist in state
-                setIsInWishlist(false);
+                setProductFromDB({
+                  ...productFromDB,
+                  inMyWishlist: false,
+                });
 
                 // Remove from wishlist in db
                 await WishlistService.removeFromWishlist({
@@ -689,7 +692,10 @@ const ProductPage = () => {
                 e.preventDefault();
 
                 // Add to wishlist in state
-                setIsInWishlist(true);
+                setProductFromDB({
+                  ...productFromDB,
+                  inMyWishlist: true,
+                });
 
                 // Add to wishlist in db
                 await WishlistService.addToWishlist({

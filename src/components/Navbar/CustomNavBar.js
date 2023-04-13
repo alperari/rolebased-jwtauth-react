@@ -25,11 +25,13 @@ const CustomNavBar = () => {
   const UserSection = () => {
     return (
       <div class="flex flex-row items-center">
-        <Link to="/wishlist">
+        <Link to="/cart">
           <IoCart className="text-2xl text-gray-500 mr-4" />
         </Link>
 
-        <IoBagHandle className="text-2xl text-gray-500 mr-4" />
+        <Link to="/wishlist">
+          <IoBagHandle className="text-2xl text-gray-500 mr-4" />
+        </Link>
 
         <div class=" mr-3 flex flex-row items-center">{user.name}</div>
         <Dropdown arrowIcon={false} inline={true} label={<Avatar size="md" />}>
