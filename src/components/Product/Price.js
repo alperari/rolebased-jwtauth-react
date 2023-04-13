@@ -20,10 +20,10 @@ export const Price = ({ product }) => {
         </Badge>
         <div class="flex flex-row gap-3">
           <span className="text-2xl line-through font-bold text-red-700 dark:text-white">
-            ${product.price}
+            ${product.price.toFixed(2)}
           </span>
           <span className="text-2xl font-bold text-gray-900 dark:text-white">
-            ${discountedPrice}
+            ${discountedPrice.toFixed(2)}
           </span>
         </div>
       </div>

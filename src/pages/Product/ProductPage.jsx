@@ -16,6 +16,8 @@ import {
   HiOutlineCheckCircle,
   HiOutlineBan,
   HiCheck,
+  HiOutlineHeart,
+  HiHeart,
 } from 'react-icons/hi';
 import ReactStars from 'react-stars';
 
@@ -65,6 +67,9 @@ const ProductPage = () => {
 
   // For adding comment
   const [showAddCommentModal, setShowAddCommentModal] = useState(false);
+
+  // For wishlist
+  const [isInWishlist, setIsInWishlist] = useState(productFromDB?.inMyWishlist);
 
   const onAddComment = async (title, description) => {
     try {
@@ -197,9 +202,11 @@ const ProductPage = () => {
       setUpdatingPriceDiscount(true);
 
       // Update price and discount in product state
-      if (newPrice != null) setPrice(newPrice);
-      if (newDiscount != null) setDiscount(newDiscount);
+      if (newPrice !== null) setPrice(newPrice);
+      if (newDiscount !== null) setDiscount(newDiscount);
 
+      console.log('newPrice:', newPrice);
+      console.log('newDiscount:', newDiscount);
       // TODO: Update price and discount in database
 
       const result = ProductService.updatePriceDiscount({
@@ -218,6 +225,8 @@ const ProductPage = () => {
     const fetchedProduct = await ProductService.getProductById({
       productID: productFromDB._id,
     });
+
+    console.log('fetched!');
 
     setProductFromDB(fetchedProduct);
   };
@@ -647,6 +656,50 @@ const ProductPage = () => {
     }
   };
 
+  const AddToWishlistButton = () => {
+    if (user) {
+      if (isInWishlist) {
+        return (
+          <div class="flex flex-row items-center justify-end">
+            <Button
+              size="xs"
+              color="light"
+              onClick={(e) => {
+                e.preventDefault();
+
+                // Remove from wishlist in db
+
+                // Remove from wishlist in state
+                setIsInWishlist(false);
+              }}
+            >
+              <HiHeart size={20} color="red" />
+            </Button>
+          </div>
+        );
+      } else {
+        return (
+          <div class="flex flex-row items-center justify-end">
+            <Button
+              size="xs"
+              color="light"
+              onClick={(e) => {
+                e.preventDefault();
+
+                // Add to wishlist in db
+
+                // Add to wishlist in state
+                setIsInWishlist(true);
+              }}
+            >
+              <HiOutlineHeart size={20} color="red" />
+            </Button>
+          </div>
+        );
+      }
+    }
+  };
+
   return (
     <div class="m-20 grid grid-cols-5 gap-1 ">
       {showAddCommentModal && (
@@ -662,6 +715,7 @@ const ProductPage = () => {
 
       <div class="col-span-2 flex flex-col ">
         <Card>
+          <AddToWishlistButton />
           <div class="flex flex-row w-full items-center justify-center">
             <div className="h-96 w-96">
               <Carousel leftControl={' '} rightControl={' '} indicators={false}>
