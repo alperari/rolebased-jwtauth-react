@@ -197,11 +197,11 @@ const CommentPageAsProductManager = () => {
                         </Button>
                       </div>
                     ) : comment.status == 'approved' ? (
-                      <div class="text-green-700 tracking-tight font-bold">
+                      <div class="text-green-400 tracking-tight font-bold">
                         Approved
                       </div>
                     ) : (
-                      <div class="text-red-700 tracking-tight font-bold">
+                      <div class="text-red-400 tracking-tight font-bold">
                         Rejected
                       </div>
                     )}
