@@ -5,65 +5,40 @@ import { ProductService } from '../../services/ProductService';
 import { RatingService } from '../../services/RatingService';
 import HorizontalProductCard from '../../components/Product/HorizontalProductCard';
 
+const cart = JSON.parse(localStorage.getItem('cart'));
+
 export const CartHover = () => {
-    
-    
-    const [loading, setLoading] = useState(false);
-    const [products, setProducts] = useState([]);
-    const [productsCopy, setProductsCopy] = useState([]);
-    const [query, setQuery] = useState('');
-    const [onlyStocksCheck, setOnlyStocksCheck] = useState(false);
-    
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const fetchProducts = async () => {
-        setLoading(true);
-
-        // Fetch products
-        const fetchedProducts = await ProductService.getProductsWithRatings();
-
-        setProducts(fetchedProducts);
-        setProductsCopy(fetchedProducts);
-        setLoading(false);
-    };
-    
-    
-    const ProductsGridView = () => {
-        if (loading) {
-        return <div class="mt-12">Loading...</div>;
-        } else {
-        if (products.length === 0) {
-            return <div class="mt-12">No products found.</div>;
-        } else {
-            return (
-            <div class="h-64 overflow-auto mt-3 grid grid-rows gap-3 ">
-                {products.map((product, index) => {
-                return (
-                    <HorizontalProductCard
-                    product={product}
-                    setProducts={setProducts}
-                    key={index}
-                    />
-                );
-                })}
-            </div>
-            );
-        }
-        }
-    };
-
-
-    
-
-    useEffect(() => {
-        fetchProducts();
-      }, []);
-
+  const Buttons = () => {
     return (
-    <div class="mx-5 my-1">
-        <ProductsGridView />
-    </div>
-    );
-    
-}
+      <div class="flex flex-row gap-2 items-center">
+        <Button
+          color="light"
+          onClick={() => {
+            navigate('/cart');
+          }}
+        >
+          Go To Cart
+        </Button>
 
+        <Button
+          color="light"
+          onClick={() => {
+            navigate('/cart');
+          }}
+        >
+          Checkout
+        </Button>
+      </div>
+    );
+  };
+
+  const ProductList = () => {};
+
+  return (
+    <div class="flex flex-col items-center mx-4">
+      <Buttons />
+    </div>
+  );
+};

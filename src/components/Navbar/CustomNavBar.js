@@ -9,6 +9,7 @@ import { useUserContext } from '../../hooks/useUserContext';
 import { CartHover } from '../Cart/CartHover';
 
 const user = JSON.parse(localStorage.getItem('user'));
+const cart = JSON.parse(localStorage.getItem('cart'));
 
 const CustomNavBar = () => {
   const { logout } = useUserContext();
@@ -68,13 +69,28 @@ const CustomNavBar = () => {
         </Navbar.Brand>
 
         <div className="flex md:order-2 items-center gap-2">
-          <Dropdown placement="left" class="bg-white">
+          <Dropdown
+            class="bg-white"
+            label={
+              <div class="relative ">
+                <div class="absolute left-3 bottom-3">
+                  <p class="flex h-2 w-2 items-center justify-center rounded-full bg-red-500 p-3 text-xs text-white">
+                    {cart &&
+                      cart.products.reduce((acc, curr) => {
+                        return acc + curr.cartQuantity;
+                      }, 0)}
+                  </p>
+                </div>
+
+                <Link to="/cart">
+                  <IoCart className="text-2xl text-gray-500 mr-4" />
+                </Link>
+              </div>
+            }
+            arrowIcon={false}
+          >
             <CartHover></CartHover>
           </Dropdown>
-
-          <Link to="/cart">
-            <IoCart className="text-2xl text-gray-500 mr-4" />
-          </Link>
 
           <Link to="/wishlist">
             <IoBagHandle className="text-2xl text-gray-500 mr-4" />
