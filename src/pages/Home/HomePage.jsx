@@ -234,19 +234,6 @@ const Home = () => {
     fetchProducts();
   }, []);
 
-  const search = async (query) => {
-    const productsSearched = await SearchService.searchProducts({
-      query: query,
-    });
-
-    for (const product of productsSearched) {
-      const rating = products.find((p) => p._id === product._id).ratings;
-      product.ratings = rating;
-    }
-
-    setProducts([...productsSearched]);
-  };
-
   return (
     <div class="flex flex-col items-center mx-64 my-8">
       <SortButtons />

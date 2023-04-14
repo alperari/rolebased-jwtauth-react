@@ -26,21 +26,6 @@ const CustomNavBar = () => {
   const UserSection = () => {
     return (
       <div class="flex flex-row items-center">
-        <Dropdown placement="left" class="bg-white">
-          
-          <CartHover></CartHover>
-          
-        </Dropdown>
-
-        
-        <Link to="/cart">
-          <IoCart className="text-2xl text-gray-500 mr-4" />
-        </Link>
-
-        <Link to="/wishlist">
-          <IoBagHandle className="text-2xl text-gray-500 mr-4" />
-        </Link>
-
         <div class=" mr-3 flex flex-row items-center">{user.name}</div>
         <Dropdown arrowIcon={false} inline={true} label={<Avatar size="md" />}>
           <Dropdown.Header>
@@ -82,7 +67,19 @@ const CustomNavBar = () => {
           </span>
         </Navbar.Brand>
 
-        <div className="flex md:order-2">
+        <div className="flex md:order-2 items-center gap-2">
+          <Dropdown placement="left" class="bg-white">
+            <CartHover></CartHover>
+          </Dropdown>
+
+          <Link to="/cart">
+            <IoCart className="text-2xl text-gray-500 mr-4" />
+          </Link>
+
+          <Link to="/wishlist">
+            <IoBagHandle className="text-2xl text-gray-500 mr-4" />
+          </Link>
+
           {user && <UserSection />}
 
           {!user && (

@@ -34,7 +34,7 @@ export class CartService {
         },
         withCredentials: true,
       });
-      return response.data;
+      return response.data.product;
     } catch (err) {
       return err.response.data;
     }

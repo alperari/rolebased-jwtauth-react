@@ -31,14 +31,8 @@ if (user) {
 }
 
 const HorizontalProductCard = ({ product, setProducts = null }) => {
-  
-
-
-  
-
   return (
     <div className="max-w-lg">
-      
       <Card imgAlt={product.name} imgSrc={product.imageURL} horizontal={true}>
         <Link
           to="/product"

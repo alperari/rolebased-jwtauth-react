@@ -24,11 +24,10 @@ import { Link } from 'react-router-dom';
 import { Price } from './Price';
 
 import { ProductService } from '../../services/ProductService';
+import { CartService } from '../../services/CartService';
 
-let user = localStorage.getItem('user');
-if (user) {
-  user = JSON.parse(user);
-}
+let user = JSON.parse(localStorage.getItem('user'));
+let cart = JSON.parse(localStorage.getItem('cart'));
 
 const VerticalProductCard = ({ product, setProducts = null }) => {
   const onRemoveButtonClick = async () => {
@@ -56,6 +55,43 @@ const VerticalProductCard = ({ product, setProducts = null }) => {
         </div>
       );
     else return null;
+  };
+
+  const onAddToCartButtonClick = async (product) => {
+    if (user) {
+      // If logged-in, update cart in database
+      const addedProduct = await CartService.addToCart({
+        productID: product._id,
+        quantity: 1,
+      });
+    }
+
+    // Update cart in local storage
+    // If cart is empty, create a new cart
+    if (!cart) {
+      cart = {
+        products: [],
+      };
+    }
+
+    // If cart is not empty, check if product is already in cart
+    const productIndex = cart.products.findIndex((p) => p._id == product._id);
+
+    // If product is not in cart, add it
+    if (productIndex == -1) {
+      cart.products.push({ ...product, cartQuantity: 1 });
+    }
+
+    // If product is in cart, update quantity
+    else {
+      // But first check if cartQuantity is not greater than product quantity
+      if (cart.products[productIndex].cartQuantity < product.quantity) {
+        cart.products[productIndex].cartQuantity += 1;
+      }
+    }
+
+    // Update cart in local storage
+    localStorage.setItem('cart', JSON.stringify(cart));
   };
 
   return (
@@ -88,7 +124,14 @@ const VerticalProductCard = ({ product, setProducts = null }) => {
         {product.quantity > 0 ? (
           <div className="flex flex-row gap-3 items-center justify-between">
             <Price product={product} />
-            <Button>Add to cart</Button>
+            <Button
+              onClick={(e) => {
+                e.preventDefault();
+                onAddToCartButtonClick(product);
+              }}
+            >
+              Add to cart
+            </Button>
           </div>
         ) : (
           <div class="flex flex-row gap-1 items-center">
