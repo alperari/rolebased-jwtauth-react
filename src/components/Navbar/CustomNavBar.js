@@ -13,6 +13,7 @@ const cart = JSON.parse(localStorage.getItem('cart'));
 
 const CustomNavBar = () => {
   const { logout } = useUserContext();
+  const [cartState, setCartState] = React.useState(cart || {});
 
   const navigate = useNavigate();
 
@@ -23,6 +24,14 @@ const CustomNavBar = () => {
   const onRegisterClick = () => {
     navigate('/register');
   };
+
+  React.useEffect(() => {
+    // Event listener for storage event
+    // Update cart state when cart is updated in another tab
+    window.addEventListener('storage', () => {
+      setCartState(JSON.parse(localStorage.getItem('cart')));
+    });
+  }, []);
 
   const UserSection = () => {
     return (
@@ -54,8 +63,9 @@ const CustomNavBar = () => {
     );
   };
 
+  console.log(cartState);
   return (
-    <div class="border-b-2 border-solid border-gray-200">
+    <div class="fixed inset-x-0 top-0 left-0 z-10 w-full bg-white border-b-2 border-solid border-gray-200">
       <Navbar fluid={true} rounded={true} class="my-4 mx-6">
         <Navbar.Brand href="/">
           <img
@@ -68,24 +78,26 @@ const CustomNavBar = () => {
           </span>
         </Navbar.Brand>
 
-        <div className="flex md:order-2 items-center gap-2">
+        <div className="flex md:order-2 items-center gap-2 justify-center">
           <Dropdown
-            class="bg-white"
+            class=" items-center jutify-center m-0 p-0 flex flex-col"
+            size="s"
             label={
-              <div class="relative ">
-                <div class="absolute left-3 bottom-3">
-                  <p class="flex h-2 w-2 items-center justify-center rounded-full bg-red-500 p-3 text-xs text-white">
-                    {cart &&
-                      cart.products.reduce((acc, curr) => {
+              cartState && cartState.products.length > 0 ? (
+                <div class="relative ">
+                  <div class="absolute left-3 bottom-3">
+                    <p class="flex h-2 w-2 items-center justify-center rounded-full bg-red-500 p-3 text-xs text-white">
+                      {cartState.products.reduce((acc, curr) => {
                         return acc + curr.cartQuantity;
                       }, 0)}
-                  </p>
-                </div>
+                    </p>
+                  </div>
 
-                <Link to="/cart">
                   <IoCart className="text-2xl text-gray-500 mr-4" />
-                </Link>
-              </div>
+                </div>
+              ) : (
+                <IoCart className="text-2xl text-gray-500 mr-4" />
+              )
             }
             arrowIcon={false}
           >

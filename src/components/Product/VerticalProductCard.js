@@ -92,6 +92,9 @@ const VerticalProductCard = ({ product, setProducts = null }) => {
 
     // Update cart in local storage
     localStorage.setItem('cart', JSON.stringify(cart));
+
+    // Dispatch storage event to update cart in navbar
+    window.dispatchEvent(new Event('storage'));
   };
 
   return (

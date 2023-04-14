@@ -11,7 +11,7 @@ import ProductPage from '../pages/Product/ProductPage';
 import CategoriesPage from '../pages/Categories/CategoriesPage';
 import CommentsPage from '../pages/Comments/CommentsPage';
 import WishlistPage from '../pages/Wishlist/WishlistPage';
-import CartPage from '../pages/Cart/CartPage'
+import CartPage from '../pages/Cart/CartPage';
 
 // Protected route, only accessible if user's role is in roles array
 const Private = ({ Component, roles }) => {
