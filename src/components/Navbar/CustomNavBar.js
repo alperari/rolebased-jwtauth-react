@@ -6,6 +6,7 @@ import { IoBagHandle, IoCart } from 'react-icons/io5';
 
 import { UserProvider } from '../../providers/UserProvider';
 import { useUserContext } from '../../hooks/useUserContext';
+import { CartHover } from '../Cart/CartHover';
 
 const user = JSON.parse(localStorage.getItem('user'));
 
@@ -25,6 +26,13 @@ const CustomNavBar = () => {
   const UserSection = () => {
     return (
       <div class="flex flex-row items-center">
+        <Dropdown placement="left" class="bg-white">
+          
+          <CartHover></CartHover>
+          
+        </Dropdown>
+
+        
         <Link to="/cart">
           <IoCart className="text-2xl text-gray-500 mr-4" />
         </Link>
