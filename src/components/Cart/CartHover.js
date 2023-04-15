@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Button, Label, TextInput, Checkbox } from 'flowbite-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ProductService } from '../../services/ProductService';
-import { RatingService } from '../../services/RatingService';
-import HorizontalProductCard from '../../components/Product/HorizontalProductCard';
 
-const cart = JSON.parse(localStorage.getItem('cart'));
+import { CartHoverProduct } from './CartHoverProduct';
 
-export const CartHover = () => {
+export const CartHover = ({ cart }) => {
+  console.log('cart', cart);
   const navigate = useNavigate();
 
   const Buttons = () => {
@@ -24,6 +22,8 @@ export const CartHover = () => {
 
         <Button
           color="light"
+          outline={true}
+          gradientDuoTone="tealToLime"
           onClick={() => {
             navigate('/cart');
           }}
@@ -34,10 +34,19 @@ export const CartHover = () => {
     );
   };
 
-  const ProductList = () => {};
+  const ProductList = () => {
+    return (
+      <div>
+        {cart?.products.map((product) => {
+          return <CartHoverProduct cartProduct={product} />;
+        })}
+      </div>
+    );
+  };
 
   return (
-    <div class="flex flex-col items-center mx-4">
+    <div class="flex flex-col items-center mx-4 gap-2">
+      <ProductList />
       <Buttons />
     </div>
   );

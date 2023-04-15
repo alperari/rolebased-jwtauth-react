@@ -83,7 +83,7 @@ const CustomNavBar = () => {
             class=" items-center jutify-center m-0 p-0 flex flex-col"
             size="s"
             label={
-              cartState && cartState.products.length > 0 ? (
+              cartState?.products?.length > 0 ? (
                 <div class="relative ">
                   <div class="absolute left-3 bottom-3">
                     <p class="flex h-2 w-2 items-center justify-center rounded-full bg-red-500 p-3 text-xs text-white">
@@ -101,7 +101,7 @@ const CustomNavBar = () => {
             }
             arrowIcon={false}
           >
-            <CartHover></CartHover>
+            <CartHover cart={cartState}></CartHover>
           </Dropdown>
 
           <Link to="/wishlist">
