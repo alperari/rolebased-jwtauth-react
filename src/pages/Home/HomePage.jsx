@@ -20,9 +20,6 @@ const Home = () => {
   const [products, setProducts] = useState([]);
   const [productsCopy, setProductsCopy] = useState([]);
   const [query, setQuery] = useState('');
-  const [onlyStocksCheck, setOnlyStocksCheck] = useState(false);
-
-  const navigate = useNavigate();
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -189,7 +186,6 @@ const Home = () => {
 
         <Checkbox
           id="remember"
-          check
           onChange={(e) => {
             if (e.target.checked) {
               const results = productsCopy.filter(

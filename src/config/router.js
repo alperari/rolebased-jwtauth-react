@@ -33,56 +33,58 @@ const Router = () => {
     <BrowserRouter>
       <CustomNavBar />
 
-      <Routes>
-        <Route path="/" exact element={<Home />} />
-        <Route path="/register" exact element={<RegisterPage />} />
-        <Route path="/login" exact element={<LoginPage />} />
-        <Route path="/product" exact element={<ProductPage />} />
-        <Route path="/categories" exact element={<CategoriesPage />} />
-        <Route path="/cart" exact element={<CartPage />} />
+      <div style={{ marginTop: 75 }}>
+        <Routes>
+          <Route path="/" exact element={<Home />} />
+          <Route path="/register" exact element={<RegisterPage />} />
+          <Route path="/login" exact element={<LoginPage />} />
+          <Route path="/product" exact element={<ProductPage />} />
+          <Route path="/categories" exact element={<CategoriesPage />} />
+          <Route path="/cart" exact element={<CartPage />} />
 
-        <Route
-          path="/user"
-          element={
-            <Private
-              Component={UserPage}
-              roles={['admin', 'customer', 'salesManager', 'productManager']}
-            />
-          }
-        />
+          <Route
+            path="/user"
+            element={
+              <Private
+                Component={UserPage}
+                roles={['admin', 'customer', 'salesManager', 'productManager']}
+              />
+            }
+          />
 
-        <Route
-          path="/add-product"
-          element={
-            <Private
-              Component={AddProductPage}
-              roles={['admin', 'productManager']}
-            />
-          }
-        />
+          <Route
+            path="/add-product"
+            element={
+              <Private
+                Component={AddProductPage}
+                roles={['admin', 'productManager']}
+              />
+            }
+          />
 
-        <Route
-          path="/comments"
-          element={
-            <Private
-              Component={CommentsPage}
-              roles={['admin', 'customer', 'salesManager', 'productManager']}
-            />
-          }
-        />
+          <Route
+            path="/comments"
+            element={
+              <Private
+                Component={CommentsPage}
+                roles={['admin', 'customer', 'salesManager', 'productManager']}
+              />
+            }
+          />
 
-        <Route
-          path="/wishlist"
-          element={
-            <Private
-              Component={WishlistPage}
-              roles={['admin', 'customer', 'salesManager', 'productManager']}
-            />
-          }
-        />
+          <Route
+            path="/wishlist"
+            element={
+              <Private
+                Component={WishlistPage}
+                roles={['admin', 'customer', 'salesManager', 'productManager']}
+              />
+            }
+          />
 
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </div>
     </BrowserRouter>
   );
 };

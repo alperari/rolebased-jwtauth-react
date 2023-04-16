@@ -6,11 +6,7 @@ export const CartHoverProduct = ({ cartProduct }) => {
     <Link to="/product" state={{ cartProduct }}>
       <div class=" flex flex-row gap-2 my-8 items-center w-full ">
         <div style={{ width: 100 }} class="border-2 border-gray-100">
-          <img
-            backgroundSize="cover"
-            src={cartProduct.imageURL}
-            alt={cartProduct.name}
-          />
+          <img src={cartProduct.imageURL} alt={cartProduct.name} />
         </div>
         <div class="flex flex-col w-full ">
           <span class="font-semibold text-l text-gray-700">

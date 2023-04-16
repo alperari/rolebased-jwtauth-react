@@ -5,7 +5,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { CartHoverProduct } from './CartHoverProduct';
 
 export const CartHover = ({ cart }) => {
-  console.log('cart', cart);
   const navigate = useNavigate();
 
   const Buttons = () => {
