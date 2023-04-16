@@ -63,7 +63,6 @@ const CustomNavBar = () => {
     );
   };
 
-  console.log(cartState);
   return (
     <div class="fixed inset-x-0 top-0 left-0 z-10 w-full bg-white border-b-2 border-solid border-gray-200">
       <Navbar fluid={true} rounded={true} class="my-4 mx-6">

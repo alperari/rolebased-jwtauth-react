@@ -36,7 +36,7 @@ export const CartHover = ({ cart }) => {
   const ProductList = () => {
     return (
       <div class="grid grid-cols divide-y">
-        {cart?.products.map((product) => {
+        {cart?.products?.map((product) => {
           return <CartHoverProduct cartProduct={product} />;
         })}
       </div>
@@ -45,7 +45,7 @@ export const CartHover = ({ cart }) => {
 
   return (
     <div class="flex flex-col items-center mx-4 divide-y gap-1">
-      <span class="font-bold">My Cart ({cart?.products.length})</span>
+      <span class="font-bold">My Cart ({cart?.products?.length})</span>
       <ProductList />
       <Buttons />
     </div>

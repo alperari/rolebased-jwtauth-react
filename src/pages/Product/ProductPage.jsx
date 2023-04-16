@@ -206,8 +206,6 @@ const ProductPage = () => {
       if (newPrice !== null) setPrice(newPrice);
       if (newDiscount !== null) setDiscount(newDiscount);
 
-      console.log('newPrice:', newPrice);
-      console.log('newDiscount:', newDiscount);
       // TODO: Update price and discount in database
 
       const result = ProductService.updatePriceDiscount({

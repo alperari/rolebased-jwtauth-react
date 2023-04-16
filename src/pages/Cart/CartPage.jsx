@@ -8,7 +8,27 @@ const user = JSON.parse(localStorage.getItem('user'));
 const cart = JSON.parse(localStorage.getItem('cart'));
 
 const CartPage = () => {
+  console.log(cart);
   const [cartState, setCartState] = useState(cart);
+
+  const onClickIncrementQuantity = async (product) => {
+    const cart = JSON.parse(localStorage.getItem('cart'));
+
+    const productIndex = cart.products.findIndex(
+      (item) => item._id === product._id
+    );
+
+    cart.products[productIndex].cartQuantity += 1;
+
+    // Update cart in local storage
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    // Dispatch storage event to update cart in navbar
+    window.dispatchEvent(new Event('storage'));
+
+    // Update cart state
+    setCartState(cart);
+  };
 
   return (
     <div class="h-screen bg-gray-100">
@@ -18,8 +38,8 @@ const CartPage = () => {
 
       <div class="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0">
         <div class="rounded-lg md:w-2/3">
-          {cart &&
-            cart.products.map((item) => {
+          {cartState &&
+            cartState.products.map((item) => {
               return (
                 <div class="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start">
                   <img
@@ -44,13 +64,18 @@ const CartPage = () => {
                             -
                           </Button>
                           <input
-                            class="h-8 w-8 border bg-white text-center text-xs outline-none"
+                            class="h-8 w-12 border bg-white text-center text-xs outline-none"
                             type="number"
-                            value="2"
-                            min="1"
+                            value={item.cartQuantity}
                             disabled={true}
                           />
-                          <Button size="xs" color="light">
+                          <Button
+                            size="xs"
+                            color="light"
+                            onClick={() => {
+                              onClickIncrementQuantity(item);
+                            }}
+                          >
                             +
                           </Button>
                         </div>
