@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Button, Label, TextInput, Checkbox } from 'flowbite-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { HiX } from 'react-icons/hi';
+
+import { CartService } from '../../services/CartService';
+
 import HorizontalProductCard from '../../components/Product/HorizontalProductCard';
 import { Price } from '../../components/Product/Price';
 
@@ -11,6 +15,14 @@ const CartPage = () => {
   const [cartState, setCartState] = useState(cart);
 
   const onClickIncrementQuantity = async (product) => {
+    // if (user) {
+    //   // If logged-in, update cart in database
+    //   const addedProduct = await CartService.addToCart({
+    //     productID: product._id,
+    //     quantity: 1,
+    //   });
+    // }
+
     const cart = JSON.parse(localStorage.getItem('cart'));
 
     const productIndex = cart.products.findIndex(
@@ -30,13 +42,66 @@ const CartPage = () => {
   };
 
   const onClickDecrementQuantity = async (product) => {
+    // if (user) {
+    //   // If logged-in, update cart in database
+    //   const addedProduct = await CartService.removeFromCart({
+    //     productID: product._id,
+    //     quantity: 1,
+    //   });
+    // }
+
     const cart = JSON.parse(localStorage.getItem('cart'));
 
     const productIndex = cart.products.findIndex(
       (item) => item._id === product._id
     );
 
-    cart.products[productIndex].cartQuantity -= 1;
+    if (product.cartQuantity == 1) {
+      // Then remove the product from the cart
+
+      // Remove product from cart
+      cart.products.splice(productIndex, 1);
+
+      // Update cart in local storage
+      localStorage.setItem('cart', JSON.stringify(cart));
+
+      // Dispatch storage event to update cart in navbar
+      window.dispatchEvent(new Event('storage'));
+
+      // Update cart state
+      setCartState(cart);
+    } else {
+      // Otherwise, just decrement the quantity
+      cart.products[productIndex].cartQuantity -= 1;
+
+      // Update cart in local storage
+      localStorage.setItem('cart', JSON.stringify(cart));
+
+      // Dispatch storage event to update cart in navbar
+      window.dispatchEvent(new Event('storage'));
+
+      // Update cart state
+      setCartState(cart);
+    }
+  };
+
+  const onClickRemove = async (product) => {
+    // if (user) {
+    //   // If logged-in, update cart in database
+    //   const addedProduct = await CartService.removeFromCart({
+    //     productID: product._id,
+    //     quantity: product.cartQuantity,
+    //   });
+    // }
+
+    const cart = JSON.parse(localStorage.getItem('cart'));
+
+    const productIndex = cart.products.findIndex(
+      (item) => item._id === product._id
+    );
+
+    // Remove product from cart
+    cart.products.splice(productIndex, 1);
 
     // Update cart in local storage
     localStorage.setItem('cart', JSON.stringify(cart));
@@ -91,7 +156,7 @@ const CartPage = () => {
                           >
                             -
                           </Button>
-                          <div class="px-4 py-2 border-2 border-gray-300 rounded-xl">
+                          <div class="px-4 py-2 border-solid border-t border-b border-l border-r border-gray-300 rounded-xl">
                             {item.cartQuantity}
                           </div>
                           <Button
@@ -107,7 +172,12 @@ const CartPage = () => {
                       </div>
                     </div>
                     <div class="mt-4 flex justify-between sm:space-y-6 sm:mt-0 sm:block sm:space-x-6">
-                      <div class="flex items-center space-x-4">
+                      <div
+                        class="flex items-center space-x-4"
+                        onClick={() => {
+                          onClickRemove(item);
+                        }}
+                      >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -136,10 +206,12 @@ const CartPage = () => {
             <p class="text-gray-700 font-semibold">
               $
               {cartState
-                ? cartState?.products.reduce(
-                    (acc, item) => acc + item.price * item.cartQuantity,
-                    0
-                  )
+                ? cartState?.products
+                    .reduce(
+                      (acc, item) => acc + item.price * item.cartQuantity,
+                      0
+                    )
+                    .toFixed(2)
                 : 0}
             </p>
           </div>
@@ -148,19 +220,21 @@ const CartPage = () => {
             <p class="text-green-500 font-semibold">
               - $
               {cartState
-                ? cartState?.products.reduce((acc, item) => {
-                    const discount =
-                      acc +
-                      (item.price * item.cartQuantity * item.discount) / 100;
-                    return discount;
-                  }, 0)
+                ? cartState?.products
+                    .reduce((acc, item) => {
+                      const discount =
+                        acc +
+                        (item.price * item.cartQuantity * item.discount) / 100;
+                      return discount;
+                    }, 0)
+                    .toFixed(2)
                 : 0}
             </p>
           </div>
           <div class="flex justify-between">
             <p class="text-gray-700">Shipping</p>
             <p class="text-gray-700 font-semibold">
-              {cartState ? '$4.99' : '0.00'}
+              {cartState?.products?.length > 0 ? '$4.99' : '0.00'}
             </p>
           </div>
           <hr class="my-4" />
@@ -169,17 +243,16 @@ const CartPage = () => {
             <div class="">
               <p class="mb-1 text-lg font-bold">
                 $
-                {cartState
-                  ? cartState?.products.reduce((acc, item) => {
-                      const discount =
-                        acc +
-                        (item.price * item.cartQuantity * item.discount) / 100;
+                {(
+                  cartState?.products.reduce((acc, item) => {
+                    const discount =
+                      acc +
+                      (item.price * item.cartQuantity * item.discount) / 100;
 
-                      const newPrice =
-                        item.price * item.cartQuantity - discount;
-                      return newPrice;
-                    }, 0) + 4.99
-                  : 0}
+                    const newPrice = item.price * item.cartQuantity - discount;
+                    return newPrice;
+                  }, 0) + (cartState?.products?.length > 0 ? 4.99 : 0)
+                ).toFixed(2)}
               </p>
             </div>
           </div>
