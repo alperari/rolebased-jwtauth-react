@@ -5,7 +5,7 @@ import { HiX } from 'react-icons/hi';
 
 import { CartService } from '../../services/CartService';
 
-import HorizontalProductCard from '../../components/Product/HorizontalProductCard';
+import HorizontalCartProductCard from '../../components/Product/HorizontalCartProductCard';
 import { Price } from '../../components/Product/Price';
 
 const user = JSON.parse(localStorage.getItem('user'));
@@ -125,79 +125,28 @@ const CartPage = () => {
 
       <div class="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0">
         <div class="rounded-lg md:w-2/3">
-          {cartState &&
+          {cartState && cartState.products.length > 0 ? (
             cartState.products.map((item) => {
               return (
-                <div class="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start">
-                  <img
-                    src={item.imageURL}
-                    alt="product-image"
-                    class="w-full rounded-lg sm:w-40"
-                  />
-                  <div class="sm:ml-4 sm:flex sm:w-full sm:justify-between">
-                    <div class="mt-5 sm:mt-0 flex flex-col justify-between w-full">
-                      <div>
-                        <h2 class="text-lg font-bold text-gray-900">
-                          {item.name}
-                        </h2>
-                        <p class="mt-1 text-xs text-gray-700">
-                          {item.distributor}
-                        </p>
-                      </div>
-                      <div class="flex flex-row items-end justify-between">
-                        <Price product={item} />
-                        <div class="flex flex-row items-center border-gray-100 gap-1">
-                          <Button
-                            size="xs"
-                            color="light"
-                            onClick={() => {
-                              onClickDecrementQuantity(item);
-                            }}
-                          >
-                            -
-                          </Button>
-                          <div class="px-4 py-2 border-solid border-t border-b border-l border-r border-gray-300 rounded-xl">
-                            {item.cartQuantity}
-                          </div>
-                          <Button
-                            size="xs"
-                            color="light"
-                            onClick={() => {
-                              onClickIncrementQuantity(item);
-                            }}
-                          >
-                            +
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="mt-4 flex justify-between sm:space-y-6 sm:mt-0 sm:block sm:space-x-6">
-                      <div
-                        class="flex items-center space-x-4"
-                        onClick={() => {
-                          onClickRemove(item);
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="h-5 w-5 cursor-pointer duration-150 hover:text-red-500"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <HorizontalCartProductCard
+                  product={item}
+                  onClickDecrementQuantity={onClickDecrementQuantity}
+                  onClickIncrementQuantity={onClickIncrementQuantity}
+                  onClickRemove={onClickRemove}
+                  key={item._id}
+                />
               );
-            })}
+            })
+          ) : (
+            <div class="flex flex-col items-center justify-center h-full">
+              <span class="text-2xl font-bold">Your cart is empty</span>
+              <Link to="/">
+                <Button className="mt-4" variant="primary" size="lg">
+                  Shop now
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
 
         <div class="mt-6 h-full rounded-lg border bg-white p-6 shadow-md md:mt-0 md:w-1/3">
@@ -243,16 +192,20 @@ const CartPage = () => {
             <div class="">
               <p class="mb-1 text-lg font-bold">
                 $
-                {(
-                  cartState?.products.reduce((acc, item) => {
-                    const discount =
-                      acc +
-                      (item.price * item.cartQuantity * item.discount) / 100;
+                {cartState?.products.length > 0
+                  ? (
+                      cartState?.products.reduce((acc, item) => {
+                        const discount =
+                          acc +
+                          (item.price * item.cartQuantity * item.discount) /
+                            100;
 
-                    const newPrice = item.price * item.cartQuantity - discount;
-                    return newPrice;
-                  }, 0) + (cartState?.products?.length > 0 ? 4.99 : 0)
-                ).toFixed(2)}
+                        const newPrice =
+                          item.price * item.cartQuantity - discount;
+                        return newPrice;
+                      }, 0) + (cartState?.products?.length > 0 ? 4.99 : 0)
+                    ).toFixed(2)
+                  : 0.0}
               </p>
             </div>
           </div>

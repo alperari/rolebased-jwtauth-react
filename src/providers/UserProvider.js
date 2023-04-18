@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext } from 'react';
 import { AuthService } from '../services/AuthService';
+import { CartService } from '../services/CartService';
 
 export const UserContext = createContext();
 
@@ -23,6 +24,54 @@ export const UserProvider = ({ children }) => {
 
       // Set user in localStorage
       localStorage.setItem('user', JSON.stringify(user));
+
+      // Fetch cart from database
+      const cart = await CartService.getCart();
+
+      // Fetch cart from localStorage
+      const localStorageCart = JSON.parse(localStorage.getItem('cart'));
+
+      console.log('cartDB', cart);
+      console.log('localStorageCart', localStorageCart);
+
+      // Cart Scenerio 1: DB Cart❌ - LocalStorage Cart❌
+      // TODO: do nothing
+      if (
+        cart.products.length == 0 &&
+        (!localStorageCart || localStorageCart?.products?.length == 0)
+      ) {
+        console.log('DB Cart❌ - LocalStorage Cart❌');
+      }
+      // Cart Scenerio 2: DB Cart❌ - LocalStorage Cart✔️
+      // TODO: merge all items from localStorageCart to DB cart
+      // TODO: update DB cart with merged items
+      else if (
+        cart.products.length == 0 &&
+        localStorageCart?.products?.length > 0
+      ) {
+        console.log('DB Cart❌ - LocalStorage Cart✔️');
+      }
+
+      // Cart Scenerio 3: DB Cart✔️ - LocalStorage Cart❌
+      // TODO: merge all items from DB cart to localStorageCart
+      // TODO: update localStorage cart with merged items
+      else if (
+        cart.products.length > 0 &&
+        (!localStorageCart || localStorageCart?.products?.length == 0)
+      ) {
+        console.log('DB Cart✔️ - LocalStorage Cart❌');
+      }
+
+      // Cart Scenerio 4: DB Cart✔️ - LocalStorage Cart✔️
+      // TODO: merge & combine all items from DB cart and localStorageCart
+      // TODO: update DB cart with merged items
+      // TODO: update localStorage cart with merged items
+      else if (
+        cart.products.length > 0 &&
+        localStorageCart?.products?.length > 0
+      ) {
+        console.log('DB Cart✔️ - LocalStorage Cart✔️');
+      }
 
       return {
         success: true,
