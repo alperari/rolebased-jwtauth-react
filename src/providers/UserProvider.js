@@ -35,7 +35,7 @@ export const UserProvider = ({ children }) => {
       console.log('localStorageCart', localStorageCart);
 
       // Cart Scenerio 1: DB Cart❌ - LocalStorage Cart❌
-      // TODO: do nothing
+      // do nothing
       if (
         cart.products.length == 0 &&
         (!localStorageCart || localStorageCart?.products?.length == 0)
@@ -50,16 +50,20 @@ export const UserProvider = ({ children }) => {
         localStorageCart?.products?.length > 0
       ) {
         console.log('DB Cart❌ - LocalStorage Cart✔️');
+        const syncedCart = await CartService.syncCart({ localStorageCart });
       }
 
       // Cart Scenerio 3: DB Cart✔️ - LocalStorage Cart❌
-      // TODO: merge all items from DB cart to localStorageCart
-      // TODO: update localStorage cart with merged items
+      // merge all items from DB cart to localStorageCart
+      // update localStorage cart with merged items
       else if (
         cart.products.length > 0 &&
         (!localStorageCart || localStorageCart?.products?.length == 0)
       ) {
         console.log('DB Cart✔️ - LocalStorage Cart❌');
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        window.dispatchEvent(new Event('storage'));
       }
 
       // Cart Scenerio 4: DB Cart✔️ - LocalStorage Cart✔️

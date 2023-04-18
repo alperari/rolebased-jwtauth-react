@@ -23,6 +23,22 @@ export class CartService {
     }
   }
 
+  static async syncCart({ localStorageCart }) {
+    try {
+      const response = await axios({
+        method: 'POST',
+        url: `${URL}/cart/sync`,
+        data: {
+          localStorageCart,
+        },
+        withCredentials: true,
+      });
+      return response.data.updatedCart;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
+
   static async addToCart({ productID, quantity }) {
     try {
       const response = await axios({
