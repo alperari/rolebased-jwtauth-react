@@ -33,7 +33,7 @@ export class CartService {
         },
         withCredentials: true,
       });
-      return response.data.updatedCart;
+      return response.data.syncedCart;
     } catch (err) {
       return err.response.data;
     }

@@ -31,9 +31,6 @@ export const UserProvider = ({ children }) => {
       // Fetch cart from localStorage
       const localStorageCart = JSON.parse(localStorage.getItem('cart'));
 
-      console.log('cartDB', cart);
-      console.log('localStorageCart', localStorageCart);
-
       // Cart Scenerio 1: DB Cart❌ - LocalStorage Cart❌
       // do nothing
       if (
@@ -43,8 +40,8 @@ export const UserProvider = ({ children }) => {
         console.log('DB Cart❌ - LocalStorage Cart❌');
       }
       // Cart Scenerio 2: DB Cart❌ - LocalStorage Cart✔️
-      // TODO: merge all items from localStorageCart to DB cart
-      // TODO: update DB cart with merged items
+      // merge all items from localStorageCart to DB cart
+      // update DB cart with merged items
       else if (
         cart.products.length == 0 &&
         localStorageCart?.products?.length > 0
@@ -54,8 +51,7 @@ export const UserProvider = ({ children }) => {
       }
 
       // Cart Scenerio 3: DB Cart✔️ - LocalStorage Cart❌
-      // merge all items from DB cart to localStorageCart
-      // update localStorage cart with merged items
+      // update localStorage with DB cart
       else if (
         cart.products.length > 0 &&
         (!localStorageCart || localStorageCart?.products?.length == 0)
@@ -67,14 +63,20 @@ export const UserProvider = ({ children }) => {
       }
 
       // Cart Scenerio 4: DB Cart✔️ - LocalStorage Cart✔️
-      // TODO: merge & combine all items from DB cart and localStorageCart
-      // TODO: update DB cart with merged items
-      // TODO: update localStorage cart with merged items
+      // merge & combine all items from DB cart and localStorageCart
+      // update DB cart with merged items
+      // update localStorage cart with merged items
       else if (
         cart.products.length > 0 &&
         localStorageCart?.products?.length > 0
       ) {
         console.log('DB Cart✔️ - LocalStorage Cart✔️');
+
+        const syncedCart = await CartService.syncCart({ localStorageCart });
+
+        // Update cart in local storage & dispatch storage event
+        localStorage.setItem('cart', JSON.stringify(syncedCart));
+        window.dispatchEvent(new Event('storage'));
       }
 
       return {
