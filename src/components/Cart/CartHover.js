@@ -24,7 +24,7 @@ export const CartHover = ({ cart }) => {
           outline={true}
           gradientDuoTone="tealToLime"
           onClick={() => {
-            navigate('/cart');
+            navigate('/checkout');
           }}
         >
           Checkout

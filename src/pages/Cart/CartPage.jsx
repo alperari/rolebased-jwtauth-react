@@ -15,13 +15,13 @@ const CartPage = () => {
   const [cartState, setCartState] = useState(cart);
 
   const onClickIncrementQuantity = async (product) => {
-    // if (user) {
-    //   // If logged-in, update cart in database
-    //   const addedProduct = await CartService.addToCart({
-    //     productID: product._id,
-    //     quantity: 1,
-    //   });
-    // }
+    if (user) {
+      // If logged-in, update cart in database
+      const addedProduct = await CartService.addToCart({
+        productID: product._id,
+        quantity: 1,
+      });
+    }
 
     const cart = JSON.parse(localStorage.getItem('cart'));
 
@@ -42,13 +42,13 @@ const CartPage = () => {
   };
 
   const onClickDecrementQuantity = async (product) => {
-    // if (user) {
-    //   // If logged-in, update cart in database
-    //   const addedProduct = await CartService.removeFromCart({
-    //     productID: product._id,
-    //     quantity: 1,
-    //   });
-    // }
+    if (user) {
+      // If logged-in, update cart in database
+      const addedProduct = await CartService.removeFromCart({
+        productID: product._id,
+        quantity: 1,
+      });
+    }
 
     const cart = JSON.parse(localStorage.getItem('cart'));
 
@@ -86,13 +86,13 @@ const CartPage = () => {
   };
 
   const onClickRemove = async (product) => {
-    // if (user) {
-    //   // If logged-in, update cart in database
-    //   const addedProduct = await CartService.removeFromCart({
-    //     productID: product._id,
-    //     quantity: product.cartQuantity,
-    //   });
-    // }
+    if (user) {
+      // If logged-in, update cart in database
+      const addedProduct = await CartService.removeFromCart({
+        productID: product._id,
+        quantity: product.cartQuantity,
+      });
+    }
 
     const cart = JSON.parse(localStorage.getItem('cart'));
 

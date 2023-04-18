@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import CustomNavBar from '../components/Navbar/CustomNavBar';
+
 import Home from '../pages/Home/HomePage';
 import LoginPage from '../pages/Auth/LoginPage';
 import RegisterPage from '../pages/Auth/RegisterPage';
@@ -12,6 +13,7 @@ import CategoriesPage from '../pages/Categories/CategoriesPage';
 import CommentsPage from '../pages/Comments/CommentsPage';
 import WishlistPage from '../pages/Wishlist/WishlistPage';
 import CartPage from '../pages/Cart/CartPage';
+import CheckoutPage from '../pages/Checkout/CheckoutPage';
 
 // Protected route, only accessible if user's role is in roles array
 const Private = ({ Component, roles }) => {
@@ -77,6 +79,16 @@ const Router = () => {
             element={
               <Private
                 Component={WishlistPage}
+                roles={['admin', 'customer', 'salesManager', 'productManager']}
+              />
+            }
+          />
+
+          <Route
+            path="/checkout"
+            element={
+              <Private
+                Component={CheckoutPage}
                 roles={['admin', 'customer', 'salesManager', 'productManager']}
               />
             }
