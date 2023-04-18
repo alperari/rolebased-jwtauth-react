@@ -37,14 +37,14 @@ export const CartHover = ({ cart }) => {
     return (
       <div class="grid grid-cols divide-y">
         {cart?.products?.map((product) => {
-          return <CartHoverProduct cartProduct={product} />;
+          return <CartHoverProduct product={product} />;
         })}
       </div>
     );
   };
 
   return (
-    <div class="flex flex-col items-center mx-4 divide-y gap-1">
+    <div class="flex flex-col items-center mx-4 divide-y gap-1 max-h-96 w-96 overflow-y-auto">
       <span class="font-bold">My Cart ({cart?.products?.length})</span>
       <ProductList />
       <Buttons />

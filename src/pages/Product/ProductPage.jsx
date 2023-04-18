@@ -222,10 +222,9 @@ const ProductPage = () => {
 
   const fetchProductDetails = async () => {
     const fetchedProduct = await ProductService.getProductById({
-      productID: productFromDB._id,
+      productID: product._id,
     });
-
-    setProductFromDB(fetchedProduct);
+    setProductFromDB({ ...fetchedProduct });
   };
 
   const fetchComments = async () => {
@@ -289,7 +288,7 @@ const ProductPage = () => {
     fetchComments();
     fetchRatings();
     fetchProductDetails();
-  }, [yourRating, stock, price, discount, showAddCommentModal]);
+  }, [product, yourRating, stock, price, discount, showAddCommentModal]);
 
   const CustomTimelineItem = ({ comment }) => {
     const isCommentMine = user && comment.user._id === user._id;

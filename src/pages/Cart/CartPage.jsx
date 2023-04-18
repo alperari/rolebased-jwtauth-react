@@ -194,16 +194,14 @@ const CartPage = () => {
                 $
                 {cartState?.products.length > 0
                   ? (
-                      cartState?.products.reduce((acc, item) => {
-                        const discount =
+                      cartState.products.reduce(
+                        (acc, item) =>
                           acc +
+                          item.price * item.cartQuantity -
                           (item.price * item.cartQuantity * item.discount) /
-                            100;
-
-                        const newPrice =
-                          item.price * item.cartQuantity - discount;
-                        return newPrice;
-                      }, 0) + (cartState?.products?.length > 0 ? 4.99 : 0)
+                            100,
+                        0
+                      ) + (cartState?.products?.length > 0 ? 4.99 : 0)
                     ).toFixed(2)
                   : 0.0}
               </p>
