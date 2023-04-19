@@ -3,6 +3,7 @@ import {
   Card,
   Button,
   Rating,
+  Badge,
   Carousel,
   Timeline,
   Spinner,
@@ -35,10 +36,7 @@ import { Price } from '../../components/Product/Price';
 import { parseDateTime } from '../../helpers/helperFunctions';
 import { AddCommentModal } from '../../components/General/Modal';
 
-let user = localStorage.getItem('user');
-if (user) {
-  user = JSON.parse(user);
-}
+const user = JSON.parse(localStorage.getItem('user'));
 
 const ProductPage = () => {
   const location = useLocation();
@@ -355,7 +353,7 @@ const ProductPage = () => {
             </span>
           </div>
         )}
-        {user && (
+        {user && user.role == 'customer' && (
           <Button
             onClick={() => {
               setShowAddCommentModal(true);
@@ -370,7 +368,7 @@ const ProductPage = () => {
 
   const Rate = () => {
     // If user is not logged in, don't show rate section
-    if (!user) return null;
+    if (!user || user.role !== 'customer') return null;
 
     return (
       <div class="flex flex-col mt-8 items-center">
@@ -496,9 +494,17 @@ const ProductPage = () => {
   const StockStatusSection = () => {
     if (productFromDB.quantity > 0) {
       return (
-        <div class="flex flex-row gap-1 items-center">
-          <HiOutlineCheckCircle color="green" size={30} />
-          <span className="text-xl text-green-500 font-bold">In stock</span>
+        <div class="flex flex-col gap-1">
+          <div class="flex flex-row gap-1 items-center">
+            <HiOutlineCheckCircle color="green" size={30} />
+            <span className="text-xl text-green-500 font-bold">In stock</span>
+          </div>
+          {productFromDB.quantity < 10 && (
+            <Badge color="failure" size="md">
+              {productFromDB.quantity}{' '}
+              {productFromDB.quantity > 1 ? 'items' : 'item'} left
+            </Badge>
+          )}
         </div>
       );
     } else {

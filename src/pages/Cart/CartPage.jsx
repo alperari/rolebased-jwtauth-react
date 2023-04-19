@@ -14,6 +14,8 @@ const cart = JSON.parse(localStorage.getItem('cart'));
 const CartPage = () => {
   const [cartState, setCartState] = useState(cart);
 
+  const navigate = useNavigate();
+
   const onClickIncrementQuantity = async (product) => {
     if (user) {
       // If logged-in, update cart in database
@@ -207,7 +209,17 @@ const CartPage = () => {
               </p>
             </div>
           </div>
-          <button class="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600">
+          <button
+            class="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600"
+            disabled={cartState?.products.length == 0}
+            onClick={() => {
+              if (user) {
+                navigate('/checkout');
+              } else {
+                navigate('/login');
+              }
+            }}
+          >
             Check out
           </button>
         </div>

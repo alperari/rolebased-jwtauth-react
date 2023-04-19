@@ -120,8 +120,11 @@ const WishlistPage = () => {
   };
 
   return (
-    <div class="flex flex-col mx-32 my-24">
-      <span class="text-3xl text-center mb-8">My Wishlist</span>
+    <div class="flex flex-col mx-32 my-32">
+      <span class="text-3xl text-center ">My Wishlist</span>
+      <span class="text-l text-center mb-8">
+        You will be notified when there is a discount on your wishlist items
+      </span>
 
       {loading ? (
         <div class="flex flex-row justify-center items-center">Loading...</div>

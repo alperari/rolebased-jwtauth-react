@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { CartHoverProduct } from './CartHoverProduct';
 
+const user = JSON.parse(localStorage.getItem('user'));
+
 export const CartHover = ({ cart }) => {
   const navigate = useNavigate();
 
@@ -24,7 +26,11 @@ export const CartHover = ({ cart }) => {
           outline={true}
           gradientDuoTone="tealToLime"
           onClick={() => {
-            navigate('/checkout');
+            if (user) {
+              navigate('/checkout');
+            } else {
+              navigate('/login');
+            }
           }}
         >
           Checkout
