@@ -10,12 +10,22 @@ import { CheckoutProductPrice } from '../../components/Checkout/CheckoutProductP
 const cart = JSON.parse(localStorage.getItem('cart')) || {};
 
 const CheckoutPage = () => {
+  const [cartState, setCartState] = useState(cart);
+
   const fetchCartUpdateLocalStorage = async () => {
     const fetchedCart = await CartService.getCart();
 
-    console.log('localStorage cart:', cart);
-    console.log('db cart:', fetchedCart);
-    console.log(_.isEqual(cart, fetchedCart));
+    // If any of product details are changed, update the cart
+    if (!_.isEqual(cart, fetchedCart)) {
+      // Update local storage
+      localStorage.setItem('cart', JSON.stringify(fetchedCart));
+
+      // Dispatch event
+      window.dispatchEvent(new Event('storage'));
+
+      // Update cart state
+      setCartState(fetchedCart);
+    }
   };
 
   useEffect(() => {
@@ -33,9 +43,9 @@ const CheckoutPage = () => {
           <div class="-mx-3 md:flex items-start">
             <div class="px-3 md:w-7/12 lg:pr-10">
               <div class="w-full mx-auto text-gray-800 font-light mb-6 border-b border-gray-200 pb-6 flex flex-col gap-4">
-                {cart?.products &&
-                  cart.products.length > 0 &&
-                  cart.products.map((product) => {
+                {cartState?.products &&
+                  cartState.products.length > 0 &&
+                  cartState.products.map((product) => {
                     return (
                       <div class="w-full flex items-center">
                         <div class="overflow-hidden rounded-lg w-16 h-16 bg-gray-50 border border-gray-200">
