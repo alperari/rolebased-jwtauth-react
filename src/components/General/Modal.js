@@ -1,4 +1,11 @@
-import { Modal, Button, Label, TextInput, Textarea } from 'flowbite-react';
+import {
+  Modal,
+  Button,
+  Label,
+  TextInput,
+  Textarea,
+  Spinner,
+} from 'flowbite-react';
 import { Navigate } from 'react-router-dom';
 
 export const CustomModal = ({
@@ -19,6 +26,51 @@ export const CustomModal = ({
       }}
     >
       <Modal.Header>{title}</Modal.Header>
+      <Modal.Body>
+        <div className="space-y-6">
+          <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+            {message1}
+          </p>
+          <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+            {message2}
+          </p>
+        </div>
+      </Modal.Body>
+      {dismissable && (
+        <Modal.Footer>
+          <Button
+            onClick={() => {
+              setShow(false);
+            }}
+          >
+            Okay
+          </Button>
+        </Modal.Footer>
+      )}
+    </Modal>
+  );
+};
+
+export const CustomProcessingModal = ({
+  title,
+  message1,
+  message2,
+  show,
+  setShow,
+  dismissable = false,
+}) => {
+  return (
+    <Modal
+      show={show}
+      size="md"
+      dismissible={dismissable}
+      onClose={() => {
+        setShow(false);
+      }}
+    >
+      <Modal.Header className="flex flex-row   bg-gray-100">
+        <Spinner color="purple" /> {title}
+      </Modal.Header>
       <Modal.Body>
         <div className="space-y-6">
           <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">

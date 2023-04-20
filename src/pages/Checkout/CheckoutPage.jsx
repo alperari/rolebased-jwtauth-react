@@ -8,10 +8,17 @@ import { Button, TextInput } from 'flowbite-react';
 
 import { CartService } from '../../services/CartService';
 
-import { CheckoutProductPrice } from '../../components/Checkout/CheckoutProductPrice';
+import { CheckoutProduct } from '../../components/Checkout/CheckoutProduct';
+
+import {
+  CustomModal,
+  CustomProcessingModal,
+} from '../../components/General/Modal';
 
 const user = JSON.parse(localStorage.getItem('user'));
 const cart = JSON.parse(localStorage.getItem('cart')) || {};
+
+const modalDisplayTime = 2000; // 1 second
 
 const CheckoutPage = () => {
   const [cartState, setCartState] = useState(cart);
@@ -21,6 +28,9 @@ const CheckoutPage = () => {
 
   const [contact, setContact] = useState(user.name || '');
   const [address, setAddress] = useState(user.address || '');
+
+  const [showProcessingModal, setShowProcessingModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const fetchCartUpdateLocalStorage = async () => {
     const fetchedCart = await CartService.getCart();
@@ -39,6 +49,7 @@ const CheckoutPage = () => {
   };
 
   const calculateTotalCost = () => {
+    console.log(showProcessingModal);
     let totalCost = 0;
     cartState.products.forEach((product) => {
       let cost = product.cartQuantity * product.price;
@@ -51,7 +62,16 @@ const CheckoutPage = () => {
 
   useEffect(() => {
     fetchCartUpdateLocalStorage();
-  }, []);
+
+    // let timeout;
+    // if (showProcessingModal) {
+    //   timeout = setTimeout(() => {
+    //     setShowProcessingModal(false);
+    //     // history.push('/newpage')
+    //   }, modalDisplayTime);
+    // }
+    // return () => clearTimeout(timeout);
+  }, [showProcessingModal]);
 
   const ContactSection = () => {
     return (
@@ -173,7 +193,15 @@ const CheckoutPage = () => {
         Checkout.
       </h1>
 
-      <div class="w-full bg-white border-t border-b border-gray-200 px-5 py-10 text-gray-800">
+      <CustomProcessingModal
+        title="Processing your order..."
+        message1="⌛ This might take a while."
+        message2="Please don't close this window."
+        show={showProcessingModal}
+        setShow={setShowProcessingModal}
+      />
+
+      <div class="w-full bg-white border-t border-b border-r border-l border-gray-200 px-5 py-10 text-gray-800">
         <div class="w-full">
           <div class="-mx-3 md:flex items-start">
             <div class="px-3 md:w-7/12 lg:pr-10">
@@ -181,20 +209,7 @@ const CheckoutPage = () => {
                 {cartState?.products &&
                   cartState.products.length > 0 &&
                   cartState.products.map((product) => {
-                    return (
-                      <div class="w-full flex items-center">
-                        <div class="overflow-hidden rounded-lg w-16 h-16 bg-gray-50 border border-gray-200">
-                          <img src={product.imageURL} alt={product._id} />
-                        </div>
-                        <div class="flex-grow pl-3">
-                          <h6 class="font-semibold uppercase text-gray-600">
-                            {product.name}
-                          </h6>
-                          <p class="text-gray-400">x {product.cartQuantity}</p>
-                        </div>
-                        <CheckoutProductPrice product={product} />
-                      </div>
-                    );
+                    return <CheckoutProduct product={product} />;
                   })}
               </div>
               <div class="mb-6 pb-6 border-b border-gray-200">
@@ -206,13 +221,19 @@ const CheckoutPage = () => {
                     <div>
                       <input
                         class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors"
-                        placeholder="XXXXXX"
+                        placeholder="XXX-XXX"
                         type="text"
                       />
                     </div>
                   </div>
                   <div class="px-2">
-                    <button class="block w-full max-w-xs mx-auto border border-transparent bg-gray-400 hover:bg-gray-500 focus:bg-gray-500 text-white rounded-md px-5 py-2 font-semibold">
+                    <button
+                      class="block w-full max-w-xs mx-auto border border-transparent bg-gray-400 hover:bg-gray-500 focus:bg-gray-500 text-white rounded-md px-5 py-2 font-semibold"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowProcessingModal(true);
+                      }}
+                    >
                       APPLY
                     </button>
                   </div>
@@ -265,13 +286,17 @@ const CheckoutPage = () => {
                   const expireYear = e.target.expireYear.value;
                   const cvv = e.target.cvv.value;
 
-                  console.log(
-                    nameOnCard,
-                    cardNumber,
-                    expireMonth,
-                    expireYear,
-                    cvv
-                  );
+                  if (
+                    !nameOnCard ||
+                    !cardNumber ||
+                    !expireMonth ||
+                    !expireYear ||
+                    !cvv ||
+                    !address ||
+                    !contact
+                  ) {
+                    return alert('Please fill out all fields.');
+                  }
                 }}
               >
                 <div class="w-full mx-auto rounded-lg bg-white border border-gray-200 text-gray-800 font-light mb-6">
@@ -323,6 +348,7 @@ const CheckoutPage = () => {
                             class="w-full px-3 py-2 mb-1 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors"
                             placeholder="John Smith"
                             type="text"
+                            required
                           />
                         </div>
                       </div>
@@ -336,6 +362,7 @@ const CheckoutPage = () => {
                             class="w-full px-3 py-2 mb-1 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors"
                             placeholder="0000 0000 0000 0000"
                             type="text"
+                            required
                           />
                         </div>
                       </div>
@@ -391,6 +418,7 @@ const CheckoutPage = () => {
                               class="w-full px-3 py-2 mb-1 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors"
                               placeholder="000"
                               type="text"
+                              required
                             />
                           </div>
                         </div>
