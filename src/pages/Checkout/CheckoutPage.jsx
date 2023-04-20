@@ -2,15 +2,22 @@ import _ from 'lodash';
 
 import React, { useEffect, useState } from 'react';
 import { Label } from 'flowbite-react';
+import { HiOutlinePencil, HiX, HiCheck } from 'react-icons/hi';
+
+import { Button, TextInput } from 'flowbite-react';
 
 import { CartService } from '../../services/CartService';
 
 import { CheckoutProductPrice } from '../../components/Checkout/CheckoutProductPrice';
 
+const user = JSON.parse(localStorage.getItem('user'));
 const cart = JSON.parse(localStorage.getItem('cart')) || {};
 
 const CheckoutPage = () => {
   const [cartState, setCartState] = useState(cart);
+
+  const [isEditingContact, setIsEditingContact] = useState(false);
+  const [isEditingAddress, setIsEditingAddress] = useState(false);
 
   const fetchCartUpdateLocalStorage = async () => {
     const fetchedCart = await CartService.getCart();
@@ -28,9 +35,99 @@ const CheckoutPage = () => {
     }
   };
 
+  const calculateTotalCost = () => {
+    let totalCost = 0;
+    cartState.products.forEach((product) => {
+      let cost = product.cartQuantity * product.price;
+      cost = cost - cost * (product.discount / 100);
+      totalCost += cost;
+    });
+
+    return totalCost;
+  };
+
   useEffect(() => {
     fetchCartUpdateLocalStorage();
   }, []);
+
+  const ContactSection = () => {
+    return (
+      <div class="w-full mx-auto rounded-lg bg-white border border-gray-200 p-3 text-gray-800 font-light mb-6">
+        <div class="w-full flex mb-3 items-center">
+          <div class="w-48 flex flex-row gap-2 items-center">
+            <span class="text-gray-600 font-semibold">Contact</span>
+            {!isEditingContact && (
+              <Button
+                size="xs"
+                color="light"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsEditingContact(true);
+                }}
+              >
+                <HiOutlinePencil size={15} />
+              </Button>
+            )}
+          </div>
+          <div class="flex-grow pl-3 items-center">
+            {isEditingContact ? (
+              <div class="flex flex-row gap-2 items-center">
+                <TextInput
+                  size="xs"
+                  placeholder="Name"
+                  value={user.name}
+                  onChange={(e) => {
+                    e.preventDefault();
+                  }}
+                />
+                <div class="flex flex-row gap-2">
+                  <Button
+                    size="xs"
+                    color="light"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsEditingContact(false);
+                    }}
+                  >
+                    <HiCheck size={15} />
+                  </Button>
+                  <Button
+                    size="xs"
+                    color="light"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsEditingContact(false);
+                    }}
+                  >
+                    <HiX size={15} />
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <span>{user.name}</span>
+            )}
+          </div>
+        </div>
+        <div class="w-full flex items-center">
+          <div class="w-48 flex flex-row gap-2 items-center">
+            <span class="text-gray-600 font-semibold">Billing Address</span>
+            <Button
+              size="xs"
+              color="light"
+              onClick={(e) => {
+                e.preventDefault();
+              }}
+            >
+              <HiOutlinePencil size={15} />
+            </Button>
+          </div>
+          <div class="flex-grow pl-3">
+            <span>{user.address}</span>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div class="min-w-screen min-h-screen bg-gray-50 p-12">
@@ -89,15 +186,17 @@ const CheckoutPage = () => {
                     <span class="text-gray-600">Subtotal</span>
                   </div>
                   <div class="pl-3">
-                    <span class="font-semibold">$190.91</span>
+                    <span class="font-semibold">
+                      ${calculateTotalCost().toFixed(2)}
+                    </span>
                   </div>
                 </div>
                 <div class="w-full flex items-center">
                   <div class="flex-grow">
-                    <span class="text-gray-600">Taxes (GST)</span>
+                    <span class="text-gray-600">Shipping</span>
                   </div>
                   <div class="pl-3">
-                    <span class="font-semibold">$19.09</span>
+                    <span class="font-semibold">$4.99</span>
                   </div>
                 </div>
               </div>
@@ -107,33 +206,16 @@ const CheckoutPage = () => {
                     <span class="text-gray-600">Total</span>
                   </div>
                   <div class="pl-3">
-                    <span class="font-semibold text-gray-400 text-sm">AUD</span>{' '}
-                    <span class="font-semibold">$210.00</span>
+                    <span class="font-semibold text-gray-400 text-sm">USD</span>{' '}
+                    <span class="font-semibold">
+                      ${(calculateTotalCost() + 4.99).toFixed(2)}
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
             <div class="px-3 md:w-5/12">
-              <div class="w-full mx-auto rounded-lg bg-white border border-gray-200 p-3 text-gray-800 font-light mb-6">
-                <div class="w-full flex mb-3 items-center">
-                  <div class="w-32">
-                    <span class="text-gray-600 font-semibold">Contact</span>
-                  </div>
-                  <div class="flex-grow pl-3">
-                    <span>Scott Windon</span>
-                  </div>
-                </div>
-                <div class="w-full flex items-center">
-                  <div class="w-32">
-                    <span class="text-gray-600 font-semibold">
-                      Billing Address
-                    </span>
-                  </div>
-                  <div class="flex-grow pl-3">
-                    <span>123 George Street, Sydney, NSW 2000 Australia</span>
-                  </div>
-                </div>
-              </div>
+              <ContactSection />
 
               <form
                 onSubmit={(e) => {
