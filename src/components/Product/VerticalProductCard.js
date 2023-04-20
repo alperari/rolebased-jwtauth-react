@@ -77,9 +77,22 @@ const VerticalProductCard = ({ product, setProducts = null }) => {
     // If cart is not empty, check if product is already in cart
     const productIndex = cart.products.findIndex((p) => p._id == product._id);
 
+    const cartProduct = {
+      cartQuantity: 1,
+      _id: product._id,
+      category: product.category,
+      distributor: product.distributor,
+      imageURL: product.imageURL,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      quantity: product.quantity,
+      discount: product.discount,
+    };
+
     // If product is not in cart, add it
     if (productIndex == -1) {
-      cart.products.push({ ...product, cartQuantity: 1 });
+      cart.products.push(cartProduct);
     }
 
     // If product is in cart, update quantity

@@ -1,19 +1,26 @@
+import _ from 'lodash';
+
 import React, { useEffect, useState } from 'react';
 import { Label } from 'flowbite-react';
 
-// import { CartService } from '../../services/CartService';
+import { CartService } from '../../services/CartService';
+
 import { CheckoutProductPrice } from '../../components/Checkout/CheckoutProductPrice';
 
 const cart = JSON.parse(localStorage.getItem('cart')) || {};
 
 const CheckoutPage = () => {
-  const calculateProductCost = (product) => {
-    const cost = product.price * product.cartQuantity;
+  const fetchCartUpdateLocalStorage = async () => {
+    const fetchedCart = await CartService.getCart();
 
-    const discounted = cost * (product.discount / 100);
-
-    return cost - discounted;
+    console.log('localStorage cart:', cart);
+    console.log('db cart:', fetchedCart);
+    console.log(_.isEqual(cart, fetchedCart));
   };
+
+  useEffect(() => {
+    fetchCartUpdateLocalStorage();
+  }, []);
 
   return (
     <div class="min-w-screen min-h-screen bg-gray-50 p-12">
