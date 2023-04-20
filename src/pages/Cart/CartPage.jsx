@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import React, { useEffect, useState } from 'react';
 import { Card, Button, Label, TextInput, Checkbox } from 'flowbite-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -15,6 +17,22 @@ const CartPage = () => {
   const [cartState, setCartState] = useState(cart);
 
   const navigate = useNavigate();
+
+  const fetchCartUpdateLocalStorage = async () => {
+    const fetchedCart = await CartService.getCart();
+
+    // If any of product details are changed, update the cart
+    if (!_.isEqual(cart, fetchedCart)) {
+      // Update local storage
+      localStorage.setItem('cart', JSON.stringify(fetchedCart));
+
+      // Dispatch event
+      window.dispatchEvent(new Event('storage'));
+
+      // Update cart state
+      setCartState(fetchedCart);
+    }
+  };
 
   const onClickIncrementQuantity = async (product) => {
     if (user) {
@@ -116,7 +134,7 @@ const CartPage = () => {
   };
 
   useEffect(() => {
-    setCartState(JSON.parse(localStorage.getItem('cart')));
+    fetchCartUpdateLocalStorage();
   }, []);
 
   return (

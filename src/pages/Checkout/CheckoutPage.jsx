@@ -15,7 +15,7 @@ const CheckoutPage = () => {
   const fetchCartUpdateLocalStorage = async () => {
     const fetchedCart = await CartService.getCart();
 
-    // If any of product details are changed, update the cart
+    // If any of product details are changed in db, update the cart
     if (!_.isEqual(cart, fetchedCart)) {
       // Update local storage
       localStorage.setItem('cart', JSON.stringify(fetchedCart));
