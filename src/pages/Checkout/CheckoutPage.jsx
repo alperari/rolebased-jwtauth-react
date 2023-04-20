@@ -19,7 +19,7 @@ import {
 const user = JSON.parse(localStorage.getItem('user'));
 const cart = JSON.parse(localStorage.getItem('cart')) || {};
 
-const modalDisplayTime = 2000; // 1 second
+const modalDisplayTime = 5000; // 1 second
 
 const CheckoutPage = () => {
   const [cartState, setCartState] = useState(cart);
@@ -32,6 +32,7 @@ const CheckoutPage = () => {
 
   const [showProcessingModal, setShowProcessingModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
   const fetchCartUpdateLocalStorage = async () => {
     const fetchedCart = await CartService.getCart();
@@ -50,7 +51,6 @@ const CheckoutPage = () => {
   };
 
   const calculateTotalCost = () => {
-    console.log(showProcessingModal);
     let totalCost = 0;
     cartState.products.forEach((product) => {
       let cost = product.cartQuantity * product.price;
@@ -72,7 +72,7 @@ const CheckoutPage = () => {
     //   }, modalDisplayTime);
     // }
     // return () => clearTimeout(timeout);
-  }, [showProcessingModal]);
+  }, [showProcessingModal, showErrorModal, showSuccessModal]);
 
   const ContactSection = () => {
     return (
@@ -202,6 +202,22 @@ const CheckoutPage = () => {
         setShow={setShowProcessingModal}
       />
 
+      <CustomModal
+        title="Payment Successful"
+        message1=""
+        message2=""
+        show={showSuccessModal}
+        setShow={setShowSuccessModal}
+      />
+
+      <CustomModal
+        title="Payment Failed"
+        message1=""
+        message2=""
+        show={showErrorModal}
+        setShow={setShowErrorModal}
+      />
+
       <div class="w-full bg-white border-t border-b border-r border-l border-gray-200 px-5 py-10 text-gray-800">
         <div class="w-full">
           <div class="-mx-3 md:flex items-start">
@@ -309,10 +325,18 @@ const CheckoutPage = () => {
 
                   // Place order
                   const order = await OrderService.placeOrder({
-                    address,
-                    contact,
-                    products,
+                    address: address,
+                    creditCard: cardNumber,
+                    productxxs: products,
                   });
+
+                  setShowProcessingModal(false);
+
+                  if (order.error) {
+                    setShowErrorModal(true);
+                  } else {
+                    setShowSuccessModal(true);
+                  }
                 }}
               >
                 <div class="w-full mx-auto rounded-lg bg-white border border-gray-200 text-gray-800 font-light mb-6">
