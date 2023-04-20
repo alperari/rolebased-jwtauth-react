@@ -19,6 +19,9 @@ const CheckoutPage = () => {
   const [isEditingContact, setIsEditingContact] = useState(false);
   const [isEditingAddress, setIsEditingAddress] = useState(false);
 
+  const [contact, setContact] = useState(user.name || '');
+  const [address, setAddress] = useState(user.address || '');
+
   const fetchCartUpdateLocalStorage = async () => {
     const fetchedCart = await CartService.getCart();
 
@@ -54,75 +57,110 @@ const CheckoutPage = () => {
     return (
       <div class="w-full mx-auto rounded-lg bg-white border border-gray-200 p-3 text-gray-800 font-light mb-6">
         <div class="w-full flex mb-3 items-center">
-          <div class="w-48 flex flex-row gap-2 items-center">
-            <span class="text-gray-600 font-semibold">Contact</span>
-            {!isEditingContact && (
-              <Button
-                size="xs"
-                color="light"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setIsEditingContact(true);
-                }}
-              >
-                <HiOutlinePencil size={15} />
-              </Button>
-            )}
-          </div>
-          <div class="flex-grow pl-3 items-center">
-            {isEditingContact ? (
-              <div class="flex flex-row gap-2 items-center">
-                <TextInput
-                  size="xs"
-                  placeholder="Name"
-                  value={user.name}
-                  onChange={(e) => {
-                    e.preventDefault();
-                  }}
-                />
-                <div class="flex flex-row gap-2">
-                  <Button
-                    size="xs"
-                    color="light"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setIsEditingContact(false);
-                    }}
-                  >
-                    <HiCheck size={15} />
-                  </Button>
-                  <Button
-                    size="xs"
-                    color="light"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setIsEditingContact(false);
-                    }}
-                  >
-                    <HiX size={15} />
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <span>{user.name}</span>
-            )}
-          </div>
-        </div>
-        <div class="w-full flex items-center">
-          <div class="w-48 flex flex-row gap-2 items-center">
-            <span class="text-gray-600 font-semibold">Billing Address</span>
+          <div class="flex flex-row gap-2 items-center ">
             <Button
               size="xs"
               color="light"
+              disabled={isEditingContact}
               onClick={(e) => {
                 e.preventDefault();
+                setIsEditingContact(true);
               }}
             >
               <HiOutlinePencil size={15} />
             </Button>
+            <span class="text-gray-600 font-semibold">Contact</span>
           </div>
-          <div class="flex-grow pl-3">
-            <span>{user.address}</span>
+          <div class="flex-grow pl-3 items-center">
+            {isEditingContact ? (
+              <div class="flex flex-row gap-2 items-center">
+                <form
+                  class="flex flex-row gap-2 items-center"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const contact = e.target.contact.value;
+
+                    if (contact) {
+                      setContact(contact);
+                    }
+                    setIsEditingContact(false);
+                  }}
+                >
+                  <TextInput id="contact" size="xs" placeholder={contact} />
+                  <div class="flex flex-row gap-2">
+                    <Button type="submit" size="xs" color="light">
+                      <HiCheck size={15} />
+                    </Button>
+                    <Button
+                      size="xs"
+                      color="light"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setIsEditingContact(false);
+                      }}
+                    >
+                      <HiX size={15} />
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            ) : (
+              <span>{contact}</span>
+            )}
+          </div>
+        </div>
+
+        <div class="w-full flex items-center">
+          <div class="flex flex-row gap-2 items-center">
+            <Button
+              size="xs"
+              color="light"
+              disabled={isEditingAddress}
+              onClick={(e) => {
+                e.preventDefault();
+                setIsEditingAddress(true);
+              }}
+            >
+              <HiOutlinePencil size={15} />
+            </Button>
+            <span class="text-gray-600 font-semibold">Billing Address</span>
+          </div>
+          <div class="overflow-auto pl-3">
+            {isEditingAddress ? (
+              <div class="flex flex-row gap-2 items-center">
+                <form
+                  class="flex flex-row gap-2 items-center"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const address = e.target.address.value;
+
+                    if (address) {
+                      setAddress(address);
+                    }
+                    setIsEditingAddress(false);
+                  }}
+                >
+                  <TextInput id="address" placeholder={address} />
+                  <div class="flex flex-row gap-2">
+                    <Button type="submit" size="xs" color="light">
+                      <HiCheck size={15} />
+                    </Button>
+                    <Button
+                      size="xs"
+                      color="light"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setIsEditingAddress(false);
+                      }}
+                    >
+                      <HiX size={15} />
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            ) : (
+              <span class="break-words">{address}</span>
+            )}
           </div>
         </div>
       </div>
