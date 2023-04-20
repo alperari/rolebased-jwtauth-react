@@ -141,7 +141,7 @@ const CartPage = () => {
             })
           ) : (
             <div class="flex flex-col items-center justify-center h-full">
-              <span class="text-2xl font-bold">Your cart is empty</span>
+              <span class="text-2xl font-bold mt-24">Your cart is empty</span>
               <Link to="/">
                 <Button className="mt-4" variant="primary" size="lg">
                   Shop now
@@ -151,78 +151,81 @@ const CartPage = () => {
           )}
         </div>
 
-        <div class="mt-6 h-full rounded-lg border bg-white p-6 shadow-md md:mt-0 md:w-1/3">
-          <div class="mb-2 flex justify-between">
-            <p class="text-gray-700">Subtotal</p>
-            <p class="text-gray-700 font-semibold">
-              $
-              {cartState
-                ? cartState?.products
-                    .reduce(
-                      (acc, item) => acc + item.price * item.cartQuantity,
-                      0
-                    )
-                    .toFixed(2)
-                : 0}
-            </p>
-          </div>
-          <div class="mb-2 flex justify-between">
-            <p class="text-gray-700">Discount</p>
-            <p class="text-green-500 font-semibold">
-              - $
-              {cartState
-                ? cartState?.products
-                    .reduce((acc, item) => {
-                      const discount =
-                        acc +
-                        (item.price * item.cartQuantity * item.discount) / 100;
-                      return discount;
-                    }, 0)
-                    .toFixed(2)
-                : 0}
-            </p>
-          </div>
-          <div class="flex justify-between">
-            <p class="text-gray-700">Shipping</p>
-            <p class="text-gray-700 font-semibold">
-              {cartState?.products?.length > 0 ? '$4.99' : '0.00'}
-            </p>
-          </div>
-          <hr class="my-4" />
-          <div class="flex justify-between">
-            <p class="text-lg font-bold">Total</p>
-            <div class="">
-              <p class="mb-1 text-lg font-bold">
+        {cartState && cartState.products.length > 0 && (
+          <div class="mt-6 h-full rounded-lg border bg-white p-6 shadow-md md:mt-0 md:w-1/3">
+            <div class="mb-2 flex justify-between">
+              <p class="text-gray-700">Subtotal</p>
+              <p class="text-gray-700 font-semibold">
                 $
-                {cartState?.products.length > 0
-                  ? (
-                      cartState.products.reduce(
-                        (acc, item) =>
-                          acc +
-                          item.price * item.cartQuantity -
-                          (item.price * item.cartQuantity * item.discount) /
-                            100,
+                {cartState
+                  ? cartState?.products
+                      .reduce(
+                        (acc, item) => acc + item.price * item.cartQuantity,
                         0
-                      ) + (cartState?.products?.length > 0 ? 4.99 : 0)
-                    ).toFixed(2)
-                  : 0.0}
+                      )
+                      .toFixed(2)
+                  : 0}
               </p>
             </div>
+            <div class="mb-2 flex justify-between">
+              <p class="text-gray-700">Discount</p>
+              <p class="text-green-500 font-semibold">
+                - $
+                {cartState
+                  ? cartState?.products
+                      .reduce((acc, item) => {
+                        const discount =
+                          acc +
+                          (item.price * item.cartQuantity * item.discount) /
+                            100;
+                        return discount;
+                      }, 0)
+                      .toFixed(2)
+                  : 0}
+              </p>
+            </div>
+            <div class="flex justify-between">
+              <p class="text-gray-700">Shipping</p>
+              <p class="text-gray-700 font-semibold">
+                {cartState?.products?.length > 0 ? '$4.99' : '0.00'}
+              </p>
+            </div>
+            <hr class="my-4" />
+            <div class="flex justify-between">
+              <p class="text-lg font-bold">Total</p>
+              <div class="">
+                <p class="mb-1 text-lg font-bold">
+                  $
+                  {cartState?.products.length > 0
+                    ? (
+                        cartState.products.reduce(
+                          (acc, item) =>
+                            acc +
+                            item.price * item.cartQuantity -
+                            (item.price * item.cartQuantity * item.discount) /
+                              100,
+                          0
+                        ) + (cartState?.products?.length > 0 ? 4.99 : 0)
+                      ).toFixed(2)
+                    : 0.0}
+                </p>
+              </div>
+            </div>
+            <button
+              class="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600"
+              disabled={cartState?.products.length == 0}
+              onClick={() => {
+                if (user) {
+                  navigate('/checkout');
+                } else {
+                  navigate('/login');
+                }
+              }}
+            >
+              Check out
+            </button>
           </div>
-          <button
-            class="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600"
-            disabled={cartState?.products.length == 0}
-            onClick={() => {
-              if (user) {
-                navigate('/checkout');
-              } else {
-                navigate('/login');
-              }
-            }}
-          >
-            Check out
-          </button>
-        </div>
+        )}
       </div>
     </div>
   );
