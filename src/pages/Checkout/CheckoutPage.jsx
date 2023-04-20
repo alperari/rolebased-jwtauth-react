@@ -7,6 +7,7 @@ import { HiOutlinePencil, HiX, HiCheck } from 'react-icons/hi';
 import { Button, TextInput } from 'flowbite-react';
 
 import { CartService } from '../../services/CartService';
+import { OrderService } from '../../services/OrderService';
 
 import { CheckoutProduct } from '../../components/Checkout/CheckoutProduct';
 
@@ -277,8 +278,10 @@ const CheckoutPage = () => {
               <ContactSection />
 
               <form
-                onSubmit={(e) => {
+                onSubmit={async (e) => {
                   e.preventDefault();
+
+                  setShowProcessingModal(true);
 
                   const nameOnCard = e.target.nameOnCard.value;
                   const cardNumber = e.target.cardNumber.value;
@@ -286,17 +289,30 @@ const CheckoutPage = () => {
                   const expireYear = e.target.expireYear.value;
                   const cvv = e.target.cvv.value;
 
-                  if (
-                    !nameOnCard ||
-                    !cardNumber ||
-                    !expireMonth ||
-                    !expireYear ||
-                    !cvv ||
-                    !address ||
-                    !contact
-                  ) {
-                    return alert('Please fill out all fields.');
+                  if (!address || !contact) {
+                    return alert(
+                      'Please fill out delivery address and contact person'
+                    );
                   }
+
+                  // Prepare products
+                  const products = cartState.products.map((product) => {
+                    let cost = product.price * product.cartQuantity;
+                    cost = cost - cost * (product.discount / 100);
+
+                    return {
+                      productID: product._id,
+                      quantity: product.cartQuantity,
+                      buyPrice: cost,
+                    };
+                  });
+
+                  // Place order
+                  const order = await OrderService.placeOrder({
+                    address,
+                    contact,
+                    products,
+                  });
                 }}
               >
                 <div class="w-full mx-auto rounded-lg bg-white border border-gray-200 text-gray-800 font-light mb-6">
