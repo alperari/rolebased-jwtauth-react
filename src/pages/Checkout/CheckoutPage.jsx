@@ -3,6 +3,7 @@ import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { Label } from 'flowbite-react';
 import { HiOutlinePencil, HiX, HiCheck } from 'react-icons/hi';
+import { TbCurrentLocation, TbHistory } from 'react-icons/tb';
 
 import { Button, TextInput } from 'flowbite-react';
 
@@ -10,6 +11,8 @@ import { CartService } from '../../services/CartService';
 import { OrderService } from '../../services/OrderService';
 
 import { CheckoutProduct } from '../../components/Checkout/CheckoutProduct';
+
+import { Link } from 'react-router-dom';
 
 import {
   CustomModal,
@@ -33,6 +36,8 @@ const CheckoutPage = () => {
   const [showProcessingModal, setShowProcessingModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
+
+  const [order, setOrder] = useState({});
 
   const fetchCartUpdateLocalStorage = async () => {
     const fetchedCart = await CartService.getCart();
@@ -201,19 +206,41 @@ const CheckoutPage = () => {
         show={showProcessingModal}
         setShow={setShowProcessingModal}
       />
-
       <CustomModal
-        title="Payment Successful"
-        message1=""
-        message2=""
+        title="Payment Successful ✔️"
+        message1={
+          <div>
+            We received your order{' '}
+            <span class="font-semibold tracking-tight font-italic">
+              {order._id || 'xyzw1234'}
+            </span>
+            .
+          </div>
+        }
+        message2={
+          <div class="flex flex-col gap-2 ">
+            <Button outline={true} gradientDuoTone="cyanToBlue">
+              <div class="flex items-center flex-row gap-2">
+                {'Track my order'}
+                <TbCurrentLocation size={25} />{' '}
+              </div>
+            </Button>
+            <Button color="light">
+              <div class="flex items-center flex-row gap-2">
+                See my orders
+                <TbHistory size={25} />
+              </div>
+            </Button>
+          </div>
+        }
         show={showSuccessModal}
         setShow={setShowSuccessModal}
       />
 
       <CustomModal
-        title="Payment Failed"
-        message1=""
-        message2=""
+        title="Payment Failed ❌"
+        message1="An error occured while processing your payment."
+        message2="Please try again."
         show={showErrorModal}
         setShow={setShowErrorModal}
       />
@@ -300,7 +327,11 @@ const CheckoutPage = () => {
                   setShowProcessingModal(true);
 
                   const nameOnCard = e.target.nameOnCard.value;
-                  const cardNumber = e.target.cardNumber.value;
+                  const cardNumber1 = e.target.cardNumber1.value;
+                  const cardNumber2 = e.target.cardNumber2.value;
+                  const cardNumber3 = e.target.cardNumber3.value;
+                  const cardNumber4 = e.target.cardNumber4.value;
+
                   const expireMonth = e.target.expireMonth.value;
                   const expireYear = e.target.expireYear.value;
                   const cvv = e.target.cvv.value;
@@ -326,9 +357,17 @@ const CheckoutPage = () => {
                   // Place order
                   const order = await OrderService.placeOrder({
                     address: address,
-                    creditCard: cardNumber,
-                    productxxs: products,
+                    creditCard:
+                      cardNumber1 +
+                      '-' +
+                      cardNumber2 +
+                      '-' +
+                      cardNumber3 +
+                      '-' +
+                      cardNumber4,
+                    products: products,
                   });
+                  setOrder(order);
 
                   setShowProcessingModal(false);
 
@@ -396,12 +435,40 @@ const CheckoutPage = () => {
                         <label class="text-gray-600 font-semibold text-sm mb-2 ml-1">
                           Card number
                         </label>
-                        <div>
+                        <div class="flex flex-row gap-4 items-center">
                           <input
-                            id="cardNumber"
+                            id="cardNumber1"
                             class="w-full px-3 py-2 mb-1 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors"
-                            placeholder="0000 0000 0000 0000"
+                            placeholder="0000"
                             type="text"
+                            maxLength={4}
+                            required
+                          />
+                          -
+                          <input
+                            id="cardNumber2"
+                            class="w-full px-3 py-2 mb-1 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors"
+                            placeholder="0000"
+                            type="text"
+                            maxLength={4}
+                            required
+                          />
+                          -
+                          <input
+                            id="cardNumber3"
+                            class="w-full px-3 py-2 mb-1 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors"
+                            placeholder="0000"
+                            type="text"
+                            maxLength={4}
+                            required
+                          />
+                          -
+                          <input
+                            id="cardNumber4"
+                            class="w-full px-3 py-2 mb-1 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors"
+                            placeholder="0000"
+                            type="text"
+                            maxLength={4}
                             required
                           />
                         </div>

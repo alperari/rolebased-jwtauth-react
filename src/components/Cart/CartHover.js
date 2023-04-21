@@ -21,20 +21,22 @@ export const CartHover = ({ cart }) => {
           Go To Cart
         </Button>
 
-        <Button
-          color="light"
-          outline={true}
-          gradientDuoTone="tealToLime"
-          onClick={() => {
-            if (user) {
-              navigate('/checkout');
-            } else {
-              navigate('/login');
-            }
-          }}
-        >
-          Checkout
-        </Button>
+        {cart && cart.products.length > 0 && (
+          <Button
+            color="light"
+            outline={true}
+            gradientDuoTone="tealToLime"
+            onClick={() => {
+              if (user) {
+                navigate('/checkout');
+              } else {
+                navigate('/login');
+              }
+            }}
+          >
+            Checkout
+          </Button>
+        )}
       </div>
     );
   };
