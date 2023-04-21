@@ -9,6 +9,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 const OrderPage = () => {
   const { orderId } = useParams();
+  const [order, setOrder] = useState({});
+
+  const navigate = useNavigate();
 
   console.log(orderId);
   return (

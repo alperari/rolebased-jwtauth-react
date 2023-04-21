@@ -10,6 +10,20 @@ const headers = {
 };
 
 export class OrderService {
+  static async getOrderById({ orderID }) {
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `${URL}/order/${orderID}`,
+        headers,
+        withCredentials: true,
+      });
+      return response.data.order;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
+
   static async placeOrder({ products, creditCard, address }) {
     try {
       const response = await axios({
