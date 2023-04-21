@@ -12,7 +12,7 @@ import { OrderService } from '../../services/OrderService';
 
 import { CheckoutProduct } from '../../components/Checkout/CheckoutProduct';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import {
   CustomModal,
@@ -38,6 +38,8 @@ const CheckoutPage = () => {
   const [showErrorModal, setShowErrorModal] = useState(false);
 
   const [order, setOrder] = useState({});
+
+  const navigate = useNavigate();
 
   const fetchCartUpdateLocalStorage = async () => {
     const fetchedCart = await CartService.getCart();
@@ -219,7 +221,13 @@ const CheckoutPage = () => {
         }
         message2={
           <div class="flex flex-col gap-2 ">
-            <Button outline={true} gradientDuoTone="cyanToBlue">
+            <Button
+              outline={true}
+              gradientDuoTone="cyanToBlue"
+              onClick={() => {
+                navigate('/order/' + order._id);
+              }}
+            >
               <div class="flex items-center flex-row gap-2">
                 {'Track my order'}
                 <TbCurrentLocation size={25} />{' '}
@@ -322,6 +330,11 @@ const CheckoutPage = () => {
 
               <form
                 onSubmit={async (e) => {
+                  if (cart && cart.products.length === 0) {
+                    alert('Your cart is empty!');
+                    navigate('/cart');
+                  }
+
                   e.preventDefault();
 
                   setShowProcessingModal(true);
