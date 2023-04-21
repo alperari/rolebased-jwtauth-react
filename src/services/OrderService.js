@@ -14,8 +14,7 @@ export class OrderService {
     try {
       const response = await axios({
         method: 'GET',
-        url: `${URL}/order/${orderID}`,
-        headers,
+        url: `${URL}/order/id/${orderID}`,
         withCredentials: true,
       });
       return response.data.order;

@@ -21,7 +21,7 @@ export const CartHover = ({ cart }) => {
           Go To Cart
         </Button>
 
-        {cart && cart.products.length > 0 && (
+        {cart?.products && cart.products.length > 0 && (
           <Button
             color="light"
             outline={true}

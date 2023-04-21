@@ -58,14 +58,18 @@ const CheckoutPage = () => {
   };
 
   const calculateTotalCost = () => {
-    let totalCost = 0;
-    cartState.products.forEach((product) => {
-      let cost = product.cartQuantity * product.price;
-      cost = cost - cost * (product.discount / 100);
-      totalCost += cost;
-    });
+    if (!cartState || !cartState?.products || cartState?.products.length === 0)
+      return 0;
+    else {
+      let totalCost = 0;
+      cartState.products.forEach((product) => {
+        let cost = product.cartQuantity * product.price;
+        cost = cost - cost * (product.discount / 100);
+        totalCost += cost;
+      });
 
-    return totalCost;
+      return totalCost;
+    }
   };
 
   useEffect(() => {
