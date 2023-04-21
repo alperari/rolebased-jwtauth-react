@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Label } from 'flowbite-react';
 import { HiOutlinePencil, HiX, HiCheck } from 'react-icons/hi';
-import { HiCalendar } from 'react-icons/hi';
+import { HiCalendar, HiCreditCard } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 
 import { Button, TextInput, Card } from 'flowbite-react';
@@ -51,9 +51,11 @@ const OrderPage = () => {
               #{order._id}
             </Link>
           </div>
-          <div class="flex flex-row items-center text-gray-400 font-semibold gap-1">
+          <div class="flex flex-row items-center text-gray-400 gap-1">
             <HiCalendar size="25" />
-            Order Placed: {date} - {time}
+            <div class="font-semibold ">
+              {date} - {time}
+            </div>
           </div>
         </div>
         <div class="flex flex-row items-center gap-2">
@@ -92,7 +94,33 @@ const OrderPage = () => {
 
   const CardFooter = () => {
     return (
-      <div class="flex flex-row justify-between py-4 items-center">footer</div>
+      <div class="flex flex-row  py-4 items-center justify-between">
+        <div class="flex flex-row gap-4 text-gray-400">
+          <Button color="light">
+            <div>Cancel Order</div>
+          </Button>
+          <div class="flex flex-row gap-2 items-center">
+            <HiCreditCard size="25" />
+            <span class="font-semibold">
+              xxxx xxxx xxxx {order.last4digits}
+            </span>
+          </div>
+        </div>
+        <div class=" flex items-center">
+          <div class="flex flex-col items-end flex-grow">
+            <span class="text-gray-600">Total</span>
+            <div class="pl-3">
+              <span class="font-semibold text-gray-400 text-sm">USD</span>{' '}
+              <span class="font-semibold">
+                $
+                {order.products
+                  .reduce((acc, curr) => acc + curr.buyPrice, 0)
+                  .toFixed(2)}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   };
 
