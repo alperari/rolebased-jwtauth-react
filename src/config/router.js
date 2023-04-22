@@ -15,6 +15,7 @@ import WishlistPage from '../pages/Wishlist/WishlistPage';
 import CartPage from '../pages/Cart/CartPage';
 import CheckoutPage from '../pages/Checkout/CheckoutPage';
 import OrderPage from '../pages/Order/OrderPage';
+import OrderHistoryPage from '../pages/Order/OrderHistoryPage';
 
 // Protected route, only accessible if user's role is in roles array
 const Private = ({ Component, roles }) => {
@@ -100,6 +101,16 @@ const Router = () => {
             element={
               <Private
                 Component={OrderPage}
+                roles={['admin', 'customer', 'salesManager', 'productManager']}
+              />
+            }
+          />
+
+          <Route
+            path="/order-history"
+            element={
+              <Private
+                Component={OrderHistoryPage}
                 roles={['admin', 'customer', 'salesManager', 'productManager']}
               />
             }
