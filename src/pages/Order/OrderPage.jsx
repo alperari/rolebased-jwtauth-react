@@ -5,6 +5,7 @@ import { HiCalendar, HiCreditCard } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 
 import { Button, TextInput, Card } from 'flowbite-react';
+import { CheckoutProduct } from '../../components/Checkout/CheckoutProduct';
 
 import { OrderService } from '../../services/OrderService';
 
@@ -25,7 +26,7 @@ const OrderPage = () => {
 
     const fetchedOrder = await OrderService.getOrderById({ orderID: orderId });
 
-    if (fetchedOrder.error) {
+    if (fetchedOrder.error || fetchedOrder === 'Unauthorized') {
       navigate('/404');
     }
     setOrder(fetchedOrder);
@@ -89,7 +90,33 @@ const OrderPage = () => {
   };
 
   const CardProducts = () => {
-    return <div>body</div>;
+    return (
+      <div class="flex flex-col gap-2 py-4">
+        {order.products.map((product) => {
+          const int = Math.floor(product.buyPrice);
+          const dec = Math.round((product.buyPrice - int).toFixed(2) * 100);
+
+          return (
+            <div class="w-full flex items-center">
+              <div class="overflow-hidden rounded-lg w-24 h-24 bg-gray-50 border border-gray-200">
+                <img src={product.imageURL} alt={product._id} />
+              </div>
+              <div class="flex-grow pl-3">
+                <h6 class="font-semibold uppercase text-gray-600">
+                  {product.name}
+                </h6>
+                <span class="text-gray-400">{product.distributor}</span>
+                <p class="text-gray-400">x {product.cartQuantity}</p>
+              </div>
+              <div>
+                <span class="font-semibold text-gray-600 text-xl">${int}</span>
+                <span class="font-semibold text-gray-600 text-sm">.{dec}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
   };
 
   const CardFooter = () => {
@@ -113,9 +140,11 @@ const OrderPage = () => {
               <span class="font-semibold text-gray-400 text-sm">USD</span>{' '}
               <span class="font-semibold">
                 $
-                {order.products
-                  .reduce((acc, curr) => acc + curr.buyPrice, 0)
-                  .toFixed(2)}
+                {order &&
+                  order?.products.length > 0 &&
+                  order.products
+                    .reduce((acc, curr) => acc + curr.buyPrice, 0)
+                    .toFixed(2)}
               </span>
             </div>
           </div>
