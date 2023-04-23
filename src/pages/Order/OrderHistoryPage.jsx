@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Label } from 'flowbite-react';
 import { HiOutlinePencil, HiX, HiCheck } from 'react-icons/hi';
-import { HiCalendar, HiCreditCard } from 'react-icons/hi';
+import { HiCalendar, HiCreditCard, HiHome } from 'react-icons/hi';
+import { FaAddressBook } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { AiFillFilePdf } from 'react-icons/ai';
 
@@ -59,6 +60,15 @@ const OrderHistoryPage = () => {
             </div>
           </div>
         </div>
+
+        <div class="text-gray-400 font-semibold flex flex-row gap-1 items-end">
+          <HiHome size="25" /> {order.address}
+        </div>
+
+        <div class="text-gray-400 font-semibold flex flex-row gap-1 items-end">
+          <FaAddressBook size="25" /> {order?.contact}
+        </div>
+
         <div class="flex flex-row items-center gap-2">
           <span class="text-gray-400">Status</span>
           {order.status == 'processing' && (

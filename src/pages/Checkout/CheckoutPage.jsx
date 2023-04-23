@@ -376,6 +376,7 @@ const CheckoutPage = () => {
                       '-' +
                       cardNumber4,
                     products: products,
+                    contact: contact,
                   });
                   setOrder(order);
 

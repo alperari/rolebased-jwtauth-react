@@ -23,7 +23,7 @@ export class OrderService {
     }
   }
 
-  static async placeOrder({ products, creditCard, address }) {
+  static async placeOrder({ products, creditCard, address, contact }) {
     try {
       const response = await axios({
         method: 'POST',
@@ -32,6 +32,7 @@ export class OrderService {
           products,
           creditCard,
           address,
+          contact,
         },
         withCredentials: true,
       });
