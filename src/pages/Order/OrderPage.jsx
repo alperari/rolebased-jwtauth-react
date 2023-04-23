@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Label } from 'flowbite-react';
 import { HiOutlinePencil, HiX, HiCheck } from 'react-icons/hi';
 import { HiCalendar, HiCreditCard } from 'react-icons/hi';
+import { AiFillFilePdf } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 
 import { Button, TextInput, Card } from 'flowbite-react';
@@ -43,15 +44,6 @@ const OrderPage = () => {
     return (
       <div class="flex flex-row justify-between py-4 items-center">
         <div class="flex flex-row items-center gap-4 items-center">
-          <div class="flex flex-row gap-2 py-2 px-4 bg-gray-100 rounded-3xl">
-            <span class="font-bold">Order</span>
-            <Link
-              to="/order/123"
-              className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-            >
-              #{order._id}
-            </Link>
-          </div>
           <div class="flex flex-row items-center text-gray-400 gap-1">
             <HiCalendar size="25" />
             <div class="font-semibold ">
@@ -133,9 +125,17 @@ const OrderPage = () => {
             </span>
           </div>
         </div>
+        <a
+          href={order.receiptURL}
+          className="flex flex-row items-end font-medium text-blue-600 hover:underline dark:text-blue-500"
+        >
+          <AiFillFilePdf size={25} />
+          Receipt
+        </a>
         <div class=" flex items-center">
           <div class="flex flex-col items-end flex-grow">
             <span class="text-gray-600">Total</span>
+
             <div class="pl-3">
               <span class="font-semibold text-gray-400 text-sm">USD</span>{' '}
               <span class="font-semibold">
@@ -155,7 +155,11 @@ const OrderPage = () => {
 
   return (
     <div class="min-w-screen min-h-screen bg-gray-50 p-16 items-center justify-center">
-      <span class="text-3xl">My Orders</span>
+      <span class="">
+        <div class="flex flex-row gap-2 py-2 px-4 bg-gray-100 rounded-3xl">
+          <span class="font-bold">Order</span>#{order._id}
+        </div>
+      </span>
       <div class="mt-8">
         {isLoading || !order ? (
           <div>Loading...</div>

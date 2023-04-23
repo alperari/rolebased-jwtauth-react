@@ -20,7 +20,7 @@ import {
 } from '../../components/General/Modal';
 
 const user = JSON.parse(localStorage.getItem('user'));
-const cart = JSON.parse(localStorage.getItem('cart')) || {};
+const cart = JSON.parse(localStorage.getItem('cart'));
 
 const modalDisplayTime = 5000; // 1 second
 
@@ -73,16 +73,15 @@ const CheckoutPage = () => {
   };
 
   useEffect(() => {
-    fetchCartUpdateLocalStorage();
+    const cart = JSON.parse(localStorage.getItem('cart'));
 
-    // let timeout;
-    // if (showProcessingModal) {
-    //   timeout = setTimeout(() => {
-    //     setShowProcessingModal(false);
-    //     // history.push('/newpage')
-    //   }, modalDisplayTime);
-    // }
-    // return () => clearTimeout(timeout);
+    setCartState(cart);
+
+    if (cart && cart.products && cart.products.length === 0) {
+      navigate('/cart');
+    }
+
+    fetchCartUpdateLocalStorage();
   }, [showProcessingModal, showErrorModal, showSuccessModal]);
 
   const ContactSection = () => {
@@ -226,7 +225,6 @@ const CheckoutPage = () => {
         message2={
           <div class="flex flex-col gap-2 ">
             <Button
-              outline={true}
               gradientDuoTone="cyanToBlue"
               onClick={() => {
                 navigate('/order/' + order._id);
@@ -334,11 +332,6 @@ const CheckoutPage = () => {
 
               <form
                 onSubmit={async (e) => {
-                  if (cart && cart.products.length === 0) {
-                    alert('Your cart is empty!');
-                    navigate('/cart');
-                  }
-
                   e.preventDefault();
 
                   setShowProcessingModal(true);

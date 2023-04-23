@@ -3,6 +3,7 @@ import { Label } from 'flowbite-react';
 import { HiOutlinePencil, HiX, HiCheck } from 'react-icons/hi';
 import { HiCalendar, HiCreditCard } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
+import { AiFillFilePdf } from 'react-icons/ai';
 
 import { Button, TextInput, Card } from 'flowbite-react';
 
@@ -132,6 +133,13 @@ const OrderHistoryPage = () => {
             </span>
           </div>
         </div>
+        <a
+          href={order.receiptURL}
+          className="flex flex-row items-end font-medium text-blue-600 hover:underline dark:text-blue-500"
+        >
+          <AiFillFilePdf size={25} />
+          Receipt
+        </a>
         <div class=" flex items-center">
           <div class="flex flex-col items-end flex-grow">
             <span class="text-gray-600">Total</span>
