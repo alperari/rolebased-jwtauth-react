@@ -15,58 +15,65 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { parseDateTime } from '../../helpers/helperFunctions';
 
 const OrderHistoryPage = () => {
-  const orderId = '6442532308533015e20c3183';
-
   const [isLoading, setIsLoading] = useState(true);
-  const [order, setOrder] = useState({});
+  const [orders, setOrder] = useState({});
 
   const navigate = useNavigate();
 
-  const fetchOrder = async () => {
+  const fetchOrders = async () => {
     setIsLoading(true);
 
-    const fetchedOrder = await OrderService.getOrderById({ orderID: orderId });
+    const fetchedOrders = await OrderService.getOrders();
 
-    if (fetchedOrder.error || fetchedOrder === 'Unauthorized') {
-      navigate('/404');
-    }
-    setOrder(fetchedOrder);
+    setOrder(fetchedOrders);
 
     setIsLoading(false);
   };
 
   useEffect(() => {
-    fetchOrder();
+    fetchOrders();
   }, []);
 
-  const CardHeader = () => {
+  const CardHeader = ({ order }) => {
     const [date, time] = parseDateTime(order.date, 'dateAndTime');
     return (
-      <div class="flex flex-row justify-between py-4 items-center">
-        <div class="flex flex-row items-center gap-4 items-center">
-          <div class="flex flex-row gap-2 py-2 px-4 bg-gray-100 rounded-3xl">
-            <span class="font-bold">Order</span>
-            <Link
-              to="/order/123"
-              className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-            >
-              #{order._id}
-            </Link>
-          </div>
-          <div class="flex flex-row items-center text-gray-400 gap-1">
-            <HiCalendar size="25" />
-            <div class="font-semibold ">
-              {date} - {time}
+      <div class="flex flex-row justify-between py-4 items-end">
+        <div class="flex flex-col justify-start gap-2">
+          <div class="flex flex-row gap-2">
+            <div class="flex flex-row gap-2 py-2 mb-4 px-4 bg-gray-100 rounded-3xl">
+              <span class="font-bold">Order</span>
+              <Link
+                to={'/order/' + order._id}
+                className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+              >
+                #{order._id}
+              </Link>
+            </div>
+            <div class="flex flex-row gap-2 py-2 mb-4 px-4 bg-gray-100 rounded-3xl">
+              <a
+                href={order.receiptURL}
+                className="flex flex-row items-end font-medium text-blue-600 hover:underline dark:text-blue-500"
+              >
+                <AiFillFilePdf size={25} />
+                Receipt
+              </a>
             </div>
           </div>
-        </div>
+          <div class="flex flex-row gap-8">
+            <div class="flex flex-row items-center text-gray-400 gap-1">
+              <HiCalendar size="25" />
+              <div class="font-semibold ">
+                {date} - {time}
+              </div>
+            </div>
+            <div class="text-gray-400 font-semibold flex flex-row gap-1 items-end">
+              <HiHome size="25" /> {order.address}
+            </div>
 
-        <div class="text-gray-400 font-semibold flex flex-row gap-1 items-end">
-          <HiHome size="25" /> {order.address}
-        </div>
-
-        <div class="text-gray-400 font-semibold flex flex-row gap-1 items-end">
-          <FaAddressBook size="25" /> {order?.contact}
+            <div class="text-gray-400 font-semibold flex flex-row gap-1 items-end">
+              <FaAddressBook size="25" /> {order?.contact}
+            </div>
+          </div>
         </div>
 
         <div class="flex flex-row items-center gap-2">
@@ -78,7 +85,7 @@ const OrderHistoryPage = () => {
           )}
 
           {order.status == 'in-transit' && (
-            <div class="flex flex-row gap-2 py-2 px-4 bg-yellow-500 rounded-3xl font-bold text-white">
+            <div class="flex flex-row gap-2 py-2 px-4 bg-yellow-400 rounded-3xl font-bold text-white">
               In-Transit
             </div>
           )}
@@ -99,7 +106,7 @@ const OrderHistoryPage = () => {
     );
   };
 
-  const CardProducts = () => {
+  const CardProducts = ({ order }) => {
     return (
       <div class="flex flex-col gap-2 py-4">
         {order.products.map((product) => {
@@ -129,11 +136,11 @@ const OrderHistoryPage = () => {
     );
   };
 
-  const CardFooter = () => {
+  const CardFooter = ({ order }) => {
     return (
       <div class="flex flex-row  py-4 items-center justify-between">
         <div class="flex flex-row gap-4 text-gray-400">
-          <Button color="light">
+          <Button color="light" disabled={order.status !== 'processing'}>
             <div>Cancel Order</div>
           </Button>
           <div class="flex flex-row gap-2 items-center">
@@ -143,13 +150,7 @@ const OrderHistoryPage = () => {
             </span>
           </div>
         </div>
-        <a
-          href={order.receiptURL}
-          className="flex flex-row items-end font-medium text-blue-600 hover:underline dark:text-blue-500"
-        >
-          <AiFillFilePdf size={25} />
-          Receipt
-        </a>
+
         <div class=" flex items-center">
           <div class="flex flex-col items-end flex-grow">
             <span class="text-gray-600">Total</span>
@@ -172,18 +173,28 @@ const OrderHistoryPage = () => {
 
   return (
     <div class="min-w-screen min-h-screen bg-gray-50 p-16 items-center justify-center">
-      <span class="text-3xl">My Orders</span>
-      <div class="mt-8">
-        {isLoading || !order ? (
+      <span class="text-3xl">
+        My Orders {orders && orders.length > 0 && `(${orders.length})`}
+      </span>
+      <div class="mt-8 flex flex-col space-y-12">
+        {isLoading || !orders ? (
           <div>Loading...</div>
+        ) : orders && orders.length > 0 ? (
+          <>
+            {orders.map((order) => {
+              return (
+                <Card>
+                  <div class="p-6 flex flex-col divide-y">
+                    <CardHeader order={order} />
+                    <CardProducts order={order} />
+                    <CardFooter order={order} />
+                  </div>
+                </Card>
+              );
+            })}
+          </>
         ) : (
-          <Card>
-            <div class="p-6 flex flex-col divide-y">
-              <CardHeader />
-              <CardProducts />
-              <CardFooter />
-            </div>
-          </Card>
+          <div>No orders found</div>
         )}
       </div>
     </div>
