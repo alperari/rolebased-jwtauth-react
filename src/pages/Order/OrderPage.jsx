@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { HiCalendar, HiCreditCard, HiHome } from 'react-icons/hi';
 import { FaAddressBook } from 'react-icons/fa';
 import { AiFillFilePdf } from 'react-icons/ai';
+import { IoMdArrowBack } from 'react-icons/io';
 
 import { Button, Card } from 'flowbite-react';
 
@@ -173,7 +174,15 @@ const OrderPage = () => {
   return (
     <div class="min-w-screen min-h-screen bg-gray-50 p-16 items-center justify-center">
       <span class="">
-        <div class="flex flex-row gap-2 text-3xl py-2 px-4 bg-gray-100 rounded-3xl">
+        <div class="flex flex-row gap-2 items-center text-3xl py-2 px-4 bg-gray-100 rounded-3xl">
+          <div
+            onClick={() => {
+              navigate(-1);
+            }}
+            class="cursor-pointer"
+          >
+            <IoMdArrowBack size="35" />
+          </div>
           <span class="">Order</span>
           <span class="text-gray-500 font-semibold tracking-tight">
             #{order._id}

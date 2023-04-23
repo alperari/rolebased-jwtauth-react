@@ -3,6 +3,7 @@ import { Dropdown, Button, Navbar, Avatar } from 'flowbite-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { IoBagHandle, IoCart } from 'react-icons/io5';
+import { AiOutlineHistory } from 'react-icons/ai';
 
 import { UserProvider } from '../../providers/UserProvider';
 import { useUserContext } from '../../hooks/useUserContext';
@@ -105,6 +106,10 @@ const CustomNavBar = () => {
 
           <Link to="/wishlist">
             <IoBagHandle className="text-2xl text-gray-500 mr-4" />
+          </Link>
+
+          <Link to="/order-history">
+            <AiOutlineHistory className="text-2xl text-gray-500 mr-4" />
           </Link>
 
           {user && <UserSection />}
