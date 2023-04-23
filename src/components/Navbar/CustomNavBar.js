@@ -1,9 +1,12 @@
 import React from 'react';
-import { Dropdown, Button, Navbar, Avatar } from 'flowbite-react';
+import { Dropdown, Button, Navbar, Avatar, Badge } from 'flowbite-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { IoBagHandle, IoCart } from 'react-icons/io5';
 import { AiOutlineHistory } from 'react-icons/ai';
+import { FaCommentDots } from 'react-icons/fa';
+import { MdAddBox, MdCategory, MdHome } from 'react-icons/md';
+import { BsCreditCardFill } from 'react-icons/bs';
 
 import { UserProvider } from '../../providers/UserProvider';
 import { useUserContext } from '../../hooks/useUserContext';
@@ -132,16 +135,46 @@ const CustomNavBar = () => {
 
         <Navbar.Collapse>
           <Navbar.Link href="/" active={true}>
-            Home
+            <div class="flex flex-row items-center gap-1 py-2">
+              Home
+              <MdHome size={20} />
+            </div>
           </Navbar.Link>
-          <Navbar.Link href="/categories">Categories</Navbar.Link>
-          <Navbar.Link href="/add-product">Add Product</Navbar.Link>
+          <Navbar.Link href="/categories">
+            <div class="flex flex-row items-center gap-1 py-2">
+              Categories
+              <MdCategory size={20} />
+            </div>
+          </Navbar.Link>
+          <Navbar.Link href="/add-product">
+            <div class="flex flex-row items-center gap-1 py-2">
+              Add Product
+              <MdAddBox size={20} />
+            </div>
+          </Navbar.Link>
 
           <Navbar.Link href="/comments">
-            {user && (user.role === 'salesManager' || user.role === 'admin')
-              ? 'Comments'
-              : 'My Comments'}
+            {user && (user.role === 'salesManager' || user.role === 'admin') ? (
+              <div class="flex flex-row gap-1 py-2 px-4 bg-gray-100 rounded-3xl font-semibold ">
+                Comments
+                <FaCommentDots size={20} />
+              </div>
+            ) : (
+              <div class="flex flex-row gap-1 py-2 px-4 rounded-3xl font-semibold ">
+                <FaCommentDots size={20} />
+                My Comments
+              </div>
+            )}
           </Navbar.Link>
+
+          {user && user.role === 'admin' && (
+            <Navbar.Link href="/orders">
+              <div class="flex flex-row gap-1 py-2 px-4 bg-gray-100 rounded-3xl font-semibold ">
+                Orders
+                <BsCreditCardFill size={20} />
+              </div>
+            </Navbar.Link>
+          )}
         </Navbar.Collapse>
       </Navbar>
     </div>
