@@ -58,14 +58,6 @@ const VerticalProductCard = ({ product, setProducts = null }) => {
   };
 
   const onAddToCartButtonClick = async (product) => {
-    if (user) {
-      // If logged-in, update cart in database
-      const addedProduct = await CartService.addToCart({
-        productID: product._id,
-        quantity: 1,
-      });
-    }
-
     // Update cart in local storage
     // If cart is empty, create a new cart
     if (!cart) {
@@ -93,13 +85,31 @@ const VerticalProductCard = ({ product, setProducts = null }) => {
     // If product is not in cart, add it
     if (productIndex == -1) {
       cart.products.push(cartProduct);
+
+      if (user) {
+        // If logged-in, update cart in database
+
+        const addedProduct = await CartService.addToCart({
+          productID: product._id,
+          quantity: 1,
+        });
+      }
     }
 
     // If product is in cart, update quantity
     else {
       // But first check if cartQuantity is not greater than product quantity
-      if (cart.products[productIndex].cartQuantity < product.quantity) {
+      if (cart.products[productIndex].cartQuantity + 1 <= product.quantity) {
         cart.products[productIndex].cartQuantity += 1;
+
+        if (user) {
+          // If logged-in, update cart in database
+
+          const addedProduct = await CartService.addToCart({
+            productID: product._id,
+            quantity: 1,
+          });
+        }
       }
     }
 
@@ -140,14 +150,16 @@ const VerticalProductCard = ({ product, setProducts = null }) => {
         {product.quantity > 0 ? (
           <div className="flex flex-row gap-3 items-center justify-between">
             <Price product={product} />
-            <Button
-              onClick={(e) => {
-                e.preventDefault();
-                onAddToCartButtonClick(product);
-              }}
-            >
-              Add to cart
-            </Button>
+            {user && user.role !== 'customer' ? null : (
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  onAddToCartButtonClick(product);
+                }}
+              >
+                Add to cart
+              </Button>
+            )}
           </div>
         ) : (
           <div class="flex flex-row gap-1 items-center">

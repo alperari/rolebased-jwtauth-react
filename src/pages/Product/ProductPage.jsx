@@ -27,6 +27,7 @@ import { CommentService } from '../../services/CommentService';
 import { UserService } from '../../services/UserService';
 import { RatingService } from '../../services/RatingService';
 import { WishlistService } from '../../services/WishlistService';
+import { CartService } from '../../services/CartService';
 
 import { useLocation } from 'react-router-dom';
 
@@ -37,6 +38,7 @@ import { parseDateTime } from '../../helpers/helperFunctions';
 import { AddCommentModal } from '../../components/General/Modal';
 
 const user = JSON.parse(localStorage.getItem('user'));
+let localCart = JSON.parse(localStorage.getItem('cart'));
 
 const ProductPage = () => {
   const location = useLocation();
@@ -69,6 +71,8 @@ const ProductPage = () => {
 
   // For wishlist
   const [isInWishlist, setIsInWishlist] = useState(productFromDB?.inMyWishlist);
+
+  const [cart, setCart] = useState(localCart);
 
   const onAddComment = async (title, description) => {
     try {
@@ -218,6 +222,74 @@ const ProductPage = () => {
     }
   };
 
+  const onAddToCartButtonClick = async (product, quantity) => {
+    // Update cart in local storage
+    // If cart is empty, create a new cart
+    if (!cart) {
+      cart = {
+        products: [],
+      };
+    }
+
+    // If cart is not empty, check if product is already in cart
+    const productIndex = cart.products.findIndex((p) => p._id == product._id);
+
+    const cartProduct = {
+      cartQuantity: quantity,
+      _id: product._id,
+      category: product.category,
+      distributor: product.distributor,
+      imageURL: product.imageURL,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      quantity: product.quantity,
+      discount: product.discount,
+    };
+
+    // If product is not in cart, add it
+    if (productIndex == -1) {
+      cart.products.push(cartProduct);
+
+      if (user) {
+        // If logged-in, update cart in database
+
+        if (quantity <= product.quantity) {
+          const addedProduct = await CartService.addToCart({
+            productID: product._id,
+            quantity: quantity,
+          });
+        }
+      }
+    }
+
+    // If product is in cart, update quantity
+    else {
+      // But first check if cartQuantity is not greater than product quantity
+      if (
+        cart.products[productIndex].cartQuantity + quantity <=
+        product.quantity
+      ) {
+        cart.products[productIndex].cartQuantity += quantity;
+
+        if (user) {
+          // If logged-in, update cart in database
+
+          const addedProduct = await CartService.addToCart({
+            productID: product._id,
+            quantity: quantity,
+          });
+        }
+      }
+    }
+
+    // Update cart in local storage
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    // Dispatch storage event to update cart in navbar
+    window.dispatchEvent(new Event('storage'));
+  };
+
   const fetchProductDetails = async () => {
     const fetchedProduct = await ProductService.getProductById({
       productID: product._id,
@@ -283,6 +355,8 @@ const ProductPage = () => {
   };
 
   useEffect(() => {
+    setCart(JSON.parse(localStorage.getItem('cart')));
+
     fetchComments();
     fetchRatings();
     fetchProductDetails();
@@ -639,21 +713,28 @@ const ProductPage = () => {
     }
     if (product.quantity > 0) {
       return (
-        <div className="flex flex-row mt-12 gap-5 items-end   justify-between">
-          <PriceSection />
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            const quantity = parseInt(e.target.quantity.value);
 
-          <div className="px-8">
-            <Label htmlFor="quantity" value="Quantity" />
-            <TextInput
-              id="quantity"
-              type="number"
-              placeholder="1"
-              required={true}
-            />
+            if (!quantity || quantity <= 1) {
+              onAddToCartButtonClick(productFromDB, 1);
+            } else {
+              onAddToCartButtonClick(productFromDB, quantity);
+            }
+          }}
+        >
+          <div className="flex flex-row mt-12 gap-5 items-end   justify-between">
+            <PriceSection />
+            <div className="px-8">
+              <Label htmlFor="quantity" value="Quantity" />
+              <TextInput id="quantity" type="number" placeholder="1" />
+            </div>
+
+            <Button type="submit">Add to cart</Button>
           </div>
-
-          <Button>Add to cart</Button>
-        </div>
+        </form>
       );
     }
   };

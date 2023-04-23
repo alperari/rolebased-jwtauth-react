@@ -35,21 +35,27 @@ const CartPage = () => {
   };
 
   const onClickIncrementQuantity = async (product) => {
-    if (user) {
-      // If logged-in, update cart in database
-      const addedProduct = await CartService.addToCart({
-        productID: product._id,
-        quantity: 1,
-      });
-    }
-
     const cart = JSON.parse(localStorage.getItem('cart'));
 
     const productIndex = cart.products.findIndex(
       (item) => item._id === product._id
     );
 
-    cart.products[productIndex].cartQuantity += 1;
+    if (
+      cart.products[productIndex].cartQuantity + 1 <=
+      cart.products[productIndex].quantity
+    ) {
+      cart.products[productIndex].cartQuantity += 1;
+
+      if (user) {
+        // If logged-in, update cart in database
+
+        const addedProduct = await CartService.addToCart({
+          productID: product._id,
+          quantity: 1,
+        });
+      }
+    }
 
     // Update cart in local storage
     localStorage.setItem('cart', JSON.stringify(cart));

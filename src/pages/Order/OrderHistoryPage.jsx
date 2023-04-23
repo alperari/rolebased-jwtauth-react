@@ -37,7 +37,7 @@ const OrderHistoryPage = () => {
   const CardHeader = ({ order }) => {
     const [date, time] = parseDateTime(order.date, 'dateAndTime');
     return (
-      <div class="flex flex-row justify-between  items-end">
+      <div class="flex flex-row justify-between  items-center">
         <div class="flex flex-col justify-start">
           <div class="flex flex-row gap-2">
             <div class="flex flex-row gap-2 py-2 mb-4 px-4 bg-gray-100 rounded-3xl">
@@ -163,6 +163,11 @@ const OrderHistoryPage = () => {
                     .reduce((acc, curr) => acc + curr.buyPrice, 0)
                     .toFixed(2)}
               </span>
+            </div>
+            <div class="pl-3">
+              <span class="font-semibold text-gray-400 text-sm">
+                + Shipping 4.99{' '}
+              </span>{' '}
             </div>
           </div>
         </div>
