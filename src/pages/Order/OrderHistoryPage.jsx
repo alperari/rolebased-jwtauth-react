@@ -23,7 +23,7 @@ const OrderHistoryPage = () => {
   const fetchOrders = async () => {
     setIsLoading(true);
 
-    const fetchedOrders = await OrderService.getOrders();
+    const fetchedOrders = await OrderService.getMyOrders();
 
     setOrder(fetchedOrders);
 

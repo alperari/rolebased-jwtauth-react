@@ -23,11 +23,24 @@ export class OrderService {
     }
   }
 
-  static async getOrders() {
+  static async getMyOrders() {
     try {
       const response = await axios({
         method: 'GET',
         url: `${URL}/order/my`,
+        withCredentials: true,
+      });
+      return response.data.orders;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
+
+  static async getOrders() {
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `${URL}/order/all`,
         withCredentials: true,
       });
       return response.data.orders;
