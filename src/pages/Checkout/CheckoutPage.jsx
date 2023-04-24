@@ -235,9 +235,14 @@ const CheckoutPage = () => {
                 <TbCurrentLocation size={25} />{' '}
               </div>
             </Button>
-            <Button color="light">
+            <Button
+              color="light"
+              onClick={() => {
+                navigate('/order-history');
+              }}
+            >
               <div class="flex items-center flex-row gap-2">
-                See my orders
+                View my order history
                 <TbHistory size={25} />
               </div>
             </Button>

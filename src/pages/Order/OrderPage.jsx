@@ -12,6 +12,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import { parseDateTime } from '../../helpers/helperFunctions';
 
+const user = JSON.parse(localStorage.getItem('user'));
+
 const OrderPage = () => {
   const { orderId } = useParams();
 
@@ -31,6 +33,20 @@ const OrderPage = () => {
     setOrder(fetchedOrder);
 
     setIsLoading(false);
+  };
+
+  const onClickCancelOrder = async () => {
+    // Update order status in state
+    setOrder({ ...order, status: 'cancelled' });
+
+    // Update order status in database
+    const response = await OrderService.cancelMyOrder({
+      orderID: order._id,
+    });
+
+    if (response.error) {
+      alert(response.error);
+    }
   };
 
   useEffect(() => {
@@ -133,9 +149,18 @@ const OrderPage = () => {
     return (
       <div class="flex flex-row  py-4 items-center justify-between">
         <div class="flex flex-row gap-4 text-gray-400">
-          <Button color="light">
-            <div>Cancel Order</div>
-          </Button>
+          {user._id == order.userID && (
+            <Button
+              color="light"
+              disabled={order.status !== 'processing'}
+              onClick={(e) => {
+                e.preventDefault();
+                onClickCancelOrder();
+              }}
+            >
+              <div>Cancel Order</div>
+            </Button>
+          )}
           <div class="flex flex-row gap-2 items-center">
             <HiCreditCard size="25" />
             <span class="font-semibold">
@@ -143,13 +168,7 @@ const OrderPage = () => {
             </span>
           </div>
         </div>
-        <a
-          href={order.receiptURL}
-          className="flex flex-row items-end font-medium text-blue-600 hover:underline dark:text-blue-500"
-        >
-          <AiFillFilePdf size={25} />
-          Receipt
-        </a>
+
         <div class=" flex items-center">
           <div class="flex flex-col items-end flex-grow">
             <span class="text-gray-600">Total</span>

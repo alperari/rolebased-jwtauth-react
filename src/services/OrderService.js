@@ -84,4 +84,20 @@ export class OrderService {
       return err.response.data;
     }
   }
+
+  static async cancelMyOrder({ orderID }) {
+    try {
+      const response = await axios({
+        method: 'PATCH',
+        url: `${URL}/order/cancel`,
+        data: {
+          orderID,
+        },
+        withCredentials: true,
+      });
+      return response.data.updatedOrder;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
 }

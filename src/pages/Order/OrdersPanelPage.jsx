@@ -17,6 +17,7 @@ import { FaTruck } from 'react-icons/fa';
 import { MdBeenhere } from 'react-icons/md';
 import { IoHammer } from 'react-icons/io5';
 import { FaBan } from 'react-icons/fa';
+import { AiFillFilePdf } from 'react-icons/ai';
 
 import { OrderService } from '../../services/OrderService';
 
@@ -258,12 +259,23 @@ const OrdersPanelPage = () => {
                 return (
                   <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
                     <Table.Cell>
-                      <Link
-                        to={'/order/' + order._id}
-                        className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                      >
-                        {order._id}
-                      </Link>
+                      <div class="flex flex-row items-center gap-3">
+                        <Link
+                          to={'/order/' + order._id}
+                          className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                        >
+                          {order._id}
+                        </Link>
+                        <div class="flex flex-row gap-2 py-2 px-2 bg-gray-100 rounded-3xl">
+                          <a
+                            href={order.receiptURL}
+                            className="flex flex-row items-end font-medium text-blue-600 hover:underline dark:text-blue-500"
+                          >
+                            <AiFillFilePdf size={25} />
+                            Receipt
+                          </a>
+                        </div>
+                      </div>
                     </Table.Cell>
 
                     <Table.Cell>
