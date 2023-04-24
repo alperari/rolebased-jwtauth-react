@@ -216,8 +216,11 @@ const CommentPageAsProductManager = () => {
   };
 
   return (
-    <div class="flex flex-col mx-32 my-24">
-      <span class="font-bold text-center mb-8">Comments</span>
+    <div class="flex flex-col mx-32 py-12">
+      <span class="font-semibold text-3xl text-center">Comments</span>
+      <span class="font text-l text-center mb-12">
+        You can view & update comments as a product manager
+      </span>
 
       {loading ? (
         <div class="flex flex-row justify-center items-center">Loading...</div>

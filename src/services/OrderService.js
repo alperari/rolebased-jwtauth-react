@@ -67,4 +67,21 @@ export class OrderService {
       return err.response.data;
     }
   }
+
+  static async updateOrderStatus({ orderID, newStatus }) {
+    try {
+      const response = await axios({
+        method: 'PATCH',
+        url: `${URL}/order/update`,
+        data: {
+          orderID,
+          newStatus,
+        },
+        withCredentials: true,
+      });
+      return response.data.order;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
 }

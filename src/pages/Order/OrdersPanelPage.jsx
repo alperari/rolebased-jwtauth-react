@@ -26,7 +26,7 @@ const OrdersPanelPage = () => {
 
   const [activeTab, setActiveTab] = useState('processing');
 
-  const fetchComments = async () => {
+  const fetchOrders = async () => {
     setLoading(true);
 
     // Fetch comments
@@ -45,20 +45,20 @@ const OrdersPanelPage = () => {
 
     orderObject.status = newStatus;
 
-    // // Update comment status in db
-    // const updatedComment = await CommentService.updateCommentStatus({
-    //   commentID: orderObject._id,
-    //   newStatus: 'approved',
-    // });
+    // Update order status in db
+    const updatedOrder = await OrderService.updateOrderStatus({
+      orderID: orderObject._id,
+      newStatus: newStatus,
+    });
 
     const updatedGroupedOrders = { ...groupedOrders };
 
-    // Remove comment from currentStatus
+    // Remove order from currentStatus
     updatedGroupedOrders[currentStatus] = updatedGroupedOrders[
       currentStatus
-    ].filter((comment) => comment._id !== orderObject._id);
+    ].filter((order) => order._id !== orderObject._id);
 
-    // Add comment to newStatus
+    // Add order to newStatus
     if (updatedGroupedOrders[newStatus]) {
       updatedGroupedOrders[newStatus].push(orderObject);
     } else {
@@ -69,7 +69,7 @@ const OrdersPanelPage = () => {
   };
 
   useEffect(() => {
-    fetchComments();
+    fetchOrders();
   }, []);
 
   const CustomTabs = () => {
@@ -308,8 +308,11 @@ const OrdersPanelPage = () => {
   };
 
   return (
-    <div class="flex flex-col mx-32 my-24">
-      <span class="font-bold text-center mb-8">Comments</span>
+    <div class="flex flex-col mx-32 py-12">
+      <span class="font-semibold text-3xl text-center">Orders</span>
+      <span class="font text-l text-center mb-12">
+        You can view & update orders as a sales manager
+      </span>
 
       {loading ? (
         <div class="flex flex-row justify-center items-center">Loading...</div>
