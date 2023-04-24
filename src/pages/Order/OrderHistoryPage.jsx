@@ -139,9 +139,6 @@ const OrderHistoryPage = () => {
     return (
       <div class="flex flex-row  py-4 items-center justify-between">
         <div class="flex flex-row gap-4 text-gray-400">
-          <Button color="light" disabled={order.status !== 'processing'}>
-            <div>Cancel Order</div>
-          </Button>
           <div class="flex flex-row gap-2 items-center">
             <HiCreditCard size="25" />
             <span class="font-semibold">

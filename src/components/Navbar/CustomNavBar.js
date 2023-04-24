@@ -146,26 +146,31 @@ const CustomNavBar = () => {
               <MdCategory size={20} />
             </div>
           </Navbar.Link>
-          <Navbar.Link href="/add-product">
-            <div class="flex flex-row items-center gap-1 py-2">
-              Add Product
-              <MdAddBox size={20} />
-            </div>
-          </Navbar.Link>
 
-          <Navbar.Link href="/comments">
-            {user && (user.role === 'salesManager' || user.role === 'admin') ? (
-              <div class="flex flex-row gap-1 py-2 px-4 bg-gray-100 rounded-3xl font-semibold ">
-                Comments
-                <FaCommentDots size={20} />
+          {user && (user.role === 'admin' || user.role == 'salesManager') && (
+            <Navbar.Link href="/add-product">
+              <div class="flex flex-row items-center gap-1 py-2">
+                Add Product
+                <MdAddBox size={20} />
               </div>
-            ) : (
-              <div class="flex flex-row gap-1 py-2 px-4 rounded-3xl font-semibold ">
-                <FaCommentDots size={20} />
-                My Comments
-              </div>
-            )}
-          </Navbar.Link>
+            </Navbar.Link>
+          )}
+
+          {user && (
+            <Navbar.Link href="/comments">
+              {user.role === 'salesManager' || user.role === 'admin' ? (
+                <div class="flex flex-row gap-1 py-2 px-4 bg-gray-100 rounded-3xl font-semibold ">
+                  Comments
+                  <FaCommentDots size={20} />
+                </div>
+              ) : (
+                <div class="flex flex-row gap-1 py-2 rounded-3xl font-semibold ">
+                  <FaCommentDots size={20} />
+                  My Comments
+                </div>
+              )}
+            </Navbar.Link>
+          )}
 
           {user && user.role === 'admin' && (
             <Navbar.Link href="/orders">

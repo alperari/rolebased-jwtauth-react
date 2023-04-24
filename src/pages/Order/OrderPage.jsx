@@ -3,6 +3,7 @@ import { HiCalendar, HiCreditCard, HiHome } from 'react-icons/hi';
 import { FaAddressBook } from 'react-icons/fa';
 import { AiFillFilePdf } from 'react-icons/ai';
 import { IoMdArrowBack } from 'react-icons/io';
+import { FaHandHoldingUsd } from 'react-icons/fa';
 
 import { Button, Card } from 'flowbite-react';
 
@@ -31,6 +32,13 @@ const OrderPage = () => {
       navigate('/404');
     }
     setOrder(fetchedOrder);
+
+    if (fetchedOrder.status == 'delivered') {
+      // Fetch refund status (if products are refunded or not)
+      for (const product of fetchedOrder.products) {
+        // TODO: call RefundService
+      }
+    }
 
     setIsLoading(false);
   };
@@ -124,6 +132,18 @@ const OrderPage = () => {
 
           return (
             <div class="w-full flex items-center">
+              {order.status == 'delivered' && (
+                <div class="mr-3">
+                  <Button size="sm" color="red">
+                    <FaHandHoldingUsd size={25} />
+                    <div class="flex flex-col">
+                      <span class="text-xs">Request</span>
+                      <span class="text-xs">Refund</span>
+                    </div>
+                  </Button>
+                </div>
+              )}
+
               <div class="overflow-hidden rounded-lg w-24 h-24 bg-gray-50 border border-gray-200">
                 <img src={product.imageURL} alt={product._id} />
               </div>
