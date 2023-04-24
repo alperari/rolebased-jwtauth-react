@@ -24,6 +24,8 @@ const OrdersPanelPage = () => {
   const [loading, setLoading] = useState(false);
   const [groupedOrders, setGroupedOrders] = useState({});
 
+  const [activeTab, setActiveTab] = useState('processing');
+
   const fetchComments = async () => {
     setLoading(true);
 
@@ -39,6 +41,7 @@ const OrdersPanelPage = () => {
 
   const onClickChangeStatus = async (orderObject, newStatus) => {
     const currentStatus = orderObject.status;
+    setActiveTab(currentStatus);
 
     orderObject.status = newStatus;
 
@@ -77,16 +80,32 @@ const OrdersPanelPage = () => {
           style="underline"
           class="flex flex-row items-center gap-3 justify-center"
         >
-          <Tabs.Item active={true} title="Processing" icon={IoHammer}>
+          <Tabs.Item
+            active={activeTab === 'processing'}
+            title="Processing"
+            icon={IoHammer}
+          >
             <CustomTable orders={groupedOrders.processing} />
           </Tabs.Item>
-          <Tabs.Item title="In-Transit" icon={FaTruck}>
+          <Tabs.Item
+            active={activeTab === 'in-transit'}
+            title="In-Transit"
+            icon={FaTruck}
+          >
             <CustomTable orders={groupedOrders['in-transit']} />
           </Tabs.Item>
-          <Tabs.Item title="Delivered" icon={MdBeenhere}>
+          <Tabs.Item
+            active={activeTab === 'delivered'}
+            title="Delivered"
+            icon={MdBeenhere}
+          >
             <CustomTable orders={groupedOrders.delivered} />
           </Tabs.Item>
-          <Tabs.Item title="Cancelled" icon={FaBan}>
+          <Tabs.Item
+            active={activeTab === 'cancelled'}
+            title="Cancelled"
+            icon={FaBan}
+          >
             <CustomTable orders={groupedOrders.cancelled} />
           </Tabs.Item>
         </Tabs.Group>
@@ -207,14 +226,14 @@ const OrdersPanelPage = () => {
         </div>
       );
     } else if (order.status === 'cancelled') {
-      return <div>4</div>;
+      return <div class="font-semibold text-red-500">Cancelled</div>;
     }
   };
 
   const CustomTable = ({ orders }) => {
     if (!orders || orders.length === 0) {
       return (
-        <div>
+        <div class="text-center">
           <h1>No orders found</h1>
         </div>
       );
@@ -271,9 +290,9 @@ const OrdersPanelPage = () => {
                       </div>
                     </Table.Cell>
 
-                    <Table.Cell>{order.receiverEmail}</Table.Cell>
+                    <Table.Cell width="200px">{order.receiverEmail}</Table.Cell>
 
-                    <Table.Cell>{order.address}</Table.Cell>
+                    <Table.Cell width="500px">{order.address}</Table.Cell>
 
                     <Table.Cell>
                       <StatusButtons order={order} />
