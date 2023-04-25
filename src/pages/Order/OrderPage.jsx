@@ -124,6 +124,9 @@ const OrderPage = () => {
   };
 
   const CardProducts = () => {
+    const orderDate = new Date(order.date);
+    const daysPast = (Date.now() - orderDate.getTime()) / 1000 / 60 / 60 / 24;
+
     return (
       <div class="flex flex-col gap-2 py-4">
         {order.products.map((product) => {
@@ -134,7 +137,7 @@ const OrderPage = () => {
             <div class="w-full flex items-center">
               {order.status == 'delivered' && (
                 <div class="mr-3">
-                  <Button size="sm" color="red">
+                  <Button size="sm" color="red" disabled={daysPast > 30}>
                     <FaHandHoldingUsd size={25} />
                     <div class="flex flex-col">
                       <span class="text-xs">Request</span>
