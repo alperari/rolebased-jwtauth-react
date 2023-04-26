@@ -8,6 +8,7 @@ import { FaHandHoldingUsd } from 'react-icons/fa';
 import { Button, Card } from 'flowbite-react';
 
 import { OrderService } from '../../services/OrderService';
+import { RefundService } from '../../services/RefundService';
 
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -33,12 +34,11 @@ const OrderPage = () => {
     }
     setOrder(fetchedOrder);
 
-    if (fetchedOrder.status == 'delivered') {
-      // Fetch refund status (if products are refunded or not)
-      for (const product of fetchedOrder.products) {
-        // TODO: call RefundService
-      }
-    }
+    const refundStatus = await RefundService.getOrderRefundStatus({
+      orderID: orderId,
+    });
+
+    console.log('refundStatus', refundStatus);
 
     setIsLoading(false);
   };

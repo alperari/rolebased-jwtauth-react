@@ -10,14 +10,14 @@ const headers = {
 };
 
 export class RefundService {
-  static async getProductRefundStatus({ productID }) {
+  static async getOrderRefundStatus({ orderID }) {
     try {
       const response = await axios({
         method: 'GET',
-        url: `${URL}/refund/product/${productID}`,
+        url: `${URL}/refund/order/${orderID}`,
         withCredentials: true,
       });
-      return response.data.refund;
+      return response.data.refunds;
     } catch (err) {
       return err.response.data;
     }
