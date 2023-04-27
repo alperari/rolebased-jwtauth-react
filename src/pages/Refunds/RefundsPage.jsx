@@ -52,6 +52,32 @@ const RefundsPageAsSalesManager = () => {
     setLoading(false);
   };
 
+  const onClickApproveRefund = async (refund) => {
+    const response = await RefundService.approveRefundRequest({
+      refundID: refund._id,
+    });
+
+    if (response.error) {
+      alert(response.error);
+      return;
+    }
+
+    // Update refunds
+    const updatedRefunds = refunds.map((r) => {
+      if (r._id === refund._id) {
+        r.status = 'approved';
+      }
+
+      return r;
+    });
+
+    // Group refunds by status
+    const groupedRefunds = groupBy(updatedRefunds, 'status');
+
+    // Set grouped refunds
+    setGroudpedRefunds({ ...groupedRefunds });
+  };
+
   useEffect(() => {
     fetchMyRefunds();
   }, []);
@@ -123,7 +149,13 @@ const RefundsPageAsSalesManager = () => {
                     <Table.Cell>
                       {refund.status === 'pending' ? (
                         <div class="flex flex-row gap-3">
-                          <Button onClick={() => {}} color="green" size="sm">
+                          <Button
+                            onClick={() => {
+                              onClickApproveRefund(refund);
+                            }}
+                            color="green"
+                            size="sm"
+                          >
                             Approve
                           </Button>
 
