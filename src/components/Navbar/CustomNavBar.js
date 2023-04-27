@@ -7,6 +7,7 @@ import { AiOutlineHistory } from 'react-icons/ai';
 import { FaCommentDots } from 'react-icons/fa';
 import { MdAddBox, MdCategory, MdHome } from 'react-icons/md';
 import { BsCreditCardFill } from 'react-icons/bs';
+import { RiRefund2Line } from 'react-icons/ri';
 
 import { UserProvider } from '../../providers/UserProvider';
 import { useUserContext } from '../../hooks/useUserContext';
@@ -178,6 +179,22 @@ const CustomNavBar = () => {
                 Orders
                 <BsCreditCardFill size={20} />
               </div>
+            </Navbar.Link>
+          )}
+
+          {user && (
+            <Navbar.Link href="/refunds">
+              {user.role === 'salesManager' || user.role === 'admin' ? (
+                <div class="flex flex-row gap-1 py-2 px-4 bg-gray-100 rounded-3xl font-semibold ">
+                  Refunds
+                  <RiRefund2Line size={20} />
+                </div>
+              ) : (
+                <div class="flex flex-row gap-1 py-2 rounded-3xl font-semibold ">
+                  My Refunds
+                  <RiRefund2Line size={20} />
+                </div>
+              )}
             </Navbar.Link>
           )}
         </Navbar.Collapse>
