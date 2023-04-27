@@ -22,6 +22,8 @@ const OrderPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [order, setOrder] = useState({});
 
+  const [refundStatus, setRefundStatus] = useState([]);
+
   const navigate = useNavigate();
 
   const fetchOrder = async () => {
@@ -37,6 +39,9 @@ const OrderPage = () => {
     const refundStatus = await RefundService.getOrderRefundStatus({
       orderID: orderId,
     });
+
+    // Update refund status in state
+    setRefundStatus(refundStatus);
 
     console.log('refundStatus', refundStatus);
 
@@ -60,6 +65,41 @@ const OrderPage = () => {
   useEffect(() => {
     fetchOrder();
   }, []);
+
+  const RefundSection = ({ product }) => {
+    const orderDate = new Date(order.date);
+    const daysPast = (Date.now() - orderDate.getTime()) / 1000 / 60 / 60 / 24;
+
+    if (!refundStatus || refundStatus.length === 0) {
+      return null;
+    } else {
+      const status = refundStatus.find(
+        (refund) => refund.productID === product._id
+      ).status;
+
+      // "approved" | "rejected" | "pending" | "none"
+
+      if (status === 'approved') {
+        return 'Approved';
+      } else if (status === 'rejected') {
+        return 'Rejected';
+      } else if (status === 'pending') {
+        return 'Pending';
+      } else {
+        return (
+          <div class="mr-3">
+            <Button size="sm" color="red" disabled={daysPast > 30}>
+              <FaHandHoldingUsd size={25} />
+              <div class="flex flex-col">
+                <span class="text-xs">Request</span>
+                <span class="text-xs">Refund</span>
+              </div>
+            </Button>
+          </div>
+        );
+      }
+    }
+  };
 
   const CardHeader = () => {
     const [date, time] = parseDateTime(order.date, 'dateAndTime');
@@ -124,9 +164,6 @@ const OrderPage = () => {
   };
 
   const CardProducts = () => {
-    const orderDate = new Date(order.date);
-    const daysPast = (Date.now() - orderDate.getTime()) / 1000 / 60 / 60 / 24;
-
     return (
       <div class="flex flex-col gap-2 py-4">
         {order.products.map((product) => {
@@ -136,15 +173,7 @@ const OrderPage = () => {
           return (
             <div class="w-full flex items-center">
               {order.status == 'delivered' && (
-                <div class="mr-3">
-                  <Button size="sm" color="red" disabled={daysPast > 30}>
-                    <FaHandHoldingUsd size={25} />
-                    <div class="flex flex-col">
-                      <span class="text-xs">Request</span>
-                      <span class="text-xs">Refund</span>
-                    </div>
-                  </Button>
-                </div>
+                <RefundSection product={product} />
               )}
 
               <div class="overflow-hidden rounded-lg w-24 h-24 bg-gray-50 border border-gray-200">

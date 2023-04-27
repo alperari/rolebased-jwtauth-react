@@ -165,8 +165,8 @@ const CustomNavBar = () => {
                 </div>
               ) : (
                 <div class="flex flex-row gap-1 py-2 rounded-3xl font-semibold ">
-                  <FaCommentDots size={20} />
                   My Comments
+                  <FaCommentDots size={20} />
                 </div>
               )}
             </Navbar.Link>
