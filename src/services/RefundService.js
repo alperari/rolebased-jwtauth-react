@@ -22,4 +22,21 @@ export class RefundService {
       return err.response.data;
     }
   }
+
+  static async createRefundRequest({ orderID, productID }) {
+    try {
+      const response = await axios({
+        method: 'POST',
+        url: `${URL}/refund`,
+        withCredentials: true,
+        data: {
+          orderID,
+          productID,
+        },
+      });
+      return response.newRefund;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
 }
