@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { HiCalendar, HiCreditCard, HiHome } from 'react-icons/hi';
-import { FaAddressBook } from 'react-icons/fa';
+import { FaAddressBook, FaBan } from 'react-icons/fa';
 import { AiFillFilePdf } from 'react-icons/ai';
 import { IoMdArrowBack } from 'react-icons/io';
 import { FaHandHoldingUsd } from 'react-icons/fa';
@@ -36,14 +36,16 @@ const OrderPage = () => {
     }
     setOrder(fetchedOrder);
 
-    const refundStatus = await RefundService.getOrderRefundStatus({
-      orderID: orderId,
-    });
+    if (fetchedOrder.status === 'delivered') {
+      const refundStatus = await RefundService.getOrderRefundStatus({
+        orderID: orderId,
+      });
 
-    // Update refund status in state
-    setRefundStatus(refundStatus);
+      // Update refund status in state
+      setRefundStatus(refundStatus);
 
-    console.log('refundStatus', refundStatus);
+      console.log('refundStatus', refundStatus);
+    }
 
     setIsLoading(false);
   };
@@ -84,6 +86,28 @@ const OrderPage = () => {
     setRefundStatus([...newRefundStatus]);
   };
 
+  const onClickCancelRefundRequest = async (product) => {
+    const response = await RefundService.cancelRefundRequest({
+      orderID: order._id,
+      productID: product._id,
+    });
+
+    if (response.error) {
+      alert(response.error);
+    }
+
+    // Update refund status in state ("pending" -> "none")
+    const newRefundStatus = refundStatus.map((refund) => {
+      if (refund.productID === product._id) {
+        return { ...refund, status: 'none' };
+      } else {
+        return refund;
+      }
+    });
+
+    setRefundStatus([...newRefundStatus]);
+  };
+
   useEffect(() => {
     fetchOrder();
   }, []);
@@ -106,7 +130,22 @@ const OrderPage = () => {
       } else if (status === 'rejected') {
         return 'Rejected';
       } else if (status === 'pending') {
-        return 'Pending';
+        return (
+          <div class="mr-3">
+            <Button
+              size="sm"
+              color="yellow"
+              onClick={() => onClickCancelRefundRequest(product)}
+            >
+              <FaBan size={25} />
+              <div class="flex flex-col items-start ml-1">
+                <span class="text-xs">Cancel</span>
+                <span class="text-xs">Refund</span>
+                <span class="text-xs">Request</span>
+              </div>
+            </Button>
+          </div>
+        );
       } else {
         return (
           <div class="mr-3">
@@ -117,7 +156,7 @@ const OrderPage = () => {
               onClick={() => onClickCreateRefundRequest(product)}
             >
               <FaHandHoldingUsd size={25} />
-              <div class="flex flex-col">
+              <div class="flex flex-col ml-1">
                 <span class="text-xs">Request</span>
                 <span class="text-xs">Refund</span>
               </div>

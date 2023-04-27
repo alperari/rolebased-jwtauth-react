@@ -40,4 +40,22 @@ export class RefundService {
       return err.response.data;
     }
   }
+
+  static async cancelRefundRequest({ orderID, productID }) {
+    try {
+      const response = await axios({
+        method: 'DELETE',
+        url: `${URL}/refund/delete`,
+        withCredentials: true,
+        data: {
+          orderID,
+          productID,
+        },
+      });
+
+      return response.data.deletedRefund;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
 }
