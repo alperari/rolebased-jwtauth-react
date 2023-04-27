@@ -245,7 +245,6 @@ const CommentPageAsCustomer = () => {
     const groupedComments = groupBy(fetchedComments, 'status');
     setGroupedComments(groupedComments);
 
-    console.log(groupedComments);
     setLoading(false);
   };
 
