@@ -34,7 +34,8 @@ export class RefundService {
           productID,
         },
       });
-      return response.newRefund;
+
+      return response.data.newRefund;
     } catch (err) {
       return err.response.data;
     }

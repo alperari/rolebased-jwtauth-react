@@ -62,6 +62,28 @@ const OrderPage = () => {
     }
   };
 
+  const onClickCreateRefundRequest = async (product) => {
+    const response = await RefundService.createRefundRequest({
+      orderID: order._id,
+      productID: product._id,
+    });
+
+    if (response.error) {
+      alert(response.error);
+    }
+
+    // Update refund status in state ("none" -> "pending")
+    const newRefundStatus = refundStatus.map((refund) => {
+      if (refund.productID === product._id) {
+        return { ...refund, status: 'pending' };
+      } else {
+        return refund;
+      }
+    });
+
+    setRefundStatus([...newRefundStatus]);
+  };
+
   useEffect(() => {
     fetchOrder();
   }, []);
@@ -88,7 +110,12 @@ const OrderPage = () => {
       } else {
         return (
           <div class="mr-3">
-            <Button size="sm" color="red" disabled={daysPast > 30}>
+            <Button
+              size="sm"
+              color="red"
+              disabled={daysPast > 30}
+              onClick={() => onClickCreateRefundRequest(product)}
+            >
               <FaHandHoldingUsd size={25} />
               <div class="flex flex-col">
                 <span class="text-xs">Request</span>
