@@ -78,6 +78,32 @@ const RefundsPageAsSalesManager = () => {
     setGroudpedRefunds({ ...groupedRefunds });
   };
 
+  const onClickRejectRefund = async (refund) => {
+    const response = await RefundService.rejectRefundRequest({
+      refundID: refund._id,
+    });
+
+    if (response.error) {
+      alert(response.error);
+      return;
+    }
+
+    // Update refunds
+    const updatedRefunds = refunds.map((r) => {
+      if (r._id === refund._id) {
+        r.status = 'rejected';
+      }
+
+      return r;
+    });
+
+    // Group refunds by status
+    const groupedRefunds = groupBy(updatedRefunds, 'status');
+
+    // Set grouped refunds
+    setGroudpedRefunds({ ...groupedRefunds });
+  };
+
   useEffect(() => {
     fetchMyRefunds();
   }, []);
@@ -159,7 +185,13 @@ const RefundsPageAsSalesManager = () => {
                             Approve
                           </Button>
 
-                          <Button onClick={() => {}} color="red" size="sm">
+                          <Button
+                            onClick={() => {
+                              onClickRejectRefund(refund);
+                            }}
+                            color="red"
+                            size="sm"
+                          >
                             Reject
                           </Button>
                         </div>
@@ -206,8 +238,11 @@ const RefundsPageAsSalesManager = () => {
   };
 
   return (
-    <div class="flex flex-col mx-32 my-24">
-      <span class="font-bold text-center mb-8">My Refunds</span>
+    <div class="flex flex-col mx-32 py-12">
+      <span class="font-semibold text-3xl text-center">Refunds</span>
+      <span class="font text-l text-center mb-12">
+        You can view & update refunds as a sales manager
+      </span>
 
       {loading ? (
         <div class="flex flex-row justify-center items-center">Loading...</div>

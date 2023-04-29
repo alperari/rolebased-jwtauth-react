@@ -89,4 +89,21 @@ export class RefundService {
       return err.response.data;
     }
   }
+
+  static async rejectRefundRequest({ refundID }) {
+    try {
+      const response = await axios({
+        method: 'PATCH',
+        url: `${URL}/refund/reject`,
+        withCredentials: true,
+        data: {
+          refundID,
+        },
+      });
+
+      return response.data.updatedRefund;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
 }
