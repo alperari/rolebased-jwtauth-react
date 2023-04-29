@@ -24,6 +24,20 @@ export class RefundService {
     }
   }
 
+  static async getAllRefunds() {
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `${URL}/refund/all`,
+        withCredentials: true,
+      });
+
+      return response.data.refunds;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
+
   static async getOrderRefundStatus({ orderID }) {
     try {
       const response = await axios({

@@ -34,7 +34,7 @@ const RefundsPageAsSalesManager = () => {
   const fetchMyRefunds = async () => {
     setLoading(true);
 
-    const fetchedRefunds = await RefundService.getMyRefunds();
+    const fetchedRefunds = await RefundService.getAllRefunds();
 
     if (fetchedRefunds.error) {
       alert(fetchedRefunds.error);
@@ -123,6 +123,7 @@ const RefundsPageAsSalesManager = () => {
               <Table.HeadCell></Table.HeadCell>
               <Table.HeadCell>Product</Table.HeadCell>
               <Table.HeadCell>Order</Table.HeadCell>
+              <Table.HeadCell>User</Table.HeadCell>
 
               <Table.HeadCell>Request Date</Table.HeadCell>
 
@@ -160,6 +161,14 @@ const RefundsPageAsSalesManager = () => {
                       >
                         {refund.orderID}
                       </Link>
+                    </Table.Cell>
+
+                    <Table.Cell>
+                      {refund.user.name}
+                      <span class="text-green-400 font-semibold">
+                        {' '}
+                        ({refund.user.email})
+                      </span>
                     </Table.Cell>
 
                     <Table.Cell>
