@@ -143,4 +143,18 @@ export class ProductService {
       return err.response.data;
     }
   }
+
+  static async isCommentableRatable({ productID }) {
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `${URL}/product/is-commentable-ratable?productID=${productID}`,
+        withCredentials: true,
+      });
+      console.log(response);
+      return response.data;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
 }

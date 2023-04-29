@@ -9,6 +9,7 @@ import {
   Spinner,
   Label,
   TextInput,
+  Tooltip,
 } from 'flowbite-react';
 import {
   HiCalendar,
@@ -73,6 +74,8 @@ const ProductPage = () => {
   const [isInWishlist, setIsInWishlist] = useState(productFromDB?.inMyWishlist);
 
   const [cart, setCart] = useState(localCart);
+
+  const [isCommentableRatable, setIsCommentableRatable] = useState(false);
 
   const onAddComment = async (title, description) => {
     try {
@@ -354,12 +357,23 @@ const ProductPage = () => {
     setLoadingRatings(false);
   };
 
+  const fetchIsCommentableRatable = async () => {
+    if (user) {
+      const result = await ProductService.isCommentableRatable({
+        productID: productFromDB._id,
+      });
+
+      setIsCommentableRatable(result);
+    }
+  };
+
   useEffect(() => {
     setCart(JSON.parse(localStorage.getItem('cart')));
 
     fetchComments();
     fetchRatings();
     fetchProductDetails();
+    fetchIsCommentableRatable();
   }, [product, yourRating, stock, price, discount, showAddCommentModal]);
 
   const CustomTimelineItem = ({ comment }) => {
@@ -429,11 +443,22 @@ const ProductPage = () => {
         )}
         {user && user.role == 'customer' && (
           <Button
+            disabled={!isCommentableRatable}
             onClick={() => {
               setShowAddCommentModal(true);
             }}
           >
-            Make Comment
+            {' '}
+            {isCommentableRatable ? (
+              'Make Comment'
+            ) : (
+              <Tooltip
+                content="You have to purchase the product"
+                trigger="hover"
+              >
+                Make Comment
+              </Tooltip>
+            )}
           </Button>
         )}
       </Card>
@@ -442,7 +467,7 @@ const ProductPage = () => {
 
   const Rate = () => {
     // If user is not logged in, don't show rate section
-    if (!user || user.role !== 'customer') return null;
+    if (!user || user.role !== 'customer' || !isCommentableRatable) return null;
 
     return (
       <div class="flex flex-col mt-8 items-center">

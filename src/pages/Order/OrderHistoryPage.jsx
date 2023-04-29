@@ -58,19 +58,9 @@ const OrderHistoryPage = () => {
                 Receipt
               </a>
             </div>
-          </div>
-          <div class="flex flex-row gap-2">
             <div class="flex flex-row gap-2 py-2 mb-4 px-4 bg-gray-100 rounded-3xl font-semibold ">
               <HiCalendar size="25" />
               {date} - {time}
-            </div>
-
-            <div class="flex flex-row gap-2 py-2 mb-4 px-4 bg-gray-100 rounded-3xl font-semibold ">
-              <HiHome size="25" /> {order.address}
-            </div>
-
-            <div class="flex flex-row gap-2 py-2 mb-4 px-4 bg-gray-100 rounded-3xl font-semibold ">
-              <FaAddressBook size="25" /> {order?.contact}
             </div>
           </div>
         </div>

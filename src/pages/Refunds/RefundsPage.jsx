@@ -140,6 +140,7 @@ const RefundsPageAsSalesManager = () => {
                   <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
                     <Table.Cell width="100px">
                       <img
+                        class="overflow-hidden rounded-lg w-12 h-12 bg-gray-50 border border-gray-200"
                         src={refund.productDetails.imageURL}
                         alt={refund.productDetails.name}
                       />
@@ -164,11 +165,13 @@ const RefundsPageAsSalesManager = () => {
                     </Table.Cell>
 
                     <Table.Cell>
-                      {refund.user.name}
-                      <span class="text-green-400 font-semibold">
-                        {' '}
-                        ({refund.user.email})
-                      </span>
+                      <div class="flex flex-col">
+                        {refund.user.name}
+                        <span class="text-green-400 font-semibold">
+                          {' '}
+                          ({refund.user.email})
+                        </span>
+                      </div>
                     </Table.Cell>
 
                     <Table.Cell>
@@ -329,6 +332,7 @@ const RefundsPageAsCustomer = () => {
                   <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
                     <Table.Cell width="100px">
                       <img
+                        class="overflow-hidden rounded-lg w-12 h-12 bg-gray-50 border border-gray-200"
                         src={refund.productDetails.imageURL}
                         alt={refund.productDetails.name}
                       />
