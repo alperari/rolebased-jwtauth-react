@@ -243,14 +243,18 @@ const ProductPage = () => {
   const onAddToCartButtonClick = async (product, quantity) => {
     // Update cart in local storage
     // If cart is empty, create a new cart
-    if (!cart) {
-      cart = {
+    let newCart = { products: [], ...JSON.parse(localStorage.getItem('cart')) };
+
+    if (!newCart) {
+      newCart = {
         products: [],
       };
     }
 
     // If cart is not empty, check if product is already in cart
-    const productIndex = cart.products.findIndex((p) => p._id == product._id);
+    const productIndex = newCart.products.findIndex(
+      (p) => p._id == product._id
+    );
 
     const cartProduct = {
       cartQuantity: quantity,
@@ -267,7 +271,7 @@ const ProductPage = () => {
 
     // If product is not in cart, add it
     if (productIndex == -1) {
-      cart.products.push(cartProduct);
+      newCart.products.push(cartProduct);
 
       if (user) {
         // If logged-in, update cart in database
@@ -285,10 +289,10 @@ const ProductPage = () => {
     else {
       // But first check if cartQuantity is not greater than product quantity
       if (
-        cart.products[productIndex].cartQuantity + quantity <=
+        newCart.products[productIndex].cartQuantity + quantity <=
         product.quantity
       ) {
-        cart.products[productIndex].cartQuantity += quantity;
+        newCart.products[productIndex].cartQuantity += quantity;
 
         if (user) {
           // If logged-in, update cart in database
@@ -302,7 +306,7 @@ const ProductPage = () => {
     }
 
     // Update cart in local storage
-    localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem('cart', JSON.stringify(newCart));
 
     // Dispatch storage event to update cart in navbar
     window.dispatchEvent(new Event('storage'));
@@ -365,7 +369,6 @@ const ProductPage = () => {
     const fetchedRatings = await RatingService.getRatingsByProductId({
       productID: productId,
     });
-    console.log(fetchedRatings);
 
     if (fetchedRatings.length > 0 && user) {
       // If user already rated this product, set yourRating state
@@ -403,7 +406,7 @@ const ProductPage = () => {
     fetchRatings();
 
     fetchIsCommentableRatable();
-  }, [price, discount, showAddCommentModal]);
+  }, [productId, price, discount, showAddCommentModal]);
 
   const CustomTimelineItem = ({ comment }) => {
     const isCommentMine = user && comment.user._id === user._id;
@@ -782,7 +785,7 @@ const ProductPage = () => {
             e.preventDefault();
             const quantity = parseInt(e.target.quantity.value);
 
-            if (!quantity || quantity <= 1) {
+            if (!quantity) {
               onAddToCartButtonClick(product, 1);
             } else {
               onAddToCartButtonClick(product, quantity);

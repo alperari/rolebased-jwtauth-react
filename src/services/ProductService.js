@@ -151,7 +151,6 @@ export class ProductService {
         url: `${URL}/product/is-commentable-ratable?productID=${productID}`,
         withCredentials: true,
       });
-      console.log(response);
       return response.data;
     } catch (err) {
       return err.response.data;
