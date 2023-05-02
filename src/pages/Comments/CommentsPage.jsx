@@ -155,8 +155,7 @@ const CommentPageAsProductManager = () => {
                   </Table.Cell>
                   <Table.Cell>
                     <Link
-                      to="/product"
-                      state={{ product: comment.product }}
+                      to={'/product/' + comment.productID}
                       className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                     >
                       {comment.product.name}
@@ -308,8 +307,7 @@ const CommentPageAsCustomer = () => {
                   </Table.Cell>
                   <Table.Cell>
                     <Link
-                      to="/product"
-                      state={{ product: comment.product }}
+                      to={'/product/' + comment.productID}
                       className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                     >
                       {comment.product.name}

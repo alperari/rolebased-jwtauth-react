@@ -44,7 +44,9 @@ const Router = () => {
           <Route path="/" exact element={<Home />} />
           <Route path="/register" exact element={<RegisterPage />} />
           <Route path="/login" exact element={<LoginPage />} />
-          <Route path="/product" exact element={<ProductPage />} />
+
+          <Route path="/product/:productId" exact element={<ProductPage />} />
+
           <Route path="/categories" exact element={<CategoriesPage />} />
           <Route path="/cart" exact element={<CartPage />} />
 

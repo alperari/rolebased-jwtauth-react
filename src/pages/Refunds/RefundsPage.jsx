@@ -147,8 +147,7 @@ const RefundsPageAsSalesManager = () => {
                     </Table.Cell>
                     <Table.Cell>
                       <Link
-                        to="/product"
-                        state={{ product: refund.productID }}
+                        to={'/product/' + refund.productID}
                         className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                       >
                         {refund.productID}
@@ -339,8 +338,7 @@ const RefundsPageAsCustomer = () => {
                     </Table.Cell>
                     <Table.Cell>
                       <Link
-                        to="/product"
-                        state={{ product: refund.productID }}
+                        to={'/product/' + refund.productID}
                         className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                       >
                         {refund.productID}

@@ -30,7 +30,7 @@ import { RatingService } from '../../services/RatingService';
 import { WishlistService } from '../../services/WishlistService';
 import { CartService } from '../../services/CartService';
 
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 import { Ratings } from '../../components/Product/Ratings';
 import { Price } from '../../components/Product/Price';
@@ -42,14 +42,18 @@ const user = JSON.parse(localStorage.getItem('user'));
 let localCart = JSON.parse(localStorage.getItem('cart'));
 
 const ProductPage = () => {
-  const location = useLocation();
-  const { product } = location.state;
+  const { productId } = useParams();
 
-  const [loadingComments, setLoadingComments] = useState(false);
-  const [loadingRatings, setLoadingRatings] = useState(false);
+  // const location = useLocation();
+  // const { product } = location.state;
+
+  const [loadingProduct, setLoadingProduct] = useState(true);
+  const [loadingComments, setLoadingComments] = useState(true);
+  const [loadingRatings, setLoadingRatings] = useState(true);
+
   const [confirmingRating, setConfirmingRating] = useState(false);
 
-  const [productFromDB, setProductFromDB] = useState(product);
+  const [product, setProduct] = useState({});
   const [comments, setComments] = useState([]);
   const [ratings, setRatings] = useState([]);
 
@@ -58,20 +62,19 @@ const ProductPage = () => {
 
   // For editing stock
   const [isEditingStock, setIsEditingStock] = useState(false);
-  const [stock, setStock] = useState(productFromDB.quantity);
   const [updatingStock, setUpdatingStock] = useState(false);
 
   // For editing price and discount
   const [isEditingPriceDiscount, setIsEditingPriceDiscount] = useState(false);
-  const [price, setPrice] = useState(productFromDB.price);
-  const [discount, setDiscount] = useState(productFromDB.discount);
+  const [price, setPrice] = useState(null);
+  const [discount, setDiscount] = useState(null);
   const [updatingPriceDiscount, setUpdatingPriceDiscount] = useState(false);
 
   // For adding comment
   const [showAddCommentModal, setShowAddCommentModal] = useState(false);
 
   // For wishlist
-  const [isInWishlist, setIsInWishlist] = useState(productFromDB?.inMyWishlist);
+  const [isInWishlist, setIsInWishlist] = useState(product?.inMyWishlist);
 
   const [cart, setCart] = useState(localCart);
 
@@ -81,7 +84,7 @@ const ProductPage = () => {
     try {
       // Add comment to database
       const newComment = await CommentService.addComment({
-        productID: productFromDB._id,
+        productID: product._id,
         title: title,
         description: description,
       });
@@ -128,31 +131,44 @@ const ProductPage = () => {
 
       // Update rating in database by sending request to API
       await RatingService.addRating({
-        productID: productFromDB._id,
+        productID: product._id,
         stars: selectedStars,
       });
 
+      const newRatings = [...ratings];
+
       // Update rating in product state
-      const myRatingInProductState = ratings.find(
+      const myRatingInProductState = newRatings.find(
         (rating) => rating.userID === user._id
       );
 
       // If i already have a rating, update it
       if (myRatingInProductState) {
-        myRatingInProductState.stars = yourRating;
+        // If my new rating is zero, delete it
+        if (selectedStars === 0) {
+          const index = newRatings.indexOf(myRatingInProductState);
+          newRatings.splice(index, 1);
+        }
+        // If my new rating is not zero, update it
+        else {
+          myRatingInProductState.stars = selectedStars;
+        }
       }
 
       // If i don't have a rating, add it
       else {
-        ratings.push({
+        newRatings.push({
           userID: user._id,
-          productID: productFromDB._id,
+          productID: product._id,
           stars: selectedStars,
         });
       }
-      // Disable "confirm" button
       setYourRating(selectedStars);
 
+      // Update rating in state
+      setRatings([...newRatings]);
+
+      // Disable "confirm" button
       setConfirmingRating(false);
     } catch (err) {
       console.log(err);
@@ -170,14 +186,13 @@ const ProductPage = () => {
         setIsEditingStock(false);
       } else {
         // Update stock in product state
-        setStock(newStock);
+        setProduct({ ...product, quantity: newStock });
 
         // TODO: Update stock in database
-
         setUpdatingStock(true);
 
         const result = ProductService.updateQuantity({
-          productID: productFromDB._id,
+          productID: product._id,
           quantity: newStock,
         });
 
@@ -214,7 +229,7 @@ const ProductPage = () => {
       // TODO: Update price and discount in database
 
       const result = ProductService.updatePriceDiscount({
-        productID: productFromDB._id,
+        productID: product._id,
         price: newPrice,
         discount: newDiscount,
       });
@@ -294,19 +309,29 @@ const ProductPage = () => {
   };
 
   const fetchProductDetails = async () => {
+    if (product) setLoadingProduct(false);
+
+    setLoadingProduct(true);
+
+    // Fetch product from database
     const fetchedProduct = await ProductService.getProductById({
-      productID: product._id,
+      productID: productId,
     });
-    setProductFromDB({ ...fetchedProduct });
+
+    setProduct({ ...fetchedProduct });
+
+    setLoadingProduct(false);
   };
 
   const fetchComments = async () => {
+    if (comments && comments.length > 0) setLoadingComments(false);
+
     setLoadingComments(true);
 
     // Fetch comments
     const fetchedComments = await CommentService.getApprovedCommentsByProductId(
       {
-        productId: productFromDB._id,
+        productId: productId,
       }
     );
 
@@ -327,18 +352,20 @@ const ProductPage = () => {
       }
     }
 
-    setComments(fetchedComments);
-
+    setComments([...fetchedComments]);
     setLoadingComments(false);
   };
 
   const fetchRatings = async () => {
+    if (ratings && ratings.length > 0) setLoadingRatings(false);
+
     setLoadingRatings(true);
 
     // Fetch ratings
     const fetchedRatings = await RatingService.getRatingsByProductId({
-      productID: productFromDB._id,
+      productID: productId,
     });
+    console.log(fetchedRatings);
 
     if (fetchedRatings.length > 0 && user) {
       // If user already rated this product, set yourRating state
@@ -351,7 +378,6 @@ const ProductPage = () => {
         setSelectedStars(myRating.stars);
       }
     }
-
     setRatings(fetchedRatings);
 
     setLoadingRatings(false);
@@ -360,7 +386,7 @@ const ProductPage = () => {
   const fetchIsCommentableRatable = async () => {
     if (user) {
       const result = await ProductService.isCommentableRatable({
-        productID: productFromDB._id,
+        productID: productId,
       });
 
       setIsCommentableRatable(result);
@@ -370,11 +396,14 @@ const ProductPage = () => {
   useEffect(() => {
     setCart(JSON.parse(localStorage.getItem('cart')));
 
-    fetchComments();
-    fetchRatings();
     fetchProductDetails();
+
+    fetchComments();
+
+    fetchRatings();
+
     fetchIsCommentableRatable();
-  }, [product, yourRating, stock, price, discount, showAddCommentModal]);
+  }, [price, discount, showAddCommentModal]);
 
   const CustomTimelineItem = ({ comment }) => {
     const isCommentMine = user && comment.user._id === user._id;
@@ -418,6 +447,17 @@ const ProductPage = () => {
   };
 
   const CommentsSection = () => {
+    if (loadingComments) {
+      return (
+        <Card>
+          <div class="text-md text-gray-900 font-bold text-center flex gap-2 justify-center flex-row">
+            Loading comments
+            <Spinner size="lg" />
+          </div>
+        </Card>
+      );
+    }
+
     return (
       <Card>
         <span class="text-md text-gray-900 font-bold text-center">
@@ -520,8 +560,8 @@ const ProductPage = () => {
     if (loadingRatings) {
       return (
         <Card>
-          <div class="flex flex-col gap-3 items-center">
-            <Spinner size="lg" />
+          <div class="text-md text-gray-900 font-bold text-center flex gap-2 justify-center flex-row">
+            Loading ratings <Spinner size="lg" />
           </div>
         </Card>
       );
@@ -551,7 +591,7 @@ const ProductPage = () => {
               disabled={!isEditingStock}
               id="stock"
               type="number"
-              placeholder={productFromDB.quantity}
+              placeholder={product.quantity}
               required={true}
             />
             {isEditingStock ? (
@@ -591,17 +631,16 @@ const ProductPage = () => {
   };
 
   const StockStatusSection = () => {
-    if (productFromDB.quantity > 0) {
+    if (product.quantity > 0) {
       return (
         <div class="flex flex-col gap-1">
           <div class="flex flex-row gap-1 items-center">
             <HiOutlineCheckCircle color="green" size={30} />
             <span className="text-xl text-green-500 font-bold">In stock</span>
           </div>
-          {productFromDB.quantity < 10 && (
+          {product.quantity < 10 && (
             <Badge color="failure" size="md">
-              {productFromDB.quantity}{' '}
-              {productFromDB.quantity > 1 ? 'items' : 'item'} left
+              {product.quantity} {product.quantity > 1 ? 'items' : 'item'} left
             </Badge>
           )}
         </div>
@@ -647,7 +686,7 @@ const ProductPage = () => {
                 id="price"
                 type="number"
                 step={0.01}
-                placeholder={productFromDB.price}
+                placeholder={product.price}
               />
             </div>
             <div class="flex flex-row gap-2 items-center justify-between">
@@ -658,7 +697,7 @@ const ProductPage = () => {
                 id="discount"
                 type="number"
                 step={0.01}
-                placeholder={productFromDB.discount}
+                placeholder={product.discount}
               />
             </div>
             <div class="flex flex-row items-center justify-end">
@@ -698,7 +737,7 @@ const ProductPage = () => {
     if (!user || (user.role !== 'admin' && user.role !== 'salesManager')) {
       return (
         <div class="flex flex-row gap-6 mt-8 items-center">
-          <Price product={productFromDB} />
+          <Price product={product} />
         </div>
       );
     }
@@ -712,7 +751,7 @@ const ProductPage = () => {
         <div class="flex-col">
           <Label htmlFor="price" value="Price" />
           <div class="flex flex-row gap-2">
-            <Price product={productFromDB} />
+            <Price product={product} />
             <Button
               color="light"
               onClick={(e) => {
@@ -744,9 +783,9 @@ const ProductPage = () => {
             const quantity = parseInt(e.target.quantity.value);
 
             if (!quantity || quantity <= 1) {
-              onAddToCartButtonClick(productFromDB, 1);
+              onAddToCartButtonClick(product, 1);
             } else {
-              onAddToCartButtonClick(productFromDB, quantity);
+              onAddToCartButtonClick(product, quantity);
             }
           }}
         >
@@ -766,7 +805,7 @@ const ProductPage = () => {
 
   const AddToWishlistButton = () => {
     if (user) {
-      if (productFromDB.inMyWishlist) {
+      if (product.inMyWishlist) {
         return (
           <div class="flex flex-row items-center justify-end">
             <Button
@@ -776,14 +815,14 @@ const ProductPage = () => {
                 e.preventDefault();
 
                 // Remove from wishlist in state
-                setProductFromDB({
-                  ...productFromDB,
+                setProduct({
+                  ...product,
                   inMyWishlist: false,
                 });
 
                 // Remove from wishlist in db
                 await WishlistService.removeFromWishlist({
-                  productID: productFromDB._id,
+                  productID: product._id,
                 });
               }}
             >
@@ -801,14 +840,14 @@ const ProductPage = () => {
                 e.preventDefault();
 
                 // Add to wishlist in state
-                setProductFromDB({
-                  ...productFromDB,
+                setProduct({
+                  ...product,
                   inMyWishlist: true,
                 });
 
                 // Add to wishlist in db
                 await WishlistService.addToWishlist({
-                  productID: productFromDB._id,
+                  productID: product._id,
                 });
               }}
             >
@@ -819,6 +858,10 @@ const ProductPage = () => {
       }
     }
   };
+
+  if (loadingProduct) {
+    return 'loading';
+  }
 
   return (
     <div class="m-20 grid grid-cols-5 gap-1 ">
@@ -839,7 +882,7 @@ const ProductPage = () => {
           <div class="flex flex-row w-full items-center justify-center">
             <div className="h-96 w-96">
               <Carousel leftControl={' '} rightControl={' '} indicators={false}>
-                <img src={productFromDB.imageURL} alt={productFromDB.name} />
+                <img src={product.imageURL} alt={product.name} />
               </Carousel>
             </div>
           </div>
@@ -847,14 +890,14 @@ const ProductPage = () => {
           <div class="details flex flex-col gap-2">
             <div class="flex flex-row justify-between">
               <span className="text-m italic tracking-tight text-gray-900 dark:text-white">
-                {productFromDB.category}
+                {product.category}
               </span>
               <span className="text-m italic tracking-tight text-gray-400 dark:text-white">
-                id: {productFromDB._id}
+                id: {product._id}
               </span>
             </div>
-            <span class="font-bold text-xl">{productFromDB.name}</span>
-            <span class="text-lg">{productFromDB.description}</span>
+            <span class="font-bold text-xl">{product.name}</span>
+            <span class="text-lg">{product.description}</span>
           </div>
 
           <div class="flex flex-row gap-1 mt-4">
@@ -862,7 +905,7 @@ const ProductPage = () => {
               Distributed by
             </span>
             <span className="text-lg font-bold tracking-tight text-gray-400 dark:text-white">
-              {productFromDB.distributor}
+              {product.distributor}
             </span>
           </div>
 

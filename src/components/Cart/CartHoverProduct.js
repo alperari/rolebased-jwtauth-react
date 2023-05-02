@@ -3,7 +3,7 @@ import { Price } from './../Product/Price';
 
 export const CartHoverProduct = ({ product }) => {
   return (
-    <Link to="/product" state={{ product }}>
+    <Link to={'/product/' + product._id}>
       <div class=" flex flex-row gap-2 my-8 items-center w-full px-4">
         <div style={{ width: 100 }} class="border-2 border-gray-100">
           <img src={product.imageURL} alt={product.name} />

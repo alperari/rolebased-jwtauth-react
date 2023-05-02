@@ -78,8 +78,7 @@ const WishlistPage = () => {
                   </Table.Cell>
                   <Table.Cell>
                     <Link
-                      to="/product"
-                      state={{ product: product }}
+                      to={'/product/' + product._id}
                       className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                     >
                       {product.name}

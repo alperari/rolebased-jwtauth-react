@@ -125,8 +125,7 @@ const VerticalProductCard = ({ product, setProducts = null }) => {
       <RemoveButton />
       <Card imgAlt={product.name} imgSrc={product.imageURL}>
         <Link
-          to="/product"
-          state={{ product }}
+          to={'/product/' + product._id}
           className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white"
         >
           {product.name}
