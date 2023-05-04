@@ -123,7 +123,11 @@ const VerticalProductCard = ({ product, setProducts = null }) => {
   return (
     <div className="max-w-sm">
       <RemoveButton />
-      <Card imgAlt={product.name} imgSrc={product.imageURL}>
+      <Card
+        imgAlt={product.name}
+        imgSrc={product.imageURL}
+        className="hover:bg-gray-100"
+      >
         <Link
           to={'/product/' + product._id}
           className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white"

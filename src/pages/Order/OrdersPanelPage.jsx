@@ -323,7 +323,7 @@ const OrdersPanelPage = () => {
     <div class="flex flex-col mx-32 py-12">
       <span class="font-semibold text-3xl text-center">Orders</span>
       <span class="font text-l text-center mb-12">
-        You can view & update orders as a sales manager
+        You can view & update orders as a product manager
       </span>
 
       {loading ? (

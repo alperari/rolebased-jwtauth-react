@@ -125,7 +125,7 @@ const Router = () => {
             element={
               <Private
                 Component={OrdersPanelPage}
-                roles={['admin', 'salesManager']}
+                roles={['admin', 'productManager']}
               />
             }
           />

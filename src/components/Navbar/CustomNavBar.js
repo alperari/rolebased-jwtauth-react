@@ -157,45 +157,49 @@ const CustomNavBar = () => {
             </Navbar.Link>
           )}
 
-          {user &&
-            (user.role === 'productManager' || user.role === 'admin' ? (
-              <Navbar.Link href="/comments">
-                <div class="flex flex-row gap-1 py-2 px-4 bg-gray-100 rounded-3xl font-semibold ">
-                  Comments
-                  <FaCommentDots size={20} />
-                </div>
-              </Navbar.Link>
-            ) : user.role === 'customer' ? (
-              <Navbar.Link href="/comments">
-                <div class="flex flex-row gap-1 py-2 rounded-3xl font-semibold ">
-                  My Comments
-                  <FaCommentDots size={20} />
-                </div>
-              </Navbar.Link>
-            ) : null)}
-
-          {user && user.role === 'admin' && (
-            <Navbar.Link href="/orders">
+          {user && (user.role === 'admin' || user.role == 'productManager') && (
+            <Navbar.Link href="/comments">
               <div class="flex flex-row gap-1 py-2 px-4 bg-gray-100 rounded-3xl font-semibold ">
-                Orders
-                <BsCreditCardFill size={20} />
+                Comments
+                <FaCommentDots size={20} />
               </div>
             </Navbar.Link>
           )}
 
-          {user && (
-            <Navbar.Link href="/refunds">
-              {user.role === 'salesManager' || user.role === 'admin' ? (
+          {user && user.role === 'customer' && (
+            <Navbar.Link href="/comments">
+              <div class="flex flex-row gap-1 py-2 rounded-3xl font-semibold ">
+                My Comments
+                <FaCommentDots size={20} />
+              </div>
+            </Navbar.Link>
+          )}
+
+          {user &&
+            (user.role === 'admin' || user.role === 'productManager') && (
+              <Navbar.Link href="/orders">
                 <div class="flex flex-row gap-1 py-2 px-4 bg-gray-100 rounded-3xl font-semibold ">
-                  Refunds
-                  <RiRefund2Line size={20} />
+                  Orders
+                  <BsCreditCardFill size={20} />
                 </div>
-              ) : (
-                <div class="flex flex-row gap-1 py-2 rounded-3xl font-semibold ">
-                  My Refunds
-                  <RiRefund2Line size={20} />
-                </div>
-              )}
+              </Navbar.Link>
+            )}
+
+          {user && (user.role === 'admin' || user.role == 'salesManager') && (
+            <Navbar.Link href="/refunds">
+              <div class="flex flex-row gap-1 py-2 px-4 bg-gray-100 rounded-3xl font-semibold ">
+                Refunds
+                <RiRefund2Line size={20} />
+              </div>
+            </Navbar.Link>
+          )}
+
+          {user && user.role === 'customer' && (
+            <Navbar.Link href="/refunds">
+              <div class="flex flex-row gap-1 py-2 rounded-3xl font-semibold ">
+                My Refunds
+                <RiRefund2Line size={20} />
+              </div>
             </Navbar.Link>
           )}
         </Navbar.Collapse>
