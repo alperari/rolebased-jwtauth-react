@@ -288,7 +288,7 @@ const OrdersPanelPage = () => {
                           return (
                             <div class="flex flex-row gap-1 font-semibold">
                               <Link
-                                to={'/product/' + order._id}
+                                to={'/product/' + product.productID}
                                 className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                               >
                                 {product.productID}

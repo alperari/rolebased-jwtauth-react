@@ -83,38 +83,44 @@ const CustomNavBar = () => {
         </Navbar.Brand>
 
         <div className="flex md:order-2 items-center gap-2 justify-center">
-          <Dropdown
-            class=" items-center jutify-center m-0 p-0 flex flex-col"
-            size="s"
-            label={
-              cartState?.products?.length > 0 ? (
-                <div class="relative ">
-                  <div class="absolute left-3 bottom-3">
-                    <p class="flex h-2 w-2 items-center justify-center rounded-full bg-red-500 p-3 text-xs text-white">
-                      {cartState.products.reduce((acc, curr) => {
-                        return acc + curr.cartQuantity;
-                      }, 0)}
-                    </p>
+          {!user || (user && user.role === 'customer') ? (
+            <Dropdown
+              class=" items-center jutify-center m-0 p-0 flex flex-col"
+              size="s"
+              label={
+                cartState?.products?.length > 0 ? (
+                  <div class="relative ">
+                    <div class="absolute left-3 bottom-3">
+                      <p class="flex h-2 w-2 items-center justify-center rounded-full bg-red-500 p-3 text-xs text-white">
+                        {cartState.products.reduce((acc, curr) => {
+                          return acc + curr.cartQuantity;
+                        }, 0)}
+                      </p>
+                    </div>
+
+                    <IoCart className="text-2xl text-gray-500 mr-4" />
                   </div>
-
+                ) : (
                   <IoCart className="text-2xl text-gray-500 mr-4" />
-                </div>
-              ) : (
-                <IoCart className="text-2xl text-gray-500 mr-4" />
-              )
-            }
-            arrowIcon={false}
-          >
-            <CartHover cart={cartState}></CartHover>
-          </Dropdown>
+                )
+              }
+              arrowIcon={false}
+            >
+              <CartHover cart={cartState}></CartHover>
+            </Dropdown>
+          ) : null}
 
-          <Link to="/wishlist">
-            <IoBagHandle className="text-2xl text-gray-500 mr-4" />
-          </Link>
+          {user && user.role === 'customer' && (
+            <Link to="/wishlist">
+              <IoBagHandle className="text-2xl text-gray-500 mr-4" />
+            </Link>
+          )}
 
-          <Link to="/order-history">
-            <AiOutlineHistory className="text-2xl text-gray-500 mr-4" />
-          </Link>
+          {user && user.role === 'customer' && (
+            <Link to="/order-history">
+              <AiOutlineHistory className="text-2xl text-gray-500 mr-4" />
+            </Link>
+          )}
 
           {user && <UserSection />}
 

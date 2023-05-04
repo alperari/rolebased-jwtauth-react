@@ -771,9 +771,14 @@ const ProductPage = () => {
   };
 
   const AddToCartSection = () => {
-    if (user && (user.role === 'admin' || user.role === 'salesManager')) {
+    if (
+      user &&
+      (user.role === 'admin' ||
+        user.role === 'salesManager' ||
+        user.role === 'productManager')
+    ) {
       return (
-        <div className="flex flex-row mt-12 gap-5 items-end   justify-between">
+        <div className="flex flex-row  gap-5 items-end   justify-between">
           <PriceSection />
         </div>
       );
@@ -792,7 +797,7 @@ const ProductPage = () => {
             }
           }}
         >
-          <div className="flex flex-row mt-12 gap-5 items-end   justify-between">
+          <div className="flex flex-row gap-5 items-end   justify-between">
             <PriceSection />
             <div className="px-8">
               <Label htmlFor="quantity" value="Quantity" />
