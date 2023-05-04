@@ -863,64 +863,84 @@ const ProductPage = () => {
   };
 
   if (loadingProduct) {
-    return 'loading';
+    return (
+      <div class="py-12 text-xl flex flex-row gap-2 justify-center">
+        <Spinner />
+        <span>Loading product...</span>
+      </div>
+    );
   }
 
   return (
-    <div class="m-20 grid grid-cols-5 gap-1 ">
-      {showAddCommentModal && (
-        <AddCommentModal
-          show={showAddCommentModal}
-          setShow={setShowAddCommentModal}
-          setComments={setComments}
-          size="lg"
-          dismissable={true}
-          onSubmit={onAddComment}
-        />
-      )}
+    <div class="flex flex-col gap-3 py-12">
+      <div class="flex flex-col gap-2 text-center">
+        <span class="text-3xl">Product Details</span>
 
-      <div class="col-span-2 flex flex-col ">
-        <Card>
-          <AddToWishlistButton />
-          <div class="flex flex-row w-full items-center justify-center">
-            <div className="h-96 w-96">
-              <Carousel leftControl={' '} rightControl={' '} indicators={false}>
-                <img src={product.imageURL} alt={product.name} />
-              </Carousel>
-            </div>
-          </div>
-
-          <div class="details flex flex-col gap-2">
-            <div class="flex flex-row justify-between">
-              <span className="text-m italic tracking-tight text-gray-900 dark:text-white">
-                {product.category}
-              </span>
-              <span className="text-m italic tracking-tight text-gray-400 dark:text-white">
-                id: {product._id}
-              </span>
-            </div>
-            <span class="font-bold text-xl">{product.name}</span>
-            <span class="text-lg">{product.description}</span>
-          </div>
-
-          <div class="flex flex-row gap-1 mt-4">
-            <span class="text-lg tracking-tight text-gray-400 dark:text-white">
-              Distributed by
-            </span>
-            <span className="text-lg font-bold tracking-tight text-gray-400 dark:text-white">
-              {product.distributor}
-            </span>
-          </div>
-
-          <StockSection />
-
-          <AddToCartSection />
-        </Card>
+        <span class="text-gray-400 tracking-tight text-xl font-semibold">
+          {' '}
+          ({product._id})
+        </span>
       </div>
 
-      <div class="flex flex-col col-span-3 pl-24 pr-4 gap-6">
-        <CommentsSection />
-        <RatingsSection />
+      <div class="m-20 grid grid-cols-5 gap-1 ">
+        {showAddCommentModal && (
+          <AddCommentModal
+            show={showAddCommentModal}
+            setShow={setShowAddCommentModal}
+            setComments={setComments}
+            size="lg"
+            dismissable={true}
+            onSubmit={onAddComment}
+          />
+        )}
+
+        <div class="col-span-2 flex flex-col ">
+          <Card>
+            <AddToWishlistButton />
+            <div class="flex flex-row w-full items-center justify-center">
+              <div className="h-96 w-96">
+                <Carousel
+                  leftControl={' '}
+                  rightControl={' '}
+                  indicators={false}
+                >
+                  <img src={product.imageURL} alt={product.name} />
+                </Carousel>
+              </div>
+            </div>
+
+            <div class="details flex flex-col gap-2">
+              <div class="flex flex-row justify-between">
+                <span className="text-m italic tracking-tight text-gray-900 dark:text-white">
+                  {product.category}
+                </span>
+                <span className="text-m italic tracking-tight text-gray-400 dark:text-white">
+                  id: {product._id}
+                </span>
+              </div>
+              <span class="font-bold text-xl">{product.name}</span>
+              <span class="text-lg">{product.description}</span>
+            </div>
+
+            <div class="flex flex-row gap-1 mt-4">
+              <span class="text-lg tracking-tight text-gray-400 dark:text-white">
+                Distributed by
+              </span>
+              <span className="text-lg font-bold tracking-tight text-gray-400 dark:text-white">
+                {product.distributor}
+              </span>
+            </div>
+
+            <StockSection />
+
+            <AddToCartSection />
+          </Card>
+        </div>
+
+        <div class="flex flex-col col-span-3 pl-24 pr-4 gap-6">
+          <CommentsSection />
+          <RatingsSection />
+        </div>
       </div>
     </div>
   );

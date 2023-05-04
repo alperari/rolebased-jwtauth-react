@@ -19,18 +19,24 @@ const CartPage = () => {
   const navigate = useNavigate();
 
   const fetchCartUpdateLocalStorage = async () => {
-    const fetchedCart = await CartService.getCart();
+    const localCart = JSON.parse(localStorage.getItem('cart'));
 
-    // If any of product details are changed, update the cart
-    if (!_.isEqual(cart, fetchedCart)) {
-      // Update local storage
-      localStorage.setItem('cart', JSON.stringify(fetchedCart));
+    if (user) {
+      const fetchedCart = await CartService.getCart();
 
-      // Dispatch event
-      window.dispatchEvent(new Event('storage'));
+      // If any of product details are changed, update the cart
+      if (!_.isEqual(localCart, fetchedCart)) {
+        // Update local storage
+        localStorage.setItem('cart', JSON.stringify(fetchedCart));
 
-      // Update cart state
-      setCartState(fetchedCart);
+        // Dispatch event
+        window.dispatchEvent(new Event('storage'));
+
+        // Update cart state
+        setCartState(fetchedCart);
+      }
+    } else {
+      setCartState(localCart);
     }
   };
 

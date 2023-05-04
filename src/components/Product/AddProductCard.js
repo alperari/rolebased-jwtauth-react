@@ -14,10 +14,15 @@ import {
   Select,
 } from 'flowbite-react';
 
+import { useNavigate } from 'react-router-dom';
+
 import { ProductService } from '../../services/ProductService';
 import { CustomModal } from '../General/Modal';
+import { IoCompassOutline } from 'react-icons/io5';
 
 export const AddProductCard = () => {
+  const navigate = useNavigate();
+
   const [image, setImage] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categories, setCategories] = useState(null);
@@ -187,12 +192,20 @@ export const AddProductCard = () => {
           </div>
 
           <div>
-            <Label htmlFor="quantity">Quantity</Label>
+            <Label htmlFor="disabledInput1">
+              Quantity{' '}
+              <>
+                <span className="text-sm text-gray-300 dark:text-gray-400">
+                  (To be determined later)
+                </span>
+              </>
+            </Label>
             <TextInput
               type="number"
               id="quantity"
               placeholder="0"
-              required={true}
+              disabled={true}
+              // required={true}
             />
           </div>
 

@@ -30,7 +30,7 @@ const Private = ({ Component, roles }) => {
   return user && roles.includes(user.role) ? (
     <Component />
   ) : (
-    <Navigate to="/login" />
+    <Navigate to="/404" />
   );
 };
 

@@ -148,7 +148,7 @@ const CustomNavBar = () => {
             </div>
           </Navbar.Link>
 
-          {user && (user.role === 'admin' || user.role == 'salesManager') && (
+          {user && (user.role === 'admin' || user.role == 'productManager') && (
             <Navbar.Link href="/add-product">
               <div class="flex flex-row items-center gap-1 py-2">
                 Add Product
