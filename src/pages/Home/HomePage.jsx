@@ -56,6 +56,22 @@ const Home = () => {
         } else {
           return b.discount - a.discount;
         }
+      } else if (by === 'rating') {
+        const aRating =
+          a.ratings.reduce((acc, rating) => {
+            return acc + rating.stars;
+          }, 0) / a.ratings.length || 0;
+
+        const bRating =
+          b.ratings.reduce((acc, rating) => {
+            return acc + rating.stars;
+          }, 0) / b.ratings.length || 0;
+
+        if (order === 'asc') {
+          return aRating - bRating;
+        } else {
+          return bRating - aRating;
+        }
       }
     });
 
@@ -139,6 +155,31 @@ const Home = () => {
             >
               <div class="flex flex-row gap-1">
                 Discount
+                <TbSortDescending fontSize="20px" />
+              </div>
+            </Button>
+          </Button.Group>
+
+          <Button.Group>
+            <Button
+              color="gray"
+              onClick={() => {
+                sortProducts('rating', 'asc');
+              }}
+            >
+              <div class="flex flex-row gap-1">
+                Rating
+                <TbSortAscending fontSize="20px" />
+              </div>
+            </Button>
+            <Button
+              color="gray"
+              onClick={() => {
+                sortProducts('rating', 'desc');
+              }}
+            >
+              <div class="flex flex-row gap-1">
+                Rating
                 <TbSortDescending fontSize="20px" />
               </div>
             </Button>

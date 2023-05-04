@@ -157,21 +157,22 @@ const CustomNavBar = () => {
             </Navbar.Link>
           )}
 
-          {user && (
-            <Navbar.Link href="/comments">
-              {user.role === 'salesManager' || user.role === 'admin' ? (
+          {user &&
+            (user.role === 'productManager' || user.role === 'admin' ? (
+              <Navbar.Link href="/comments">
                 <div class="flex flex-row gap-1 py-2 px-4 bg-gray-100 rounded-3xl font-semibold ">
                   Comments
                   <FaCommentDots size={20} />
                 </div>
-              ) : (
+              </Navbar.Link>
+            ) : user.role === 'customer' ? (
+              <Navbar.Link href="/comments">
                 <div class="flex flex-row gap-1 py-2 rounded-3xl font-semibold ">
                   My Comments
                   <FaCommentDots size={20} />
                 </div>
-              )}
-            </Navbar.Link>
-          )}
+              </Navbar.Link>
+            ) : null)}
 
           {user && user.role === 'admin' && (
             <Navbar.Link href="/orders">

@@ -14,13 +14,12 @@ const user = JSON.parse(localStorage.getItem('user'));
 const cart = JSON.parse(localStorage.getItem('cart'));
 
 const CartPage = () => {
-  const [cartState, setCartState] = useState(cart);
+  const [cartState, setCartState] = useState({ products: [] });
 
   const navigate = useNavigate();
 
   const fetchCartUpdateLocalStorage = async () => {
     const localCart = JSON.parse(localStorage.getItem('cart'));
-
     if (user) {
       const fetchedCart = await CartService.getCart();
 
@@ -34,6 +33,8 @@ const CartPage = () => {
 
         // Update cart state
         setCartState(fetchedCart);
+      } else {
+        setCartState(localCart);
       }
     } else {
       setCartState(localCart);
