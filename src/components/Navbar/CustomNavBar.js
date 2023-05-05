@@ -41,7 +41,14 @@ const CustomNavBar = () => {
   const UserSection = () => {
     return (
       <div class="flex flex-row items-center">
-        <div class=" mr-3 flex flex-row items-center">{user.name}</div>
+        <div class=" mr-3 flex flex-col justify-center items-end">
+          {user.name}{' '}
+          {user && user.role !== 'customer' && (
+            <Badge color="purple" size="sm">
+              {user.role}
+            </Badge>
+          )}
+        </div>
         <Dropdown arrowIcon={false} inline={true} label={<Avatar size="md" />}>
           <Dropdown.Header>
             <span className="block text-sm">{user.name}</span>

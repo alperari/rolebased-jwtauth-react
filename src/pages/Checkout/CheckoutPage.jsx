@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Label } from 'flowbite-react';
 import { HiOutlinePencil, HiX, HiCheck } from 'react-icons/hi';
 import { TbCurrentLocation, TbHistory } from 'react-icons/tb';
+import { AiFillFilePdf } from 'react-icons/ai';
 
 import { Button, TextInput } from 'flowbite-react';
 
@@ -224,6 +225,17 @@ const CheckoutPage = () => {
         }
         message2={
           <div class="flex flex-col gap-2 ">
+            <Button
+              gradientDuoTone="pinkToOrange"
+              onClick={() => {
+                window.location.href = order.receiptURL;
+              }}
+            >
+              <div class="flex items-center flex-row gap-2">
+                {'Receipt'}
+                <AiFillFilePdf size={25} />{' '}
+              </div>
+            </Button>
             <Button
               gradientDuoTone="cyanToBlue"
               onClick={() => {
