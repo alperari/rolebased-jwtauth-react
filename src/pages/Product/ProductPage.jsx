@@ -1038,6 +1038,7 @@ const ProductPage = () => {
       return (
         <Card>
           <ChartButtons />
+
           <div class="text-md text-gray-900 font-bold text-center flex gap-2 justify-center flex-row">
             {chartMode === 'revenues' && (
               <CustomBarChart options={options_revenues} data={data_revenues} />
@@ -1046,6 +1047,36 @@ const ProductPage = () => {
               <CustomBarChart options={options_sales} data={data_sales} />
             )}
           </div>
+
+          {chartMode === 'revenues' && (
+            <div class="flex flex-row items-center justify-center gap-1">
+              <span class="text-sm font-medium text-gray-900 dark:text-gray-300">
+                Total revenue:
+              </span>
+
+              <span class="text-l font-bold text-gray-900 dark:text-gray-300">
+                $
+                {sales.reduce((acc, currItem) => {
+                  return acc + currItem.buyPrice;
+                }, 0)}
+              </span>
+            </div>
+          )}
+
+          {chartMode === 'sales' && (
+            <div>
+              <div class="flex flex-row items-center justify-center gap-1">
+                <span class="text-sm font-medium text-gray-900 dark:text-gray-300">
+                  Total number of sales:
+                </span>
+                <span class="text-l font-bold text-gray-900 dark:text-gray-300">
+                  {sales.reduce((acc, currItem) => {
+                    return acc + currItem.quantity;
+                  }, 0)}
+                </span>
+              </div>
+            </div>
+          )}
         </Card>
       );
     }

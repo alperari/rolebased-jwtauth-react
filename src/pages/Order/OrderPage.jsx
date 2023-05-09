@@ -41,10 +41,10 @@ const OrderPage = () => {
         orderID: orderId,
       });
 
-      // Update refund status in state
-      setRefundStatus(refundStatus);
-
-      console.log('refundStatus', refundStatus);
+      if (!refundStatus.error) {
+        // Update refund status in state
+        setRefundStatus(refundStatus);
+      }
     }
 
     setIsLoading(false);
