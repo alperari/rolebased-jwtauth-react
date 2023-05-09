@@ -247,7 +247,7 @@ const Home = () => {
     if (loading) {
       return <div class="mt-12">Loading...</div>;
     } else {
-      if (products.length === 0) {
+      if (!products || products.length === 0) {
         return <div class="mt-12">No products found.</div>;
       } else {
         return (
