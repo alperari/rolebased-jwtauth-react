@@ -3,23 +3,23 @@ import {
   CategoryScale,
   LinearScale,
   PointElement,
-  LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
   PointElement,
-  LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend
 );
 
-export const SalesChart = ({ options, data }) => {
-  return <Line options={options} data={data} />;
+export const CustomBarChart = ({ options, data }) => {
+  return <Bar options={options} data={data} />;
 };

@@ -40,7 +40,7 @@ import { Price } from '../../components/Product/Price';
 import { parseDateTime, get30DaysArray } from '../../helpers/helperFunctions';
 import { AddCommentModal } from '../../components/General/Modal';
 
-import { SalesChart } from '../../components/Order/SalesChart';
+import { CustomBarChart } from '../../components/Order/CustomBarChart';
 
 const user = JSON.parse(localStorage.getItem('user'));
 let localCart = JSON.parse(localStorage.getItem('cart'));
@@ -973,6 +973,16 @@ const ProductPage = () => {
             text: 'Revenues (Last 30 Days)',
           },
         },
+        scales: {
+          y: {
+            ticks: {
+              // Include a dollar sign in the ticks
+              callback: function (value, index, ticks) {
+                return '$' + value;
+              },
+            },
+          },
+        },
       };
 
       const options_sales = {
@@ -987,6 +997,18 @@ const ProductPage = () => {
             text: 'Number Of Sales (Last 30 Days)',
           },
         },
+        scales: {
+          y: {
+            ticks: {
+              beginAtZero: true,
+              callback: function (value) {
+                if (value % 1 === 0) {
+                  return value;
+                }
+              },
+            },
+          },
+        },
       };
 
       const data_revenues = {
@@ -994,6 +1016,7 @@ const ProductPage = () => {
         datasets: [
           {
             data: datasetRevenues,
+            minBarLength: 7,
             borderColor: 'rgb(37, 99, 235)',
             backgroundColor: 'rgba(37, 99, 235, 0.5)',
           },
@@ -1005,6 +1028,7 @@ const ProductPage = () => {
         datasets: [
           {
             data: datasetSaleNumbers,
+            minBarLength: 7,
             borderColor: 'rgb(255, 99, 132)',
             backgroundColor: 'rgba(255, 99, 132, 0.5)',
           },
@@ -1016,10 +1040,10 @@ const ProductPage = () => {
           <ChartButtons />
           <div class="text-md text-gray-900 font-bold text-center flex gap-2 justify-center flex-row">
             {chartMode === 'revenues' && (
-              <SalesChart options={options_revenues} data={data_revenues} />
+              <CustomBarChart options={options_revenues} data={data_revenues} />
             )}
             {chartMode === 'sales' && (
-              <SalesChart options={options_sales} data={data_sales} />
+              <CustomBarChart options={options_sales} data={data_sales} />
             )}
           </div>
         </Card>
@@ -1103,9 +1127,10 @@ const ProductPage = () => {
         </div>
 
         <div class="flex flex-col col-span-3 pl-24 pr-4 gap-6">
-          {/* <CommentsSection /> */}
-          {/* <RatingsSection /> */}
-          <SalesSection />
+          <CommentsSection />
+          <RatingsSection />
+          {user?.role === 'admin' ||
+            (user?.role === 'salesManager' && <SalesSection />)}
         </div>
       </div>
     </div>
