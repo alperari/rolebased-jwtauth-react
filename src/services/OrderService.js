@@ -113,4 +113,30 @@ export class OrderService {
       return err.response.data;
     }
   }
+
+  static async getAllReceipts() {
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `${URL}/order/receipts/all`,
+        withCredentials: true,
+      });
+      return response.data.receipts;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
+
+  static async getProductReceipts({ productID }) {
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `${URL}/order/receipts/product/${productID}`,
+        withCredentials: true,
+      });
+      return response.data.receipts;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
 }
