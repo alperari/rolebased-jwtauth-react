@@ -18,6 +18,8 @@ import OrderPage from '../pages/Order/OrderPage';
 import OrderHistoryPage from '../pages/Order/OrderHistoryPage';
 import OrdersPanelPage from '../pages/Order/OrdersPanelPage';
 import RefundsPage from '../pages/Refunds/RefundsPage';
+import ProductReceiptsPage from '../pages/Receipts/ProductReceiptsPage';
+import AllReceiptsPage from '../pages/Receipts/AllReceiptsPage';
 
 // Protected route, only accessible if user's role is in roles array
 const Private = ({ Component, roles }) => {
@@ -136,6 +138,26 @@ const Router = () => {
               <Private
                 Component={RefundsPage}
                 roles={['admin', 'customer', 'salesManager', 'productManager']}
+              />
+            }
+          />
+
+          <Route
+            path="/receipts/all"
+            element={
+              <Private
+                Component={AllReceiptsPage}
+                roles={['admin', 'salesManager']}
+              />
+            }
+          />
+
+          <Route
+            path="/receipts/product/:productId"
+            element={
+              <Private
+                Component={ProductReceiptsPage}
+                roles={['admin', 'salesManager']}
               />
             }
           />
