@@ -100,4 +100,17 @@ export class OrderService {
       return err.response.data;
     }
   }
+
+  static async getProductSales({ productID }) {
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `${URL}/order/product-sales?productID=${productID}`,
+        withCredentials: true,
+      });
+      return response.data.sales;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
 }

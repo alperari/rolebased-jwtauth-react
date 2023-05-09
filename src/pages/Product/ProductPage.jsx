@@ -11,6 +11,7 @@ import {
   TextInput,
   Tooltip,
 } from 'flowbite-react';
+
 import {
   HiCalendar,
   HiOutlinePencil,
@@ -37,6 +38,8 @@ import { Price } from '../../components/Product/Price';
 
 import { parseDateTime } from '../../helpers/helperFunctions';
 import { AddCommentModal } from '../../components/General/Modal';
+
+import { SalesChart } from '../../components/Order/SalesChart';
 
 const user = JSON.parse(localStorage.getItem('user'));
 let localCart = JSON.parse(localStorage.getItem('cart'));
@@ -867,6 +870,44 @@ const ProductPage = () => {
     }
   };
 
+  const SalesSection = () => {
+    const labels = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+    ];
+
+    const data = {
+      labels,
+      datasets: [
+        {
+          label: 'Dataset 1',
+          data: [1, 2, 3, 4, 5, 6, 7],
+          borderColor: 'rgb(255, 99, 132)',
+          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        },
+        {
+          label: 'Dataset 2',
+          data: [10, 20, 30, 40, 50, 60, 70],
+          borderColor: 'rgb(53, 162, 235)',
+          backgroundColor: 'rgba(53, 162, 235, 0.5)',
+        },
+      ],
+    };
+
+    return (
+      <Card>
+        <div class="text-md text-gray-900 font-bold text-center flex gap-2 justify-center flex-row">
+          <SalesChart data={data} />
+        </div>
+      </Card>
+    );
+  };
+
   if (loadingProduct) {
     return (
       <div class="py-12 text-xl flex flex-row gap-2 justify-center">
@@ -945,6 +986,7 @@ const ProductPage = () => {
         <div class="flex flex-col col-span-3 pl-24 pr-4 gap-6">
           <CommentsSection />
           <RatingsSection />
+          <SalesSection />
         </div>
       </div>
     </div>
