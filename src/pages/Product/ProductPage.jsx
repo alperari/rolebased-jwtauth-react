@@ -86,6 +86,7 @@ const ProductPage = () => {
   const [isCommentableRatable, setIsCommentableRatable] = useState(false);
 
   const [sales, setSales] = useState([]);
+  const [chartMode, setChartMode] = useState('revenues');
 
   const onAddComment = async (title, description) => {
     try {
@@ -887,6 +888,37 @@ const ProductPage = () => {
     }
   };
 
+  const ChartButtons = () => {
+    return (
+      <div class="flex flex-col items-center">
+        <div class="flex flex-row items-center">
+          <span class="mr-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+            Revenues
+          </span>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={chartMode === 'sales'}
+              class="sr-only peer"
+              onChange={(e) => {
+                e.preventDefault();
+                if (e.target.checked) {
+                  setChartMode('sales');
+                } else {
+                  setChartMode('revenues');
+                }
+              }}
+            />
+            <div class="w-11 h-6 bg-blue-700 rounded-full peer dark:bg-blue-700 peer-focus:ring-4 peer-focus:ring-gray-300 dark:peer-focus:ring-pink-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-blue-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-blue-600 peer-checked:bg-pink-600"></div>
+            <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+              Sales
+            </span>
+          </label>
+        </div>
+      </div>
+    );
+  };
+
   const SalesSection = () => {
     if (loadingSales) {
       return (
@@ -897,44 +929,98 @@ const ProductPage = () => {
         </Card>
       );
     } else {
-      const labels = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-      ];
-
-      console.log(sales);
-
       const past30DaysArray = get30DaysArray();
 
-      console.log(past30DaysArray);
+      const datasetSaleNumbers = past30DaysArray.map((day) => {
+        const salesOnThatDay = sales.filter((sale) => {
+          // each sale looks like {date: '2023-05-04', quantity: 1, buyPrice: 75.99}
+          return sale.date === day;
+        });
 
-      const data = {
-        labels,
+        if (salesOnThatDay.length > 0) {
+          return salesOnThatDay.reduce((acc, sale) => {
+            return acc + sale.quantity;
+          }, 0);
+        } else {
+          return 0;
+        }
+      });
+
+      const datasetRevenues = past30DaysArray.map((day) => {
+        const salesOnThatDay = sales.filter((sale) => {
+          // each sale looks like {date: '2023-05-04', quantity: 1, buyPrice: 75.99}
+          return sale.date === day;
+        });
+
+        if (salesOnThatDay.length > 0) {
+          return salesOnThatDay.reduce((acc, sale) => {
+            return acc + sale.buyPrice;
+          }, 0);
+        } else {
+          return 0;
+        }
+      });
+
+      const options_revenues = {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: false,
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Revenues (Last 30 Days)',
+          },
+        },
+      };
+
+      const options_sales = {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: false,
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Number Of Sales (Last 30 Days)',
+          },
+        },
+      };
+
+      const data_revenues = {
+        labels: past30DaysArray,
         datasets: [
           {
-            label: 'Dataset 1',
-            data: [1, 2, 3, 4, 5, 6, 7],
+            data: datasetRevenues,
+            borderColor: 'rgb(37, 99, 235)',
+            backgroundColor: 'rgba(37, 99, 235, 0.5)',
+          },
+        ],
+      };
+
+      const data_sales = {
+        labels: past30DaysArray,
+        datasets: [
+          {
+            data: datasetSaleNumbers,
             borderColor: 'rgb(255, 99, 132)',
             backgroundColor: 'rgba(255, 99, 132, 0.5)',
-          },
-          {
-            label: 'Dataset 2',
-            data: [10, 20, 30, 40, 50, 60, 70],
-            borderColor: 'rgb(53, 162, 235)',
-            backgroundColor: 'rgba(53, 162, 235, 0.5)',
           },
         ],
       };
 
       return (
         <Card>
+          <ChartButtons />
           <div class="text-md text-gray-900 font-bold text-center flex gap-2 justify-center flex-row">
-            <SalesChart data={data} />
+            {chartMode === 'revenues' && (
+              <SalesChart options={options_revenues} data={data_revenues} />
+            )}
+            {chartMode === 'sales' && (
+              <SalesChart options={options_sales} data={data_sales} />
+            )}
           </div>
         </Card>
       );
@@ -1017,8 +1103,8 @@ const ProductPage = () => {
         </div>
 
         <div class="flex flex-col col-span-3 pl-24 pr-4 gap-6">
-          <CommentsSection />
-          <RatingsSection />
+          {/* <CommentsSection /> */}
+          {/* <RatingsSection /> */}
           <SalesSection />
         </div>
       </div>

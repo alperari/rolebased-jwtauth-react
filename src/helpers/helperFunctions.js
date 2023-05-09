@@ -28,11 +28,11 @@ export const get30DaysArray = () => {
 
   for (let i = 30; i >= 0; i--) {
     const date = new Date(today - i * daysInMilliseconds);
-    const formattedDate = `${date.getDate().toString().padStart(2, '0')}-${(
+    const formattedDate = `${date.getFullYear().toString()}-${(
       date.getMonth() + 1
     )
       .toString()
-      .padStart(2, '0')}-${date.getFullYear().toString()}`;
+      .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
     dateArray.push(formattedDate);
   }
 

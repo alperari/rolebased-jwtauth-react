@@ -20,19 +20,6 @@ ChartJS.register(
   Legend
 );
 
-export const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top',
-    },
-    title: {
-      display: true,
-      text: 'Daily Sales (Last 30 Days)',
-    },
-  },
-};
-
-export const SalesChart = ({ data }) => {
+export const SalesChart = ({ options, data }) => {
   return <Line options={options} data={data} />;
 };
