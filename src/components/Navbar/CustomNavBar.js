@@ -2,7 +2,7 @@ import React from 'react';
 import { Dropdown, Button, Navbar, Avatar, Badge } from 'flowbite-react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { IoBagHandle, IoCart } from 'react-icons/io5';
+import { IoBagHandle, IoCart, IoReceipt } from 'react-icons/io5';
 import { AiOutlineHistory } from 'react-icons/ai';
 import { FaCommentDots } from 'react-icons/fa';
 import { MdAddBox, MdCategory, MdHome } from 'react-icons/md';
@@ -203,6 +203,15 @@ const CustomNavBar = () => {
               <div class="flex flex-row gap-1 py-2 px-4 bg-gray-100 rounded-3xl font-semibold ">
                 Refunds
                 <RiRefund2Line size={20} />
+              </div>
+            </Navbar.Link>
+          )}
+
+          {user && (user.role === 'admin' || user.role == 'salesManager') && (
+            <Navbar.Link href="/receipts/all">
+              <div class="flex flex-row gap-1 py-2 px-4 bg-gray-100 rounded-3xl font-semibold ">
+                Invoices
+                <IoReceipt size={20} />
               </div>
             </Navbar.Link>
           )}
