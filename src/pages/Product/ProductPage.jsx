@@ -30,6 +30,7 @@ import { UserService } from '../../services/UserService';
 import { RatingService } from '../../services/RatingService';
 import { WishlistService } from '../../services/WishlistService';
 import { CartService } from '../../services/CartService';
+import { OrderService } from '../../services/OrderService';
 
 import { useLocation, useParams } from 'react-router-dom';
 
@@ -53,6 +54,7 @@ const ProductPage = () => {
   const [loadingProduct, setLoadingProduct] = useState(true);
   const [loadingComments, setLoadingComments] = useState(true);
   const [loadingRatings, setLoadingRatings] = useState(true);
+  const [loadingSales, setLoadingSales] = useState(true);
 
   const [confirmingRating, setConfirmingRating] = useState(false);
 
@@ -82,6 +84,8 @@ const ProductPage = () => {
   const [cart, setCart] = useState(localCart);
 
   const [isCommentableRatable, setIsCommentableRatable] = useState(false);
+
+  const [sales, setSales] = useState([]);
 
   const onAddComment = async (title, description) => {
     try {
@@ -399,6 +403,17 @@ const ProductPage = () => {
     }
   };
 
+  const fetchProductSales = async () => {
+    setLoadingSales(true);
+    const fetchedSales = await OrderService.getProductSales({
+      productID: productId,
+    });
+
+    setSales([...fetchedSales]);
+
+    setLoadingSales(false);
+  };
+
   useEffect(() => {
     setCart(JSON.parse(localStorage.getItem('cart')));
 
@@ -409,6 +424,8 @@ const ProductPage = () => {
     fetchRatings();
 
     fetchIsCommentableRatable();
+
+    fetchProductSales();
   }, [productId, price, discount, showAddCommentModal]);
 
   const CustomTimelineItem = ({ comment }) => {
@@ -871,41 +888,53 @@ const ProductPage = () => {
   };
 
   const SalesSection = () => {
-    const labels = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-    ];
+    if (loadingSales) {
+      return (
+        <Card>
+          <div class="text-md text-gray-900 font-bold text-center flex gap-2 justify-center flex-row">
+            Loading sales <Spinner size="lg" />
+          </div>
+        </Card>
+      );
+    } else {
+      const labels = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+      ];
 
-    const data = {
-      labels,
-      datasets: [
-        {
-          label: 'Dataset 1',
-          data: [1, 2, 3, 4, 5, 6, 7],
-          borderColor: 'rgb(255, 99, 132)',
-          backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        },
-        {
-          label: 'Dataset 2',
-          data: [10, 20, 30, 40, 50, 60, 70],
-          borderColor: 'rgb(53, 162, 235)',
-          backgroundColor: 'rgba(53, 162, 235, 0.5)',
-        },
-      ],
-    };
+      console.log(sales);
 
-    return (
-      <Card>
-        <div class="text-md text-gray-900 font-bold text-center flex gap-2 justify-center flex-row">
-          <SalesChart data={data} />
-        </div>
-      </Card>
-    );
+      const data = {
+        labels,
+        datasets: [
+          {
+            label: 'Dataset 1',
+            data: [1, 2, 3, 4, 5, 6, 7],
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+          },
+          {
+            label: 'Dataset 2',
+            data: [10, 20, 30, 40, 50, 60, 70],
+            borderColor: 'rgb(53, 162, 235)',
+            backgroundColor: 'rgba(53, 162, 235, 0.5)',
+          },
+        ],
+      };
+
+      return (
+        <Card>
+          <div class="text-md text-gray-900 font-bold text-center flex gap-2 justify-center flex-row">
+            <SalesChart data={data} />
+          </div>
+        </Card>
+      );
+    }
   };
 
   if (loadingProduct) {
