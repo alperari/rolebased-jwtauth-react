@@ -20,3 +20,21 @@ export const groupBy = (array, key) => {
     return rv;
   }, {});
 };
+
+export const get30DaysArray = () => {
+  const dateArray = [];
+  const today = new Date();
+  const daysInMilliseconds = 24 * 60 * 60 * 1000; // Number of milliseconds in a day
+
+  for (let i = 30; i >= 0; i--) {
+    const date = new Date(today - i * daysInMilliseconds);
+    const formattedDate = `${date.getDate().toString().padStart(2, '0')}-${(
+      date.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, '0')}-${date.getFullYear().toString()}`;
+    dateArray.push(formattedDate);
+  }
+
+  return dateArray;
+};

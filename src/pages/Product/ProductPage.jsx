@@ -37,7 +37,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import { Ratings } from '../../components/Product/Ratings';
 import { Price } from '../../components/Product/Price';
 
-import { parseDateTime } from '../../helpers/helperFunctions';
+import { parseDateTime, get30DaysArray } from '../../helpers/helperFunctions';
 import { AddCommentModal } from '../../components/General/Modal';
 
 import { SalesChart } from '../../components/Order/SalesChart';
@@ -908,6 +908,10 @@ const ProductPage = () => {
       ];
 
       console.log(sales);
+
+      const past30DaysArray = get30DaysArray();
+
+      console.log(past30DaysArray);
 
       const data = {
         labels,
