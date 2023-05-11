@@ -937,6 +937,7 @@ const ProductPage = () => {
     return (
       <div class="flex flex-col items-center gap-2">
         <IntervalPicker
+          color={chartMode === 'revenues' ? 'blue' : 'pink'}
           startDate={startDate}
           setStartDate={setStartDate}
           endDate={endDate}
@@ -1148,9 +1149,11 @@ const ProductPage = () => {
 
               <span class="text-l font-bold text-gray-900 dark:text-gray-300">
                 $
-                {sales.reduce((acc, currItem) => {
-                  return acc + currItem.buyPrice;
-                }, 0)}
+                {sales
+                  .reduce((acc, currItem) => {
+                    return acc + currItem.buyPrice;
+                  }, 0)
+                  .toFixed(2)}
               </span>
             </div>
           )}
@@ -1250,8 +1253,8 @@ const ProductPage = () => {
         </div>
 
         <div class="flex flex-col col-span-3 pl-24 pr-4 gap-6">
-          {/* <CommentsSection />
-          <RatingsSection /> */}
+          <CommentsSection />
+          <RatingsSection />
           {user?.role === 'admin' ||
             (user?.role === 'salesManager' && <SalesSection />)}
         </div>
