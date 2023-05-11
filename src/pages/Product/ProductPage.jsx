@@ -943,18 +943,12 @@ const ProductPage = () => {
         </Card>
       );
     } else {
-      const past30DaysArray = get30DaysArray();
+      // Get days in selected interval (as array of strings)
+      const daysInSelectedIntervalArray = getDaysInInterval(startDate, endDate);
 
-      if (startDate !== null && endDate !== null) {
-        const daysInSelectedIntervalArray = getDaysInInterval(
-          startDate,
-          endDate
-        );
+      console.log(daysInSelectedIntervalArray);
 
-        console.log(daysInSelectedIntervalArray);
-      }
-
-      const datasetSaleNumbers = past30DaysArray.map((day) => {
+      const datasetSaleNumbers = daysInSelectedIntervalArray.map((day) => {
         const salesOnThatDay = sales.filter((sale) => {
           // each sale looks like {date: '2023-05-04', quantity: 1, buyPrice: 75.99}
           return sale.date === day;
@@ -969,7 +963,7 @@ const ProductPage = () => {
         }
       });
 
-      const datasetRevenues = past30DaysArray.map((day) => {
+      const datasetRevenues = daysInSelectedIntervalArray.map((day) => {
         const salesOnThatDay = sales.filter((sale) => {
           // each sale looks like {date: '2023-05-04', quantity: 1, buyPrice: 75.99}
           return sale.date === day;
@@ -993,7 +987,7 @@ const ProductPage = () => {
           },
           title: {
             display: true,
-            text: 'Revenues (Last 30 Days)',
+            text: 'Revenues',
           },
         },
         scales: {
@@ -1017,7 +1011,7 @@ const ProductPage = () => {
           },
           title: {
             display: true,
-            text: 'Number Of Sales (Last 30 Days)',
+            text: 'Number Of Sales',
           },
         },
         scales: {
@@ -1035,7 +1029,7 @@ const ProductPage = () => {
       };
 
       const data_revenues = {
-        labels: past30DaysArray,
+        labels: daysInSelectedIntervalArray,
         datasets: [
           {
             data: datasetRevenues,
@@ -1047,7 +1041,7 @@ const ProductPage = () => {
       };
 
       const data_sales = {
-        labels: past30DaysArray,
+        labels: daysInSelectedIntervalArray,
         datasets: [
           {
             data: datasetSaleNumbers,
