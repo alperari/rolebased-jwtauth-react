@@ -37,7 +37,12 @@ import { useLocation, useParams } from 'react-router-dom';
 import { Ratings } from '../../components/Product/Ratings';
 import { Price } from '../../components/Product/Price';
 
-import { parseDateTime, get30DaysArray } from '../../helpers/helperFunctions';
+import {
+  parseDateTime,
+  get30DaysArray,
+  getDaysInInterval,
+  convertDateToDDmmYYYY,
+} from '../../helpers/helperFunctions';
 import { AddCommentModal } from '../../components/General/Modal';
 
 import { CustomBarChart } from '../../components/Order/CustomBarChart';
@@ -421,6 +426,7 @@ const ProductPage = () => {
   };
 
   useEffect(() => {
+    console.log(new Date());
     setCart(JSON.parse(localStorage.getItem('cart')));
 
     fetchProductDetails();
@@ -939,6 +945,15 @@ const ProductPage = () => {
       );
     } else {
       const past30DaysArray = get30DaysArray();
+
+      if (startDate !== null && endDate !== null) {
+        const daysInSelectedIntervalArray = getDaysInInterval(
+          startDate,
+          endDate
+        );
+
+        console.log(daysInSelectedIntervalArray);
+      }
 
       const datasetSaleNumbers = past30DaysArray.map((day) => {
         const salesOnThatDay = sales.filter((sale) => {
