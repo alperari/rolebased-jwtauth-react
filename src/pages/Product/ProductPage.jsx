@@ -42,6 +42,7 @@ import {
   get30DaysArray,
   getDaysInInterval,
   convertDateToDDmmYYYY,
+  getDateDaysAgo,
 } from '../../helpers/helperFunctions';
 import { AddCommentModal } from '../../components/General/Modal';
 
@@ -51,6 +52,8 @@ import { IntervalPicker } from '../../components/Product/DatePicker';
 
 const user = JSON.parse(localStorage.getItem('user'));
 let localCart = JSON.parse(localStorage.getItem('cart'));
+
+const today = new Date();
 
 const ProductPage = () => {
   const { productId } = useParams();
@@ -95,8 +98,9 @@ const ProductPage = () => {
   // For sales chart
   const [sales, setSales] = useState([]);
   const [chartMode, setChartMode] = useState('revenues');
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+
+  const [startDate, setStartDate] = useState(getDateDaysAgo(30));
+  const [endDate, setEndDate] = useState(getDateDaysAgo(0));
 
   const onAddComment = async (title, description) => {
     try {
@@ -426,7 +430,6 @@ const ProductPage = () => {
   };
 
   useEffect(() => {
-    console.log(new Date());
     setCart(JSON.parse(localStorage.getItem('cart')));
 
     fetchProductDetails();
@@ -897,10 +900,6 @@ const ProductPage = () => {
         );
       }
     }
-  };
-
-  const ChartIntervalPicker = () => {
-    return <IntervalPicker startDate={startDate} setStartDate={setStartDate} />;
   };
 
   const ChartModeSwitch = () => {

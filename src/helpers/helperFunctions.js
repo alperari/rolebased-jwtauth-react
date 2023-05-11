@@ -66,8 +66,8 @@ export const convertDateToDDmmYYYY = (date) => {
   const dateList = date.toLocaleDateString().split('/');
 
   const yyyy = dateList[2];
-  let mm = dateList[1];
-  let dd = dateList[0];
+  let mm = dateList[0];
+  let dd = dateList[1];
 
   if (mm.length == 1) mm = '0' + mm;
 
@@ -75,4 +75,14 @@ export const convertDateToDDmmYYYY = (date) => {
 
   // Convert to YYYY-mm-dd format
   return `${yyyy}-${mm}-${dd}`;
+};
+
+export const getDateDaysAgo = (days) => {
+  var today = new Date();
+  var daysAgo = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate() - days
+  );
+  return daysAgo;
 };
