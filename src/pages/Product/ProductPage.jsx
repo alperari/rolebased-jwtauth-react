@@ -933,6 +933,81 @@ const ProductPage = () => {
     );
   };
 
+  const IntervalSection = () => {
+    return (
+      <div class="flex flex-col items-center gap-2">
+        <IntervalPicker
+          startDate={startDate}
+          setStartDate={setStartDate}
+          endDate={endDate}
+          setEndDate={setEndDate}
+        />
+        <Button.Group>
+          <Button
+            size="xs"
+            color="light"
+            onClick={() => {
+              setStartDate(getDateDaysAgo(365 - 1));
+              setEndDate(getDateDaysAgo(0));
+            }}
+          >
+            Last 365 Days
+          </Button>
+          <Button
+            size="xs"
+            color="light"
+            onClick={() => {
+              setStartDate(getDateDaysAgo(90 - 1));
+              setEndDate(getDateDaysAgo(0));
+            }}
+          >
+            Last 90 Days
+          </Button>
+          <Button
+            size="xs"
+            color="light"
+            onClick={() => {
+              setStartDate(getDateDaysAgo(30 - 1));
+              setEndDate(getDateDaysAgo(0));
+            }}
+          >
+            Last 30 Days
+          </Button>
+          <Button
+            size="xs"
+            color="light"
+            onClick={() => {
+              setStartDate(getDateDaysAgo(15 - 1));
+              setEndDate(getDateDaysAgo(0));
+            }}
+          >
+            Last 15 Days
+          </Button>
+          <Button
+            size="xs"
+            color="light"
+            onClick={() => {
+              setStartDate(getDateDaysAgo(7 - 1));
+              setEndDate(getDateDaysAgo(0));
+            }}
+          >
+            Last 7 Days
+          </Button>
+          <Button
+            size="xs"
+            color="light"
+            onClick={() => {
+              setStartDate(getDateDaysAgo(3 - 1));
+              setEndDate(getDateDaysAgo(0));
+            }}
+          >
+            Last 3 Days
+          </Button>
+        </Button.Group>
+      </div>
+    );
+  };
+
   const SalesSection = () => {
     if (loadingSales) {
       return (
@@ -945,8 +1020,6 @@ const ProductPage = () => {
     } else {
       // Get days in selected interval (as array of strings)
       const daysInSelectedIntervalArray = getDaysInInterval(startDate, endDate);
-
-      console.log(daysInSelectedIntervalArray);
 
       const datasetSaleNumbers = daysInSelectedIntervalArray.map((day) => {
         const salesOnThatDay = sales.filter((sale) => {
@@ -1056,12 +1129,7 @@ const ProductPage = () => {
         <Card>
           <ChartModeSwitch />
 
-          <IntervalPicker
-            startDate={startDate}
-            setStartDate={setStartDate}
-            endDate={endDate}
-            setEndDate={setEndDate}
-          />
+          <IntervalSection />
 
           <div class="text-md text-gray-900 font-bold text-center flex gap-2 justify-center flex-row">
             {chartMode === 'revenues' && (
