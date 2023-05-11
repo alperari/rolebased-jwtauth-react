@@ -8,9 +8,8 @@ import { IntervalPicker } from '../../components/Product/DatePicker';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   parseDateTime,
-  getDaysInInterval,
-  convertDateToDDmmYYYY,
   getDateDaysAgo,
+  convertDateToDDmmYYYY,
 } from '../../helpers/helperFunctions';
 
 const AllReceiptsPage = () => {
@@ -43,66 +42,100 @@ const AllReceiptsPage = () => {
         </div>
       );
     } else {
+      // Filter receipts by date [startDate, endDate]
+      const filteredReceipts = receipts.filter((receipt) => {
+        const [date, time] = parseDateTime(receipt.date);
+
+        const receiptDate = new Date(date);
+        const receiptDateWithoutTime = new Date(
+          receiptDate.getFullYear(),
+          receiptDate.getMonth(),
+          receiptDate.getDate()
+        );
+
+        return (
+          receiptDateWithoutTime >= startDate &&
+          receiptDateWithoutTime <= endDate
+        );
+      });
+
       return (
-        <Table hoverable={true}>
-          <Table.Head>
-            <Table.HeadCell>Order</Table.HeadCell>
-            <Table.HeadCell>User</Table.HeadCell>
-            <Table.HeadCell>Date</Table.HeadCell>
-            <Table.HeadCell>Total</Table.HeadCell>
-            <Table.HeadCell>Receipt</Table.HeadCell>
-          </Table.Head>
+        <div class="flex flex-col gap-5">
+          <div class="text-m text-center py-2 px-4 bg-gray-100 rounded-3xl font-semibold ">
+            Showing{' '}
+            <span class="font-bold text-red-700">
+              {filteredReceipts.length}{' '}
+            </span>
+            receipts between{' '}
+            <span class="font-bold text-red-700">
+              {convertDateToDDmmYYYY(startDate)}
+            </span>{' '}
+            and{' '}
+            <span class="font-bold text-red-700">
+              {convertDateToDDmmYYYY(endDate)}
+            </span>
+          </div>
 
-          <Table.Body className="divide-y">
-            {receipts.map((receipt) => {
-              const [date, time] = parseDateTime(receipt.date);
+          <Table hoverable={true}>
+            <Table.Head>
+              <Table.HeadCell>Order</Table.HeadCell>
+              <Table.HeadCell>User</Table.HeadCell>
+              <Table.HeadCell>Date</Table.HeadCell>
+              <Table.HeadCell>Total</Table.HeadCell>
+              <Table.HeadCell>Receipt</Table.HeadCell>
+            </Table.Head>
 
-              return (
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <Table.Cell>
-                    <Link
-                      to={'/order/' + receipt.orderID}
-                      className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                    >
-                      {receipt.orderID}
-                    </Link>
-                  </Table.Cell>
+            <Table.Body className="divide-y">
+              {filteredReceipts.map((receipt) => {
+                const [date, time] = parseDateTime(receipt.date);
 
-                  <Table.Cell>{receipt.userID}</Table.Cell>
+                return (
+                  <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                    <Table.Cell>
+                      <Link
+                        to={'/order/' + receipt.orderID}
+                        className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                      >
+                        {receipt.orderID}
+                      </Link>
+                    </Table.Cell>
 
-                  <Table.Cell>
-                    {date} {time}
-                  </Table.Cell>
+                    <Table.Cell>{receipt.userID}</Table.Cell>
 
-                  <Table.Cell>
-                    <span class="font-bold">${receipt.total.toFixed(2)}</span>
-                  </Table.Cell>
+                    <Table.Cell>
+                      {date} {time}
+                    </Table.Cell>
 
-                  <Table.Cell>
-                    <Button
-                      gradientDuoTone="pinkToOrange"
-                      onClick={() => {
-                        window.location.href = receipt.receiptURL;
-                      }}
-                    >
-                      <div class="flex items-center flex-row gap-2">
-                        {'Receipt'}
-                        <AiFillFilePdf size={25} />{' '}
-                      </div>
-                    </Button>
-                  </Table.Cell>
-                </Table.Row>
-              );
-            })}
-          </Table.Body>
-        </Table>
+                    <Table.Cell>
+                      <span class="font-bold">${receipt.total.toFixed(2)}</span>
+                    </Table.Cell>
+
+                    <Table.Cell>
+                      <Button
+                        gradientDuoTone="pinkToOrange"
+                        onClick={() => {
+                          window.location.href = receipt.receiptURL;
+                        }}
+                      >
+                        <div class="flex items-center flex-row gap-2">
+                          {'Receipt'}
+                          <AiFillFilePdf size={25} />{' '}
+                        </div>
+                      </Button>
+                    </Table.Cell>
+                  </Table.Row>
+                );
+              })}
+            </Table.Body>
+          </Table>
+        </div>
       );
     }
   };
 
   const IntervalSection = () => {
     return (
-      <div class="flex flex-col items-center gap-2">
+      <div class="flex flex-col items-center gap-2 mb-8">
         <IntervalPicker
           color={'blue'}
           startDate={startDate}
@@ -115,11 +148,21 @@ const AllReceiptsPage = () => {
             size="xs"
             color="light"
             onClick={() => {
-              setStartDate(getDateDaysAgo(365 - 1));
+              const oldestReceiptDate = new Date(
+                receipts[0].date.split('T')[0]
+              );
+              const oldestReceiptDateWithoutTime = new Date(
+                oldestReceiptDate.getFullYear(),
+                oldestReceiptDate.getMonth(),
+
+                oldestReceiptDate.getDate()
+              );
+
+              setStartDate(oldestReceiptDateWithoutTime);
               setEndDate(getDateDaysAgo(0));
             }}
           >
-            Last 365 Days
+            All
           </Button>
           <Button
             size="xs"
@@ -186,7 +229,7 @@ const AllReceiptsPage = () => {
       {loading ? (
         <div class="flex flex-row justify-center items-center">Loading...</div>
       ) : (
-        <div class="flex flex-col space-y-6">
+        <div class="flex flex-col">
           <IntervalSection />
           <ReceiptsTable />
         </div>
