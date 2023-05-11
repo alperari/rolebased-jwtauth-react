@@ -948,11 +948,20 @@ const ProductPage = () => {
             size="xs"
             color="light"
             onClick={() => {
-              setStartDate(getDateDaysAgo(365 - 1));
+              // Assign the oldest sale's date to the start date
+              const oldestSaleDate = new Date(sales[0].date.split('T')[0]);
+              const oldestSaleDateWithoutTime = new Date(
+                oldestSaleDate.getFullYear(),
+                oldestSaleDate.getMonth(),
+
+                oldestSaleDate.getDate()
+              );
+
+              setStartDate(oldestSaleDate);
               setEndDate(getDateDaysAgo(0));
             }}
           >
-            Last 365 Days
+            All
           </Button>
           <Button
             size="xs"
