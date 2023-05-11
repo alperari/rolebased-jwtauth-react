@@ -42,6 +42,8 @@ import { AddCommentModal } from '../../components/General/Modal';
 
 import { CustomBarChart } from '../../components/Order/CustomBarChart';
 
+import { IntervalPicker } from '../../components/Product/DatePicker';
+
 const user = JSON.parse(localStorage.getItem('user'));
 let localCart = JSON.parse(localStorage.getItem('cart'));
 
@@ -85,8 +87,11 @@ const ProductPage = () => {
 
   const [isCommentableRatable, setIsCommentableRatable] = useState(false);
 
+  // For sales chart
   const [sales, setSales] = useState([]);
   const [chartMode, setChartMode] = useState('revenues');
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   const onAddComment = async (title, description) => {
     try {
@@ -888,9 +893,13 @@ const ProductPage = () => {
     }
   };
 
-  const ChartButtons = () => {
+  const ChartIntervalPicker = () => {
+    return <IntervalPicker startDate={startDate} setStartDate={setStartDate} />;
+  };
+
+  const ChartModeSwitch = () => {
     return (
-      <div class="flex flex-col items-center">
+      <div class="flex flex-col items-end">
         <div class="flex flex-row items-center">
           <span class="mr-3 text-sm font-medium text-gray-900 dark:text-gray-300">
             Revenues
@@ -1037,7 +1046,14 @@ const ProductPage = () => {
 
       return (
         <Card>
-          <ChartButtons />
+          <ChartModeSwitch />
+
+          <IntervalPicker
+            startDate={startDate}
+            setStartDate={setStartDate}
+            endDate={endDate}
+            setEndDate={setEndDate}
+          />
 
           <div class="text-md text-gray-900 font-bold text-center flex gap-2 justify-center flex-row">
             {chartMode === 'revenues' && (
@@ -1158,8 +1174,8 @@ const ProductPage = () => {
         </div>
 
         <div class="flex flex-col col-span-3 pl-24 pr-4 gap-6">
-          <CommentsSection />
-          <RatingsSection />
+          {/* <CommentsSection />
+          <RatingsSection /> */}
           {user?.role === 'admin' ||
             (user?.role === 'salesManager' && <SalesSection />)}
         </div>
