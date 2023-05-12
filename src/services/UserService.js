@@ -16,7 +16,6 @@ export class UserService {
         method: 'GET',
         url: `${URL}/user/id/${id}`,
         withCredentials: true,
-        headers: headers,
       });
 
       return response.data.user;

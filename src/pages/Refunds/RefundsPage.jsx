@@ -179,7 +179,7 @@ const RefundsPageAsSalesManager = () => {
 
                     <Table.Cell>
                       <span class="font-semibold">
-                        ${refund.quantity * refund.price}
+                        ${refund.price.toFixed(2)}
                       </span>
                     </Table.Cell>
 
@@ -360,7 +360,7 @@ const RefundsPageAsCustomer = () => {
 
                     <Table.Cell>
                       <span class="font-semibold">
-                        ${refund.quantity * refund.price}
+                        ${refund.price.toFixed(2)}
                       </span>
                     </Table.Cell>
 

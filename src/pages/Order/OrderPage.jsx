@@ -126,7 +126,12 @@ const OrderPage = () => {
       // "approved" | "rejected" | "pending" | "none"
 
       if (status === 'approved') {
-        return 'Approved';
+        return (
+          <div class="flex flex-col items-center justify-center p-4 font-bold text-green-900 bg-green-200 rounded-xl mr-3">
+            <span>Refund</span>
+            <span>Approved</span>
+          </div>
+        );
       } else if (status === 'rejected') {
         return 'Rejected';
       } else if (status === 'pending') {
