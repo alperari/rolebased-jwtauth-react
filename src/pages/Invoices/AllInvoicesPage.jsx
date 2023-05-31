@@ -3,6 +3,8 @@ import { TextInput, Label, Table, Button } from 'flowbite-react';
 import { AiFillFilePdf } from 'react-icons/ai';
 
 import { OrderService } from '../../services/OrderService';
+import { RefundService } from '../../services/RefundService';
+
 import { IntervalPicker } from '../../components/Product/DatePicker';
 
 import { Link, useNavigate } from 'react-router-dom';
@@ -24,10 +26,23 @@ const AllInvoicesPage = () => {
   const fetchAllReceipts = async () => {
     setLoading(true);
 
-    const fetchedReceipts = await OrderService.getAllReceipts();
+    const fetchedOrders = await OrderService.getAllReceipts();
 
-    setReceipts(fetchedReceipts);
+    fetchedOrders.forEach((order) => {
+      order.transactionType = 'Order';
+    });
+    console.log('fetchedOrders:', fetchedOrders);
 
+    const fetchedRefunds = await RefundService.getApprovedRefunds();
+
+    fetchedRefunds.forEach((refund) => {
+      refund.transactionType = 'Refund';
+    });
+
+    console.log('fetchedRefunds:', fetchedRefunds);
+    const allReceipts = [...fetchedOrders];
+
+    setReceipts(allReceipts);
     setLoading(false);
   };
 
@@ -79,7 +94,9 @@ const AllInvoicesPage = () => {
 
           <Table hoverable={true}>
             <Table.Head>
-              <Table.HeadCell>Order</Table.HeadCell>
+              <Table.HeadCell>ID</Table.HeadCell>
+              <Table.HeadCell>Transaction Type</Table.HeadCell>
+
               <Table.HeadCell>User</Table.HeadCell>
               <Table.HeadCell>Date</Table.HeadCell>
               <Table.HeadCell>Total</Table.HeadCell>
@@ -100,6 +117,7 @@ const AllInvoicesPage = () => {
                         {receipt.orderID}
                       </Link>
                     </Table.Cell>
+                    <Table.Cell>xxx</Table.Cell>
 
                     <Table.Cell>{receipt.userID}</Table.Cell>
 
