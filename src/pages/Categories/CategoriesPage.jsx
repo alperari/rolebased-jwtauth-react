@@ -17,7 +17,8 @@ const CategoriesPage = () => {
     setLoading(true);
 
     // Fetch products
-    const fetchedProducts = await ProductService.getProductsWithRatings();
+    const fetchedProducts =
+      await ProductService.getProductsWithRatingsAsCustomer();
 
     setProducts(fetchedProducts);
 

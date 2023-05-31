@@ -22,10 +22,20 @@ const Home = () => {
   const [query, setQuery] = useState('');
 
   const fetchProducts = async () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+
     setLoading(true);
 
     // Fetch products
-    const fetchedProducts = await ProductService.getProductsWithRatings();
+    let fetchedProducts = [];
+    if (user && user.role != 'customer') {
+      fetchedProducts = await ProductService.getProductsWithRatings();
+
+      console.log('fetchedProducts:', fetchedProducts);
+    } else {
+      fetchedProducts = await ProductService.getProductsWithRatingsAsCustomer();
+      console.log('y');
+    }
 
     setProducts(fetchedProducts);
     setProductsCopy(fetchedProducts);
@@ -252,15 +262,17 @@ const Home = () => {
       } else {
         return (
           <div class="mt-12 grid grid-cols-4 gap-5 ">
-            {products.map((product, index) => {
-              return (
-                <VerticalProductCard
-                  product={product}
-                  setProducts={setProducts}
-                  key={index}
-                />
-              );
-            })}
+            {products &&
+              products.length > 0 &&
+              products.map((product, index) => {
+                return (
+                  <VerticalProductCard
+                    product={product}
+                    setProducts={setProducts}
+                    key={index}
+                  />
+                );
+              })}
           </div>
         );
       }

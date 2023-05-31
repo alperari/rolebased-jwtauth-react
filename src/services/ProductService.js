@@ -23,11 +23,11 @@ export class ProductService {
     }
   }
 
-  static async getProducts() {
+  static async getProductsWithRatingsAsCustomer() {
     try {
       const response = await axios({
         method: 'GET',
-        url: `${URL}/product`,
+        url: `${URL}/product/listed/with-ratings`,
         withCredentials: true,
       });
       return response.data.products;
