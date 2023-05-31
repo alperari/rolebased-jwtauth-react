@@ -30,8 +30,6 @@ const Home = () => {
     let fetchedProducts = [];
     if (user && user.role != 'customer') {
       fetchedProducts = await ProductService.getProductsWithRatings();
-
-      console.log('fetchedProducts:', fetchedProducts);
     } else {
       fetchedProducts = await ProductService.getProductsWithRatingsAsCustomer();
       console.log('y');

@@ -237,7 +237,7 @@ const ProductPage = () => {
         return;
       }
 
-      if (newPrice < 0 || newDiscount < 0 || newDiscount > 100) {
+      if (newDiscount < 0 || newDiscount > 100) {
         setIsEditingPriceDiscount(false);
         return;
       }
@@ -245,10 +245,21 @@ const ProductPage = () => {
       setUpdatingPriceDiscount(true);
 
       // Update price and discount in product state
-      if (newPrice !== null) setPrice(newPrice);
-      if (newDiscount !== null) setDiscount(newDiscount);
+      if (newPrice !== null && newPrice !== product.price && !isNaN(newPrice)) {
+        // console.log('before set price:', product);
+        setProduct({ ...product, price: newPrice });
+      }
+      console.log(newPrice, newDiscount);
+      if (
+        newDiscount !== null &&
+        newDiscount !== product.discount &&
+        !isNaN(newDiscount)
+      ) {
+        setProduct({ ...product, discount: newDiscount });
+      }
 
       // TODO: Update price and discount in database
+      // console.log('after update price:', product);
 
       const result = ProductService.updatePriceDiscount({
         productID: product._id,
@@ -441,7 +452,7 @@ const ProductPage = () => {
     fetchIsCommentableRatable();
 
     fetchProductSales();
-  }, [productId, price, discount, showAddCommentModal]);
+  }, [productId, showAddCommentModal]);
 
   const CustomTimelineItem = ({ comment }) => {
     const isCommentMine = user && comment.user._id === user._id;
