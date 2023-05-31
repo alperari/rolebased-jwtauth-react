@@ -121,7 +121,7 @@ const RefundsPageAsSalesManager = () => {
           <Table hoverable={true}>
             <Table.Head>
               <Table.HeadCell></Table.HeadCell>
-              <Table.HeadCell>Product</Table.HeadCell>
+              <Table.HeadCell>Product (Amount)</Table.HeadCell>
               <Table.HeadCell>Order</Table.HeadCell>
               <Table.HeadCell>User</Table.HeadCell>
 
@@ -146,12 +146,15 @@ const RefundsPageAsSalesManager = () => {
                       />
                     </Table.Cell>
                     <Table.Cell>
-                      <Link
-                        to={'/product/' + refund.productID}
-                        className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                      >
-                        {refund.productID}
-                      </Link>
+                      <div class="flex flex-row items-center gap-1">
+                        <Link
+                          to={'/product/' + refund.productID}
+                          className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                        >
+                          {refund.productID}
+                        </Link>
+                        <span class="text-gray-500">({refund.quantity})</span>
+                      </div>
                     </Table.Cell>
 
                     <Table.Cell>

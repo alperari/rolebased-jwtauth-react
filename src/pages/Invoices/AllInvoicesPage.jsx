@@ -28,19 +28,25 @@ const AllInvoicesPage = () => {
 
     const fetchedOrders = await OrderService.getAllReceipts();
 
+    // Fetch orders
     fetchedOrders.forEach((order) => {
+      order._id = order.orderID;
       order.transactionType = 'Order';
     });
-    console.log('fetchedOrders:', fetchedOrders);
 
+    // Fetch refunds
     const fetchedRefunds = await RefundService.getApprovedRefunds();
 
     fetchedRefunds.forEach((refund) => {
       refund.transactionType = 'Refund';
+      refund.total = refund.price;
     });
 
-    console.log('fetchedRefunds:', fetchedRefunds);
-    const allReceipts = [...fetchedOrders];
+    // Put them into a common shape
+
+    const allReceipts = [...fetchedOrders, ...fetchedRefunds].sort(
+      (a, b) => new Date(b.date) - new Date(a.date)
+    );
 
     setReceipts(allReceipts);
     setLoading(false);
@@ -110,14 +116,32 @@ const AllInvoicesPage = () => {
                 return (
                   <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
                     <Table.Cell>
-                      <Link
-                        to={'/order/' + receipt.orderID}
-                        className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                      >
-                        {receipt.orderID}
-                      </Link>
+                      {receipt.transactionType === 'Order' ? (
+                        <Link
+                          to={'/order/' + receipt._id}
+                          className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                        >
+                          {receipt._id}
+                        </Link>
+                      ) : (
+                        <span className="font-medium ">{receipt._id}</span>
+                      )}
                     </Table.Cell>
-                    <Table.Cell>xxx</Table.Cell>
+                    <Table.Cell>
+                      {receipt.transactionType === 'Order' ? (
+                        <span>
+                          <span class=" gap-1 py-2 px-4 bg-green-200 rounded-3xl font-semibold ">
+                            Order
+                          </span>
+                        </span>
+                      ) : (
+                        <span>
+                          <span class=" gap-1 py-2 px-4 bg-red-200 rounded-3xl font-semibold ">
+                            Refund
+                          </span>
+                        </span>
+                      )}
+                    </Table.Cell>
 
                     <Table.Cell>{receipt.userID}</Table.Cell>
 
