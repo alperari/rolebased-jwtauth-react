@@ -12,7 +12,7 @@ import {
   convertDateToDDmmYYYY,
 } from '../../helpers/helperFunctions';
 
-const AllReceiptsPage = () => {
+const AllInvoicesPage = () => {
   const [loading, setLoading] = useState(false);
   const [receipts, setReceipts] = useState([]);
 
@@ -25,6 +25,7 @@ const AllReceiptsPage = () => {
     setLoading(true);
 
     const fetchedReceipts = await OrderService.getAllReceipts();
+
     setReceipts(fetchedReceipts);
 
     setLoading(false);
@@ -66,7 +67,7 @@ const AllReceiptsPage = () => {
             <span class="font-bold text-red-700">
               {filteredReceipts.length}{' '}
             </span>
-            receipts between{' '}
+            invoices between{' '}
             <span class="font-bold text-red-700">
               {convertDateToDDmmYYYY(startDate)}
             </span>{' '}
@@ -148,8 +149,9 @@ const AllReceiptsPage = () => {
             size="xs"
             color="light"
             onClick={() => {
+              console.log('receipts.slice(-1):', receipts.slice(-1));
               const oldestReceiptDate = new Date(
-                receipts[0].date.split('T')[0]
+                receipts.slice(-1)[0].date.split('T')[0]
               );
               const oldestReceiptDateWithoutTime = new Date(
                 oldestReceiptDate.getFullYear(),
@@ -221,9 +223,9 @@ const AllReceiptsPage = () => {
 
   return (
     <div class="flex flex-col mx-32 py-12">
-      <span class="font-semibold text-3xl text-center">Receipts</span>
+      <span class="font-semibold text-3xl text-center">Invoices</span>
       <span class="font text-l text-center mb-12">
-        You can view all receipts here
+        You can view all invoices here
       </span>
 
       {loading ? (
@@ -238,4 +240,4 @@ const AllReceiptsPage = () => {
   );
 };
 
-export default AllReceiptsPage;
+export default AllInvoicesPage;

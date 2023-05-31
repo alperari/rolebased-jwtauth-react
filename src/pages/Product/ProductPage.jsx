@@ -81,8 +81,6 @@ const ProductPage = () => {
 
   // For editing price and discount
   const [isEditingPriceDiscount, setIsEditingPriceDiscount] = useState(false);
-  const [price, setPrice] = useState(null);
-  const [discount, setDiscount] = useState(null);
   const [updatingPriceDiscount, setUpdatingPriceDiscount] = useState(false);
 
   // For adding comment

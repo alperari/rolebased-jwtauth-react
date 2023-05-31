@@ -208,7 +208,7 @@ const CustomNavBar = () => {
           )}
 
           {user && (user.role === 'admin' || user.role == 'salesManager') && (
-            <Navbar.Link href="/receipts/all">
+            <Navbar.Link href="/invoices/all">
               <div class="flex flex-row gap-1 py-2 px-4 bg-gray-100 rounded-3xl font-semibold ">
                 Invoices
                 <IoReceipt size={20} />
