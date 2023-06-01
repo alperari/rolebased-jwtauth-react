@@ -25,6 +25,7 @@ const SalesPage = () => {
   const [orders, setOrders] = useState([]);
   const [refunds, setRefunds] = useState([]);
 
+  const [revenue, setRevenue] = useState(0);
   const [cost, setCost] = useState(0);
 
   const [startDate, setStartDate] = useState(getDateDaysAgo(30));
@@ -50,26 +51,43 @@ const SalesPage = () => {
     setLoading(false);
   };
 
-  //   const fetchProductsCalculateCost = async () => {
-  //     setLoading(true);
-  //     const products = await ProductService.getProducts();
+  const fetchProductsCalculateCost = async () => {
+    setLoading(true);
+    const products = await ProductService.getProducts();
 
-  //     let totalCost = 0;
+    let totalCost = 0;
 
-  //     products.forEach((product) => {
-  //       totalCost += product.cost;
-  //     });
-  //     console.log('totalCost:', totalCost);
-  //     setCost(totalCost);
+    products.forEach((product) => {
+      totalCost += product.cost;
+    });
+    setCost(totalCost);
 
-  //     setLoading(false);
-  //   };
+    setLoading(false);
+  };
+
+  const calculateRevenue = () => {
+    let totalRevenue = 0;
+
+    orders?.forEach((order) => {
+      order.products?.forEach((product) => {
+        totalRevenue += product.buyPrice;
+      });
+    });
+
+    refunds?.forEach((refund) => {
+      totalRevenue -= refund.price;
+    });
+
+    setRevenue(totalRevenue);
+  };
 
   useEffect(() => {
     fetchActiveOrders();
     fetchApprovedRefunds();
-    // fetchProductsCalculateCost();
-  }, []);
+
+    calculateRevenue();
+    fetchProductsCalculateCost();
+  }, [revenue, cost]);
 
   const IntervalSection = () => {
     return (
@@ -277,7 +295,7 @@ const SalesPage = () => {
       labels: ['Revenues', 'Costs'],
       datasets: [
         {
-          data: [15, 4],
+          data: [revenue, cost],
           minBarLength: 3,
           borderColor: ['rgba(1, 1, 1, 1)', 'rgba(1, 1, 1, 1)'],
           backgroundColor: ['rgba(97, 255, 6, 0.3)', 'rgba(255, 24, 6, 0.3)'],
@@ -292,10 +310,6 @@ const SalesPage = () => {
           display: false,
           position: 'top',
         },
-        //   title: {
-        //     display: true,
-        //     text: 'Revenues',
-        //   },
       },
       scales: {
         y: {
@@ -316,7 +330,7 @@ const SalesPage = () => {
         <div class="flex flex-col gap-2 text-md text-gray-900 font-bold text-center flex gap-2 justify-center flex-row px-16">
           <CustomBarChart data={data} options={options} />
           <span class="font-normal">
-            Profit <span class="font-bold">${cost}</span>
+            Profit <span class="font-bold">${revenue - cost}</span>
           </span>
         </div>
       </Card>

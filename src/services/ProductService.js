@@ -49,6 +49,19 @@ export class ProductService {
     }
   }
 
+  static async getProducts() {
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `${URL}/product/all`,
+        withCredentials: true,
+      });
+      return response.data.products;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
+
   static async addProduct({ name, description, image, category, distributor }) {
     const formData = new FormData();
 
