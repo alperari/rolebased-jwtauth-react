@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { TextInput, Label, Table, Button, Card, Spinner } from 'flowbite-react';
 import { AiFillFilePdf } from 'react-icons/ai';
+import { FaMoneyBillWave } from 'react-icons/fa';
 
 import { ProductService } from '../../services/ProductService';
 import { OrderService } from '../../services/OrderService';
@@ -35,59 +36,50 @@ const SalesPage = () => {
     setLoading(true);
 
     const fetchedOrders = await OrderService.getActiveOrders();
-    setOrders(fetchedOrders);
-
-    console.log(fetchedOrders);
-
-    setLoading(false);
+    return fetchedOrders;
   };
 
   const fetchApprovedRefunds = async () => {
     setLoading(true);
 
     const fetchedRefunds = await RefundService.getApprovedRefunds();
-    setRefunds(fetchedRefunds);
 
-    setLoading(false);
-  };
-
-  const fetchProductsCalculateCost = async () => {
-    setLoading(true);
-    const products = await ProductService.getProducts();
-
-    let totalCost = 0;
-
-    products.forEach((product) => {
-      totalCost += product.cost;
-    });
-    setCost(totalCost);
-
-    setLoading(false);
-  };
-
-  const calculateRevenue = () => {
-    let totalRevenue = 0;
-
-    orders?.forEach((order) => {
-      order.products?.forEach((product) => {
-        totalRevenue += product.buyPrice;
-      });
-    });
-
-    refunds?.forEach((refund) => {
-      totalRevenue -= refund.price;
-    });
-
-    setRevenue(totalRevenue);
+    return fetchedRefunds;
   };
 
   useEffect(() => {
-    fetchActiveOrders();
-    fetchApprovedRefunds();
+    fetchActiveOrders().then((fetchedOrders) => {
+      fetchApprovedRefunds().then(async (fetchedRefunds) => {
+        setOrders(fetchedOrders);
+        setRefunds(fetchedRefunds);
 
-    calculateRevenue();
-    fetchProductsCalculateCost();
-  }, [revenue, cost]);
+        let totalRevenue = 0;
+
+        fetchedOrders.forEach((order) => {
+          order.products?.forEach((product) => {
+            totalRevenue += product.buyPrice;
+          });
+        });
+
+        fetchedRefunds.forEach((refund) => {
+          totalRevenue -= refund.price;
+        });
+
+        const products = await ProductService.getProducts();
+
+        let totalCost = 0;
+
+        products.forEach((product) => {
+          totalCost += product.cost;
+        });
+
+        setRevenue(totalRevenue);
+        setCost(totalCost);
+
+        setLoading(false);
+      });
+    });
+  }, []);
 
   const IntervalSection = () => {
     return (
@@ -263,11 +255,23 @@ const SalesPage = () => {
         </Card>
       );
     } else {
+      let salesIncomeAmount = 0;
+      orders.forEach((order) => {
+        order.products?.forEach((product) => {
+          salesIncomeAmount += product.buyPrice;
+        });
+      });
+
+      let refundsAmount = 0;
+      refunds.forEach((refund) => {
+        refundsAmount += refund.price;
+      });
+
       const data = {
-        labels: ['Sales', 'Refunds'],
+        labels: ['Sold ($)', 'Refunded ($)'],
         datasets: [
           {
-            data: [12, 19],
+            data: [salesIncomeAmount, refundsAmount],
             backgroundColor: [
               'rgba(54, 162, 235, 0.2)',
               'rgba(153, 102, 255, 0.2)',
@@ -280,7 +284,7 @@ const SalesPage = () => {
       return (
         <Card>
           <div class="flex flex-col gap-2 text-md text-gray-900 items-center font-bold text-center flex gap-2 justify-center flex-row">
-            <span class="font-bold text-center mb-2">Profit</span>
+            <span class="font-bold text-center mb-2">Sales/Refunds</span>
             <div class="w-96">
               <CustomPieChart data={data} />
             </div>
@@ -298,7 +302,7 @@ const SalesPage = () => {
           data: [revenue, cost],
           minBarLength: 3,
           borderColor: ['rgba(1, 1, 1, 1)', 'rgba(1, 1, 1, 1)'],
-          backgroundColor: ['rgba(97, 255, 6, 0.3)', 'rgba(255, 24, 6, 0.3)'],
+          backgroundColor: ['rgb(51, 102, 0)', 'rgb(204, 51, 0)'],
         },
       ],
     };
@@ -325,13 +329,17 @@ const SalesPage = () => {
 
     return (
       <Card>
-        <span class=" font-bold text-center mb-2">Sales & Costs</span>
+        <span class=" font-bold text-center mb-2">Revenues & Costs</span>
 
         <div class="flex flex-col gap-2 text-md text-gray-900 font-bold text-center flex gap-2 justify-center flex-row px-16">
           <CustomBarChart data={data} options={options} />
-          <span class="font-normal">
-            Profit <span class="font-bold">${revenue - cost}</span>
-          </span>
+          <div class="flex flex-col  py-2 px-4 bg-gray-200 rounded-3xl font-semibold justify-center">
+            Profit
+            <div class="flex flex-row gap-2 items-center justify-center text-green-700 font-bold">
+              <FaMoneyBillWave size={20} />
+              {(revenue - cost).toFixed(2)}
+            </div>
+          </div>
         </div>
       </Card>
     );
