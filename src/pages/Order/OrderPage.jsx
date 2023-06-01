@@ -133,7 +133,12 @@ const OrderPage = () => {
           </div>
         );
       } else if (status === 'rejected') {
-        return 'Rejected';
+        return (
+          <div class="flex flex-col items-center justify-center p-4 font-bold text-red-900 bg-red-200 rounded-xl mr-3">
+            <span>Refund</span>
+            <span>Rejected</span>
+          </div>
+        );
       } else if (status === 'pending') {
         return (
           <div class="mr-3">

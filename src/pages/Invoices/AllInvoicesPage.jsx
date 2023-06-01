@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TextInput, Label, Table, Button } from 'flowbite-react';
+import { TextInput, Label, Table, Button, Card } from 'flowbite-react';
 import { AiFillFilePdf } from 'react-icons/ai';
 
 import { OrderService } from '../../services/OrderService';
@@ -36,7 +36,6 @@ const AllInvoicesPage = () => {
 
     // Fetch refunds
     const fetchedRefunds = await RefundService.getApprovedRefunds();
-
     fetchedRefunds.forEach((refund) => {
       refund.transactionType = 'Refund';
       refund.total = refund.price;
@@ -50,6 +49,35 @@ const AllInvoicesPage = () => {
 
     setReceipts(allReceipts);
     setLoading(false);
+  };
+
+  const calculateRevenue = () => {
+    const filteredReceipts = receipts.filter((receipt) => {
+      const [date, time] = parseDateTime(receipt.date);
+
+      const receiptDate = new Date(date);
+      const receiptDateWithoutTime = new Date(
+        receiptDate.getFullYear(),
+        receiptDate.getMonth(),
+        receiptDate.getDate()
+      );
+
+      return (
+        receiptDateWithoutTime >= startDate && receiptDateWithoutTime <= endDate
+      );
+    });
+
+    let revenue = 0;
+
+    filteredReceipts.forEach((receipt) => {
+      if (receipt.transactionType === 'Order') {
+        revenue += receipt.total;
+      } else {
+        revenue -= receipt.total;
+      }
+    });
+
+    return revenue.toFixed(2);
   };
 
   useEffect(() => {
@@ -82,7 +110,7 @@ const AllInvoicesPage = () => {
       });
 
       return (
-        <div class="flex flex-col gap-5">
+        <div class="flex flex-col gap-5 max-h-screen">
           <div class="text-m text-center py-2 px-4 bg-gray-100 rounded-3xl font-semibold ">
             Showing{' '}
             <span class="font-bold text-red-700">
@@ -130,13 +158,13 @@ const AllInvoicesPage = () => {
                     <Table.Cell>
                       {receipt.transactionType === 'Order' ? (
                         <span>
-                          <span class=" gap-1 py-2 px-4 bg-green-200 rounded-3xl font-semibold ">
+                          <span class=" gap-1 py-2 px-4 bg-green-400 rounded-3xl font-semibold text-white ">
                             Order
                           </span>
                         </span>
                       ) : (
                         <span>
-                          <span class=" gap-1 py-2 px-4 bg-red-200 rounded-3xl font-semibold ">
+                          <span class=" gap-1 py-2 px-4 bg-red-400 rounded-3xl font-semibold text-white">
                             Refund
                           </span>
                         </span>
@@ -150,7 +178,15 @@ const AllInvoicesPage = () => {
                     </Table.Cell>
 
                     <Table.Cell>
-                      <span class="font-bold">${receipt.total.toFixed(2)}</span>
+                      {receipt.transactionType === 'Order' ? (
+                        <span class="font-bold text-green-600">
+                          ${receipt.total.toFixed(2)}
+                        </span>
+                      ) : (
+                        <span class="font-bold text-red-600">
+                          -${receipt.total.toFixed(2)}
+                        </span>
+                      )}
                     </Table.Cell>
 
                     <Table.Cell>
@@ -266,7 +302,7 @@ const AllInvoicesPage = () => {
   return (
     <div class="flex flex-col mx-32 py-12">
       <span class="font-semibold text-3xl text-center">Invoices</span>
-      <span class="font text-l text-center mb-12">
+      <span class="font text-l text-center mb-4">
         You can view all invoices here
       </span>
 
@@ -275,7 +311,20 @@ const AllInvoicesPage = () => {
       ) : (
         <div class="flex flex-col">
           <IntervalSection />
+
           <ReceiptsTable />
+
+          <div class="my-6">
+            <Card>
+              <div class="flex flex-row justify-between py-2 font-bold tracking-tight text-xl">
+                <div>Revenue</div>
+                <div class="flex flex-row gap-1">
+                  <span>$</span>
+                  <span>{calculateRevenue()}</span>
+                </div>
+              </div>
+            </Card>
+          </div>
         </div>
       )}
     </div>
