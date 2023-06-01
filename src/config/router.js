@@ -19,6 +19,7 @@ import OrderHistoryPage from '../pages/Order/OrderHistoryPage';
 import OrdersPanelPage from '../pages/Order/OrdersPanelPage';
 import RefundsPage from '../pages/Refunds/RefundsPage';
 import AllInvoicesPage from '../pages/Invoices/AllInvoicesPage';
+import SalesPage from '../pages/Sales/SalesPage';
 
 // Protected route, only accessible if user's role is in roles array
 const Private = ({ Component, roles }) => {
@@ -146,6 +147,16 @@ const Router = () => {
             element={
               <Private
                 Component={AllInvoicesPage}
+                roles={['admin', 'salesManager']}
+              />
+            }
+          />
+
+          <Route
+            path="/sales"
+            element={
+              <Private
+                Component={SalesPage}
                 roles={['admin', 'salesManager']}
               />
             }
