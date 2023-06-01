@@ -17,6 +17,22 @@ import {
 const SalesPage = () => {
   const [loading, setLoading] = useState(true);
 
+  const [orders, setOrders] = useState([]);
+  const [refunds, setRefunds] = useState([]);
+
+  const [startDate, setStartDate] = useState(getDateDaysAgo(30));
+  const [endDate, setEndDate] = useState(getDateDaysAgo(0));
+
+  const fetchOrders = async () => {
+    const fetchedOrders = await OrderService.getOrders();
+    console.log(fetchedOrders);
+    setOrders(fetchedOrders);
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
   return (
     <div class="flex flex-col mx-32 py-12">
       <span class="font-semibold text-3xl text-center">

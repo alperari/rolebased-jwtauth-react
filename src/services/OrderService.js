@@ -49,6 +49,19 @@ export class OrderService {
     }
   }
 
+  static async getActiveOrders() {
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `${URL}/order/active`,
+        withCredentials: true,
+      });
+      return response.data.orders;
+    } catch (err) {
+      return err.response.data;
+    }
+  }
+
   static async placeOrder({ products, creditCard, address, contact }) {
     try {
       const response = await axios({
