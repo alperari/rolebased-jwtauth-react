@@ -108,9 +108,9 @@ const OrderHistoryPage = () => {
                 <img src={product.imageURL} alt={product._id} />
               </div>
               <div class="flex-grow pl-3">
-                <h6 class="font-semibold uppercase text-gray-600">
-                  {product.name}
-                </h6>
+                <div className="font-semibold uppercase font-medium text-blue-600 hover:underline dark:text-blue-500">
+                  <Link to={'/product/' + product._id}>{product.name}</Link>
+                </div>
                 <span class="text-gray-400">{product.distributor}</span>
                 <p class="text-gray-400">x {product.cartQuantity}</p>
               </div>

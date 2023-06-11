@@ -46,6 +46,15 @@ export const UserCard = ({ user }) => {
           <div className="mt-4 flex flex-col space-y-4 lg:mt-6 text-center">
             <div>
               <h5 className="text-m pt-4 font-medium text-gray-900 dark:text-white">
+                Tax ID
+              </h5>
+              <div class="flex flex-col py-2 px-4 rounded-3xl bg-gray-100 items-center justify-center">
+                {user.tax_id}
+              </div>
+            </div>
+
+            <div>
+              <h5 className="text-m pt-4 font-medium text-gray-900 dark:text-white">
                 Address
               </h5>
               <div class="flex flex-col py-2 px-4 rounded-3xl bg-gray-100 items-center justify-center">

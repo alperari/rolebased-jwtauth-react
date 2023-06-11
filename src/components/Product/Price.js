@@ -1,6 +1,16 @@
 import { Badge } from 'flowbite-react';
 
 export const Price = ({ product }) => {
+  if (product.price === -1) {
+    return (
+      <div>
+        <span className="text-3xl font-bold text-gray-900 dark:text-white">
+          $TBA
+        </span>
+      </div>
+    );
+  }
+
   if (product.discount <= 0) {
     return (
       <div>

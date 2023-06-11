@@ -49,7 +49,7 @@ export const AddProductCard = () => {
     const name = e.target.name.value;
     const description = e.target.description.value;
     const category =
-      selectedCategory === 'Other'
+      selectedCategory === 'Add New Category'
         ? e.target.specifyCategory.value
         : selectedCategory;
 
@@ -77,7 +77,13 @@ export const AddProductCard = () => {
   const getCategories = async () => {
     const fetchedCategories = await ProductService.getCategories();
 
-    setCategories([...fetchedCategories, 'Other']);
+    setCategories([...fetchedCategories, 'Add New Category']);
+
+    if (fetchedCategories.length === 0) {
+      setSelectedCategory('Add New Category');
+    } else {
+      setSelectedCategory(fetchedCategories[0]);
+    }
   };
 
   // Fetch categories from API before the render
@@ -164,7 +170,7 @@ export const AddProductCard = () => {
             </Select>
           </div>
 
-          {selectedCategory === 'Other' && (
+          {selectedCategory === 'Add New Category' && (
             <div>
               <Label
                 class="text-blue-500 text-sm font-bold"

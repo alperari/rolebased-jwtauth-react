@@ -43,11 +43,15 @@ const CustomNavBar = () => {
       <div class="flex flex-row items-center">
         <div class=" mr-3 flex flex-col justify-center items-end">
           {user.name}{' '}
-          {user && user.role !== 'customer' && (
+          {user && user.role !== 'customer' && user.role === 'salesManager' ? (
             <Badge color="purple" size="sm">
               {user.role}
             </Badge>
-          )}
+          ) : user.role === 'productManager' ? (
+            <Badge color="red" size="sm">
+              {user.role}
+            </Badge>
+          ) : null}
         </div>
         <Dropdown arrowIcon={false} inline={true} label={<Avatar size="md" />}>
           <Dropdown.Header>
